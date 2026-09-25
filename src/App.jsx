@@ -1,80 +1,74 @@
-// Import React so we can create React components.
-// Importujemy React, aby móc tworzyć komponenty React.
+// Import React so we can create the application component.
+// Importujemy React, aby móc tworzyć główny komponent aplikacji.
 import React from "react";
 
-// Import the main stylesheet used by the application.
-// Importujemy główny arkusz stylów używany przez aplikację.
+// Import the stylesheet used by the application.
+// Importujemy arkusz stylów używany przez aplikację.
 import "./App.css";
 
-// Import the local honey flower image from the assets folder.
-// Importujemy lokalne zdjęcie miodu faceliowego z folderu assets.
-import miodFaceliowy from "./assets/MiodFaceliowy.png";
-
-// Import the honey cellar image from the assets folder.
-// Importujemy zdjęcie piwnicy z miodem z folderu assets.
-import miodPiwnica from "./assets/MiodPiwnica.jpg";
-
-// Import the official Złotkowska Pasieka logo.
-// Importujemy oficjalne logo Złotkowskiej Pasieki.
-import logo from "./assets/ZlotkowskaPasiekaLogo.JPG";
+// Import the local images from the src/assets folder.
+// Importujemy lokalne obrazy z folderu src/assets.
+import NaturalMiod from "./assets/NaturalMiod.jpeg";
+import MiodFaceliowy from "./assets/MiodFaceliowy.png";
+import MiodPiwnica from "./assets/MiodPiwnica.jpg";
+import ZlotkowskaPasiekaLogo from "./assets/ZlotkowskaPasiekaLogo.JPG";
 
 
 // Store the products displayed on the website.
 // Przechowujemy produkty wyświetlane na stronie.
 const products = [
   {
-    // Unique identifier for the product.
-// Unikalny identyfikator produktu.
+    // Unique product identifier.
+    // Unikalny identyfikator produktu.
     id: 1,
 
     // Product name.
-// Nazwa produktu.
+    // Nazwa produktu.
     name: "Miód wielokwiatowy",
 
     // Product description.
-// Opis produktu.
+    // Opis produktu.
     description:
       "Naturalny miód o delikatnym, kwiatowym smaku, pozyskiwany w okolicach Złotkowa.",
 
     // Product weight.
-// Waga produktu.
+    // Waga produktu.
     weight: "500 g",
 
     // Product price.
-// Cena produktu.
+    // Cena produktu.
     price: "25 zł",
 
-    // Use the local image imported from src/assets.
-// Używamy lokalnego zdjęcia zaimportowanego z src/assets.
-    image: miodFaceliowy,
+    // Use the local facelia honey image.
+    // Używamy lokalnego zdjęcia miodu faceliowego.
+    image: MiodFaceliowy,
   },
 
   {
-    // Unique identifier for the second product.
-// Unikalny identyfikator drugiego produktu.
+    // Unique product identifier.
+    // Unikalny identyfikator produktu.
     id: 2,
 
     // Product name.
-// Nazwa produktu.
-    name: "Miód akacjowy",
+    // Nazwa produktu.
+    name: "Miód naturalny",
 
     // Product description.
-// Opis produktu.
+    // Opis produktu.
     description:
-      "Jasny i łagodny miód o subtelnym smaku, idealny do codziennego spożycia.",
+      "Naturalny miód produkowany w małej pasiece, bez przemysłowej produkcji i zbędnych dodatków.",
 
     // Product weight.
-// Waga produktu.
+    // Waga produktu.
     weight: "500 g",
 
     // Product price.
-// Cena produktu.
+    // Cena produktu.
     price: "30 zł",
 
-    // Keep the second product image as a temporary placeholder.
-// Pozostawiamy tymczasowe zdjęcie drugiego produktu.
-    image:
-      "https://images.unsplash.com/photo-1471943311424-646960669fbc?auto=format&fit=crop&w=900&q=85",
+    // Use the natural honey image.
+    // Używamy zdjęcia naturalnego miodu.
+    image: NaturalMiod,
   },
 ];
 
@@ -82,11 +76,9 @@ const products = [
 // Main application component.
 // Główny komponent aplikacji.
 function App() {
-  // Return the complete website interface.
-// Zwracamy kompletny interfejs strony internetowej.
+  // Return the complete website.
+// Zwracamy kompletną stronę internetową.
   return (
-    // Main website wrapper.
-// Główny kontener strony.
     <div className="site">
 
       {/* =========================
@@ -98,45 +90,46 @@ function App() {
 // Główny pasek nawigacyjny. */}
       <header className="navbar">
 
-        {/* Brand link leading back to the top of the page.
+        {/* Brand link leading to the top of the page.
 // Link marki prowadzący na górę strony. */}
         <a href="#top" className="brand">
 
-          {/* Official Złotkowska Pasieka logo.
-// Oficjalne logo Złotkowskiej Pasieki. */}
+          {/* Real company logo.
+// Prawdziwe logo firmy. */}
           <img
-            src={logo}
+            src={ZlotkowskaPasiekaLogo}
             alt="Złotkowska Pasieka"
             className="brand-logo"
           />
+
         </a>
+
 
         {/* Main navigation links.
 // Główne linki nawigacyjne. */}
         <nav className="nav-links">
 
-          {/* Link to the honey products section.
-// Link do sekcji z miodami. */}
+          {/* Link to honey products.
+// Link do produktów z miodem. */}
           <a href="#miody">Miody</a>
 
-          {/* Link to the story section.
-// Link do sekcji historii. */}
+          {/* Link to the apiary story.
+// Link do historii pasieki. */}
           <a href="#pasieka">Nasza pasieka</a>
 
-          {/* Link to the honey cellar section.
-// Link do sekcji piwnicy z miodem. */}
-          <a href="#piwnica">Nasza produkcja</a>
-
-          {/* Link to the contact section.
-// Link do sekcji kontaktowej. */}
+          {/* Link to contact.
+// Link do kontaktu. */}
           <a href="#kontakt">Kontakt</a>
+
         </nav>
 
-        {/* Main navigation call-to-action.
+
+        {/* Main navigation button.
 // Główny przycisk nawigacji. */}
         <a href="#miody" className="nav-button">
           Odkryj miody
         </a>
+
       </header>
 
 
@@ -146,26 +139,26 @@ function App() {
       ========================== */}
 
       {/* Main hero section.
-// Główna sekcja strony. */}
+// Główna sekcja hero. */}
       <main id="top">
 
-        {/* Hero container.
-// Kontener sekcji głównej. */}
         <section className="hero">
 
           {/* Decorative background element.
 // Dekoracyjny element tła. */}
           <div className="hero-glow"></div>
 
+
           {/* Hero text content.
-// Treść tekstowa sekcji głównej. */}
+// Treść tekstowa sekcji hero. */}
           <div className="hero-content">
 
-            {/* Small location label.
-// Mała etykieta lokalizacji. */}
+            {/* Location label.
+// Etykieta lokalizacji. */}
             <p className="eyebrow">
               ZŁOTKOWO · POLSKA
             </p>
+
 
             {/* Main website heading.
 // Główny nagłówek strony. */}
@@ -174,72 +167,77 @@ function App() {
               <span>prosto z pasieki.</span>
             </h1>
 
+
             {/* Hero description.
-// Opis sekcji głównej. */}
+// Opis sekcji hero. */}
             <p className="hero-description">
               Poznaj naturalny miód produkowany przez nasze pszczoły
               w sercu Złotkowa.
             </p>
 
-            {/* Hero action buttons.
-// Przyciski sekcji głównej. */}
+
+            {/* Hero buttons.
+// Przyciski sekcji hero. */}
             <div className="hero-actions">
 
-              {/* Main product button.
+              {/* Main products button.
 // Główny przycisk produktów. */}
               <a href="#miody" className="button button-dark">
                 Zobacz nasze miody
               </a>
 
+
               {/* Story button.
-// Przycisk prowadzący do historii pasieki. */}
+// Przycisk historii. */}
               <a href="#pasieka" className="button button-light">
                 Poznaj naszą historię
               </a>
+
             </div>
 
-            {/* Small trust message.
-// Mały komunikat budujący zaufanie. */}
+
+            {/* Small brand statement.
+// Małe hasło marki. */}
             <div className="hero-note">
               <span>✦</span>
               Naturalnie · Lokalnie · Z pasją
             </div>
+
           </div>
 
 
-          {/* Hero visual area.
-// Obszar wizualny sekcji głównej. */}
+          {/* Hero image area.
+// Obszar zdjęcia hero. */}
           <div className="hero-visual">
 
-            {/* Hero image wrapper.
-// Kontener głównego zdjęcia. */}
             <div className="hero-image-wrapper">
 
-              {/* Use the local honey image as the main hero image.
-// Używamy lokalnego zdjęcia miodu jako głównego obrazu. */}
+              {/* Main natural honey image.
+// Główne zdjęcie naturalnego miodu. */}
               <img
-                src={miodFaceliowy}
-                alt="Naturalny miód faceliowy ze Złotkowskiej Pasieki"
+                src={NaturalMiod}
+                alt="Naturalny miód Złotkowskiej Pasieki"
                 className="hero-image"
               />
 
-              {/* Floating information card.
-// Pływająca karta informacyjna. */}
+
+              {/* Small floating information card.
+// Mała pływająca karta informacyjna. */}
               <div className="floating-card">
 
-                {/* Honey emoji used as a decorative element.
-// Emoji miodu używane jako element dekoracyjny. */}
                 <span>🍯</span>
 
-                {/* Floating card text.
-// Tekst pływającej karty. */}
                 <div>
                   <small>Nasza pasieka</small>
                   <strong>Złotkowo</strong>
                 </div>
+
               </div>
+
             </div>
+
           </div>
+
         </section>
 
 
@@ -248,65 +246,57 @@ function App() {
             PRODUKTY
         ========================== */}
 
-        {/* Products section.
-// Sekcja produktów. */}
         <section className="products-section" id="miody">
 
-          {/* Products heading.
+          {/* Products section heading.
 // Nagłówek sekcji produktów. */}
           <div className="section-heading">
 
-            {/* Section label.
-// Etykieta sekcji. */}
             <p className="eyebrow">
               NASZE MIODY
             </p>
 
-            {/* Section title.
-// Tytuł sekcji. */}
+
             <h2>
               Prosto z ula.
               <span>Bez zbędnych dodatków.</span>
             </h2>
 
-            {/* Product introduction.
-// Wprowadzenie do produktów. */}
+
             <p>
-              Nasze miody powstają w niewielkiej, lokalnej pasiece
-              i zachowują charakter miejsca, z którego pochodzą.
+              Tworzymy miód w małej, lokalnej pasiece.
+              Każdy słoik powstaje z dbałością o naturalny charakter produktu.
             </p>
+
           </div>
 
 
-          {/* Product grid.
-// Siatka produktów. */}
+          {/* Product cards.
+// Karty produktów. */}
           <div className="product-grid">
 
-            {/* Render every product from the products array.
-// Renderujemy każdy produkt z tablicy products. */}
             {products.map((product) => (
 
-              /* Individual product card.
-// Pojedyncza karta produktu. */
-              <article className="product-card" key={product.id}>
+              <article
+                className="product-card"
+                key={product.id}
+              >
 
-                {/* Product image wrapper.
-// Kontener zdjęcia produktu. */}
+                {/* Product image.
+// Zdjęcie produktu. */}
                 <div className="product-image-wrapper">
 
-                  {/* Product image.
-// Zdjęcie produktu. */}
                   <img
                     src={product.image}
                     alt={product.name}
                     className="product-image"
                   />
 
-                  {/* Product category badge.
-// Etykieta kategorii produktu. */}
+
                   <span className="product-badge">
                     Naturalny
                   </span>
+
                 </div>
 
 
@@ -314,48 +304,46 @@ function App() {
 // Informacje o produkcie. */}
                 <div className="product-info">
 
-                  {/* Product title and weight.
-// Nazwa produktu i jego waga. */}
                   <div className="product-title-row">
 
-                    {/* Product name.
-// Nazwa produktu. */}
-                    <h3>{product.name}</h3>
+                    <h3>
+                      {product.name}
+                    </h3>
 
-                    {/* Product weight.
-// Waga produktu. */}
-                    <span>{product.weight}</span>
+                    <span>
+                      {product.weight}
+                    </span>
+
                   </div>
 
 
-                  {/* Product description.
-// Opis produktu. */}
                   <p>
                     {product.description}
                   </p>
 
 
-                  {/* Product footer.
-// Dolna część karty produktu. */}
                   <div className="product-footer">
 
-                    {/* Product price.
-// Cena produktu. */}
                     <strong>
                       {product.price}
                     </strong>
 
-                    {/* Product order link.
-// Link do zamówienia produktu. */}
+
                     <a href="#kontakt">
                       Zamów
                       <span>↗</span>
                     </a>
+
                   </div>
+
                 </div>
+
               </article>
+
             ))}
+
           </div>
+
         </section>
 
 
@@ -364,146 +352,115 @@ function App() {
             HISTORIA
         ========================== */}
 
-        {/* Story section.
-// Sekcja historii. */}
         <section className="story-section" id="pasieka">
 
           {/* Story image.
-// Zdjęcie sekcji historii. */}
+// Zdjęcie historii. */}
           <div className="story-image">
 
-            {/* Nature and beekeeping image.
-// Zdjęcie natury i pszczelarstwa. */}
             <img
-              src={miodPiwnica}
+              src={MiodPiwnica}
               alt="Miód przechowywany w Złotkowskiej Pasiece"
             />
+
           </div>
 
 
-          {/* Story content.
-// Treść historii. */}
+          {/* Story text.
+// Tekst historii. */}
           <div className="story-content">
 
-            {/* Section label.
-// Etykieta sekcji. */}
             <p className="eyebrow">
-              NASZA HISTORIA
+              NASZA PASIEKA
             </p>
 
-            {/* Story heading.
-// Nagłówek historii. */}
+
             <h2>
               Miód, który zaczyna się
               <span>w Złotkowie.</span>
             </h2>
 
-            {/* First story paragraph.
-// Pierwszy akapit historii. */}
+
             <p>
               Złotkowska Pasieka powstała z miłości do pszczół,
               natury i prostych, prawdziwych produktów.
             </p>
 
-            {/* Second story paragraph.
-// Drugi akapit historii. */}
+
             <p>
-              Nasze pszczoły pracują wśród kwiatów Złotkowa,
-              a my dbamy o to, aby miód zachował swój naturalny
-              smak i charakter.
+              Nasz miód powstaje w małej, lokalnej pasiece.
+              Pszczoły pracują wśród naturalnych kwiatów,
+              a my dbamy o to, aby każda partia zachowała
+              swój naturalny smak i charakter.
             </p>
 
-            {/* Link to production section.
-// Link do sekcji dotyczącej produkcji. */}
-            <a href="#piwnica" className="text-link">
-              Poznaj naszą produkcję
+
+            <p>
+              Nie jesteśmy przemysłową produkcją.
+              Pracujemy w ograniczonych ilościach, bez chemicznych
+              dodatków i bez masowej produkcji. Każdy słoik
+              powstaje z troską i szacunkiem dla natury.
+            </p>
+
+
+            <a href="#kontakt" className="text-link">
+              Dowiedz się więcej
               <span>→</span>
             </a>
+
           </div>
+
         </section>
 
 
         {/* =========================
-            HONEY CELLAR
-            PIWNICA Z MIODEM
+            NATURAL PRODUCTION
+            NATURALNA PRODUKCJA
         ========================== */}
 
-        {/* Honey cellar section.
-// Sekcja piwnicy z miodem. */}
-        <section className="cellar-section" id="piwnica">
+        <section className="story-section natural-section">
 
-          {/* Cellar image.
-// Zdjęcie piwnicy. */}
-          <div className="cellar-image">
+          {/* Natural production image.
+// Zdjęcie naturalnej produkcji. */}
+          <div className="story-image">
 
-            {/* Local honey cellar image.
-// Lokalne zdjęcie piwnicy z miodem. */}
             <img
-              src={miodPiwnica}
-              alt="Piwnica, w której przechowywany jest miód Złotkowskiej Pasieki"
+              src={MiodFaceliowy}
+              alt="Naturalny miód faceliowy"
             />
+
           </div>
 
 
-          {/* Cellar text content.
-// Treść sekcji piwnicy. */}
-          <div className="cellar-content">
+          {/* Natural production text.
+// Tekst dotyczący naturalnej produkcji. */}
+          <div className="story-content">
 
-            {/* Section label.
-// Etykieta sekcji. */}
             <p className="eyebrow">
               MAŁA PRODUKCJA
             </p>
 
-            {/* Main cellar heading.
-// Główny nagłówek sekcji piwnicy. */}
+
             <h2>
-              Tutaj miód
-              <span>przechowujemy z troską.</span>
+              Prawdziwy miód.
+              <span>Bez przemysłowego charakteru.</span>
             </h2>
 
-            {/* Production description.
-// Opis produkcji. */}
+
             <p>
-              Złotkowska Pasieka to niewielka, lokalna produkcja.
-              Nasz miód powstaje w małych partiach, bez przemysłowej
-              skali i bez zbędnych dodatków.
+              Produkujemy miód ręcznie i w ograniczonych ilościach.
+              Dzięki temu możemy poświęcić uwagę każdej partii
+              i zachować jej naturalny charakter.
             </p>
 
-            {/* Natural production description.
-// Opis naturalnego charakteru produkcji. */}
+
             <p>
-              Chcemy, aby każda partia zachowała swój naturalny
-              charakter i była związana z miejscem, w którym
-              pracują nasze pszczoły.
+              Bez masowej produkcji, bez niepotrzebnych dodatków
+              i z szacunkiem dla pracy pszczół.
             </p>
 
-            {/* Production characteristics.
-// Cechy produkcji. */}
-            <div className="cellar-features">
-
-              {/* First feature.
-// Pierwsza cecha. */}
-              <div>
-                <strong>Małe partie</strong>
-                <span>Ograniczona produkcja</span>
-              </div>
-
-              {/* Second feature.
-// Druga cecha. */}
-              <div>
-                <strong>Lokalnie</strong>
-                <span>Złotkowo i okolice</span>
-              </div>
-
-              {/* Third feature.
-// Trzecia cecha. */}
-              <div>
-                <strong>Naturalnie</strong>
-                <span>Bez zbędnych dodatków</span>
-              </div>
-            </div>
           </div>
+
         </section>
 
 
@@ -512,38 +469,29 @@ function App() {
             KONTAKT
         ========================== */}
 
-        {/* Contact section.
-// Sekcja kontaktowa. */}
         <section className="contact-section" id="kontakt">
 
-          {/* Contact text.
-// Treść kontaktu. */}
           <div>
 
-            {/* Contact label.
-// Etykieta kontaktu. */}
             <p className="eyebrow">
               ZAMÓWIENIA
             </p>
 
-            {/* Contact heading.
-// Nagłówek kontaktu. */}
+
             <h2>
               Masz ochotę na
               <span>prawdziwy miód?</span>
             </h2>
 
-            {/* Contact description.
-// Opis kontaktu. */}
+
             <p>
-              Napisz do nas, aby dowiedzieć się, jakie miody
-              są aktualnie dostępne i jak możesz je zamówić.
+              Napisz do nas, aby dowiedzieć się więcej o dostępnych
+              miodach i aktualnych partiach produkcyjnych.
             </p>
+
           </div>
 
 
-          {/* Contact email button.
-// Przycisk kontaktu przez e-mail. */}
           <a
             href="mailto:kontakt@example.com"
             className="button button-dark"
@@ -551,7 +499,9 @@ function App() {
             Napisz do nas
             <span>↗</span>
           </a>
+
         </section>
+
       </main>
 
 
@@ -560,27 +510,24 @@ function App() {
           STOPKA
       ========================== */}
 
-      {/* Website footer.
-// Stopka strony. */}
       <footer className="footer">
 
-        {/* Footer brand.
-// Marka w stopce. */}
         <strong>
           Złotkowska Pasieka
         </strong>
 
-        {/* Copyright information.
-// Informacja o prawach autorskich. */}
+
         <span>
           © 2026 · Złotkowo, Polska
         </span>
+
       </footer>
+
     </div>
   );
 }
 
 
-// Export the main application component.
-// Eksportujemy główny komponent aplikacji.
+// Export the application component.
+// Eksportujemy komponent aplikacji.
 export default App;
