@@ -86,15 +86,25 @@ img {
 }
 
 
-/* Style the brand. */
-/* Stylizujemy nazwę marki. */
+/* Style the brand area. */
+/* Stylizujemy obszar marki. */
 .brand {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   font-family: "Playfair Display", serif;
   font-size: 21px;
   line-height: 1;
+}
+
+
+/* Style the local company logo. */
+/* Stylizujemy lokalne logo firmy. */
+.brand-logo {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  border-radius: 12px;
 }
 
 
@@ -104,14 +114,6 @@ img {
   display: block;
   font-style: italic;
   font-weight: 500;
-}
-
-
-/* Style the decorative brand symbol. */
-/* Stylizujemy dekoracyjny symbol marki. */
-.brand-icon {
-  color: var(--honey);
-  font-size: 25px;
 }
 
 
@@ -396,6 +398,7 @@ img {
 /* Tytuł nagłówka produktów. */
 .section-heading h2,
 .story-content h2,
+.production-content h2,
 .contact-section h2 {
   font-family: "Playfair Display", serif;
   font-size: clamp(40px, 5vw, 62px);
@@ -409,6 +412,7 @@ img {
 /* Akcentowana linia wewnątrz nagłówków. */
 .section-heading h2 span,
 .story-content h2 span,
+.production-content h2 span,
 .contact-section h2 span {
   display: block;
   color: var(--honey);
@@ -563,6 +567,95 @@ img {
 
 
 /* =========================
+   ARTISAN PRODUCTION
+   RZEMIEŚLNICZA PRODUKCJA
+========================= */
+
+
+/* Main production section layout. */
+/* Główny układ sekcji produkcji. */
+.production-section {
+  width: min(1240px, calc(100% - 48px));
+  margin: 0 auto 130px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 90px;
+  align-items: center;
+}
+
+
+/* Production image container. */
+/* Kontener zdjęcia produkcji. */
+.production-image {
+  position: relative;
+}
+
+
+/* Production image. */
+/* Zdjęcie produkcji. */
+.production-image img {
+  width: 100%;
+  height: 620px;
+  object-fit: cover;
+  border-radius: 25px;
+}
+
+
+/* Production content. */
+/* Treść sekcji produkcji. */
+.production-content {
+  max-width: 560px;
+}
+
+
+/* Production paragraphs. */
+/* Akapity sekcji produkcji. */
+.production-content > p:not(.eyebrow) {
+  margin-top: 25px;
+  color: var(--brown-light);
+  max-width: 540px;
+}
+
+
+/* Production values row. */
+/* Wiersz najważniejszych cech produkcji. */
+.production-values {
+  margin-top: 35px;
+  padding-top: 25px;
+  border-top: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+
+/* Production value item. */
+/* Pojedyncza cecha produkcji. */
+.production-values div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+
+/* Production value title. */
+/* Tytuł cechy produkcji. */
+.production-values strong {
+  font-family: "Playfair Display", serif;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+
+/* Production value description. */
+/* Opis cechy produkcji. */
+.production-values span {
+  color: var(--brown-light);
+  font-size: 11px;
+}
+
+
+/* =========================
    STORY
    HISTORIA
 ========================= */
@@ -679,11 +772,28 @@ img {
     margin-top: 20px;
   }
 
+
   /* Reduce hero image height. */
   /* Zmniejszamy wysokość zdjęcia hero. */
   .hero-image {
     height: 520px;
   }
+
+
+  /* Stack production section vertically. */
+  /* Układamy sekcję produkcji pionowo. */
+  .production-section {
+    grid-template-columns: 1fr;
+    gap: 45px;
+  }
+
+
+  /* Reduce production image height. */
+  /* Zmniejszamy wysokość zdjęcia produkcji. */
+  .production-image img {
+    height: 500px;
+  }
+
 
   /* Stack story section vertically. */
   /* Układamy sekcję historii pionowo. */
@@ -692,11 +802,13 @@ img {
     gap: 45px;
   }
 
+
   /* Reduce story image height. */
   /* Zmniejszamy wysokość zdjęcia historii. */
   .story-image img {
     height: 500px;
   }
+
 
   /* Stack contact section. */
   /* Układamy sekcję kontaktową pionowo. */
@@ -716,11 +828,21 @@ img {
   .navbar,
   .hero,
   .products-section,
+  .production-section,
   .story-section,
   .contact-section,
   .footer {
     width: min(100% - 30px, 1240px);
   }
+
+
+  /* Make the logo slightly smaller on mobile. */
+  /* Zmniejszamy logo na telefonach. */
+  .brand-logo {
+    width: 44px;
+    height: 44px;
+  }
+
 
   /* Simplify mobile navigation. */
   /* Upraszczamy nawigację mobilną. */
@@ -728,11 +850,13 @@ img {
     display: none;
   }
 
+
   /* Hide desktop navigation button on mobile. */
   /* Ukrywamy przycisk nawigacji desktopowej na telefonie. */
   .nav-button {
     padding: 11px 15px;
   }
+
 
   /* Reduce hero spacing. */
   /* Zmniejszamy odstępy w hero. */
@@ -741,17 +865,20 @@ img {
     min-height: auto;
   }
 
+
   /* Reduce hero title size. */
   /* Zmniejszamy rozmiar głównego nagłówka. */
   .hero h1 {
     font-size: clamp(48px, 14vw, 68px);
   }
 
+
   /* Reduce hero image height. */
   /* Zmniejszamy wysokość zdjęcia hero. */
   .hero-image {
     height: 430px;
   }
+
 
   /* Move floating card inside the image area. */
   /* Przesuwamy pływającą kartę do wnętrza obrazu. */
@@ -760,11 +887,13 @@ img {
     bottom: 15px;
   }
 
+
   /* Stack products vertically. */
   /* Układamy produkty jeden pod drugim. */
   .product-grid {
     grid-template-columns: 1fr;
   }
+
 
   /* Reduce product image height. */
   /* Zmniejszamy wysokość zdjęcia produktu. */
@@ -772,17 +901,35 @@ img {
     height: 360px;
   }
 
+
+  /* Reduce production image height. */
+  /* Zmniejszamy wysokość zdjęcia produkcji. */
+  .production-image img {
+    height: 400px;
+  }
+
+
+  /* Stack production values vertically. */
+  /* Układamy cechy produkcji pionowo. */
+  .production-values {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+
   /* Reduce story image height. */
   /* Zmniejszamy wysokość zdjęcia historii. */
   .story-image img {
     height: 400px;
   }
 
+
   /* Reduce contact section padding. */
   /* Zmniejszamy wewnętrzne odstępy sekcji kontaktowej. */
   .contact-section {
     padding: 40px 25px;
   }
+
 
   /* Stack footer content. */
   /* Układamy zawartość stopki pionowo. */
@@ -803,6 +950,7 @@ img {
   html {
     scroll-behavior: auto;
   }
+
 
   /* Remove transition effects. */
   /* Usuwamy efekty przejścia. */
