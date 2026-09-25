@@ -1,0 +1,75 @@
+# English: Name of the GitHub Actions workflow.
+# Polski: Nazwa procesu GitHub Actions.
+name: Deploy React app to GitHub Pages
+
+# English: Run this workflow whenever changes are pushed to the main branch.
+# Polski: Uruchamia ten proces za każdym razem, gdy zmiany zostaną wysłane do gałęzi main.
+on:
+  push:
+    branches:
+      - main
+
+# English: Give the workflow permission to deploy the website to GitHub Pages.
+# Polski: Nadaje procesowi uprawnienia do wdrażania strony internetowej na GitHub Pages.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# English: Prevent multiple deployments from running at the same time.
+# Polski: Zapobiega jednoczesnemu uruchamianiu wielu wdrożeń.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+# English: Define the deployment job.
+# Polski: Definiuje zadanie wdrażania.
+jobs:
+  deploy:
+
+    # English: Use an Ubuntu virtual machine provided by GitHub.
+    # Polski: Używa wirtualnej maszyny Ubuntu udostępnionej przez GitHub.
+    runs-on: ubuntu-latest
+
+    steps:
+
+      # English: Download the repository code.
+      # Polski: Pobiera kod repozytorium.
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # English: Install Node.js for building the React application.
+      # Polski: Instaluje Node.js do budowania aplikacji React.
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      # English: Install the dependencies listed in package-lock.json.
+      # Polski: Instaluje zależności zapisane w package-lock.json.
+      - name: Install dependencies
+        run: npm ci
+
+      # English: Build the production version of the application.
+      # Polski: Buduje produkcyjną wersję aplikacji.
+      - name: Build application
+        run: npm run build
+
+      # English: Configure GitHub Pages.
+      # Polski: Konfiguruje GitHub Pages.
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      # English: Upload the generated dist folder.
+      # Polski: Przesyła wygenerowany folder dist.
+      - name: Upload website
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
+      # English: Deploy the website to GitHub Pages.
+      # Polski: Wdraża stronę internetową na GitHub Pages.
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
