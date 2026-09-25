@@ -1,0 +1,18 @@
+/* Remove the default Vite stylesheet styles. */
+/* Usuwamy domyślne style arkusza Vite. */
+
+html,
+body,
+#root {
+  /* Make the application use the full available width. */
+  /* Sprawiamy, że aplikacja wykorzystuje całą dostępną szerokość. */
+  width: 100%;
+
+  /* Remove the default minimum width from the Vite template. */
+  /* Usuwamy domyślną minimalną szerokość z szablonu Vite. */
+  min-width: 320px;
+
+  /* Remove default page margins. */
+  /* Usuwamy domyślne marginesy strony. */
+  margin: 0;
+}

@@ -1,0 +1,814 @@
+/* Import a modern serif and sans-serif font from Google Fonts. */
+/* Importujemy nowoczesną czcionkę szeryfową i bezszeryfową z Google Fonts. */
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap");
+
+
+/* Define reusable colors and design variables. */
+/* Definiujemy kolory i zmienne używane w całym projekcie. */
+:root {
+  --cream: #f7f3ea;
+  --cream-dark: #eee7d8;
+  --honey: #d89b35;
+  --honey-light: #e9bd68;
+  --brown: #2c241b;
+  --brown-light: #655a4d;
+  --white: #fffdf8;
+  --border: rgba(44, 36, 27, 0.12);
+}
+
+
+/* Remove default browser spacing. */
+/* Usuwamy domyślne marginesy przeglądarki. */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+
+/* Enable smooth scrolling between page sections. */
+/* Włączamy płynne przewijanie pomiędzy sekcjami strony. */
+html {
+  scroll-behavior: smooth;
+}
+
+
+/* Define the global page appearance. */
+/* Definiujemy globalny wygląd strony. */
+body {
+  font-family: "DM Sans", sans-serif;
+  background: var(--cream);
+  color: var(--brown);
+  line-height: 1.6;
+}
+
+
+/* Remove default link styling. */
+/* Usuwamy domyślne style linków. */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+
+/* Make images responsive. */
+/* Sprawiamy, że obrazy są responsywne. */
+img {
+  display: block;
+  max-width: 100%;
+}
+
+
+/* Main site container. */
+/* Główny kontener strony. */
+.site {
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+
+/* =========================
+   NAVIGATION
+   NAWIGACJA
+========================= */
+
+
+/* Style the main navigation bar. */
+/* Stylizujemy główny pasek nawigacyjny. */
+.navbar {
+  width: min(1240px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: 26px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+}
+
+
+/* Style the brand. */
+/* Stylizujemy nazwę marki. */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: "Playfair Display", serif;
+  font-size: 21px;
+  line-height: 1;
+}
+
+
+/* Style the second part of the brand name. */
+/* Stylizujemy drugą część nazwy marki. */
+.brand strong {
+  display: block;
+  font-style: italic;
+  font-weight: 500;
+}
+
+
+/* Style the decorative brand symbol. */
+/* Stylizujemy dekoracyjny symbol marki. */
+.brand-icon {
+  color: var(--honey);
+  font-size: 25px;
+}
+
+
+/* Navigation links container. */
+/* Kontener linków nawigacyjnych. */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 35px;
+  margin-left: auto;
+}
+
+
+/* Style individual navigation links. */
+/* Stylizujemy pojedyncze linki nawigacyjne. */
+.nav-links a {
+  color: var(--brown-light);
+  font-size: 14px;
+  transition: color 0.25s ease;
+}
+
+
+/* Change link color on hover. */
+/* Zmieniamy kolor linku po najechaniu. */
+.nav-links a:hover {
+  color: var(--brown);
+}
+
+
+/* Main navigation button. */
+/* Główny przycisk nawigacji. */
+.nav-button {
+  background: var(--brown);
+  color: var(--white);
+  padding: 13px 20px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  transition: transform 0.25s ease, background 0.25s ease;
+}
+
+
+/* Add a small hover movement. */
+/* Dodajemy niewielki ruch po najechaniu. */
+.nav-button:hover {
+  transform: translateY(-2px);
+  background: #40352a;
+}
+
+
+/* =========================
+   HERO
+   SEKCJA GŁÓWNA
+========================= */
+
+
+/* Main hero layout. */
+/* Główny układ sekcji hero. */
+.hero {
+  width: min(1240px, calc(100% - 48px));
+  margin: 30px auto 100px;
+  min-height: 650px;
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 70px;
+  align-items: center;
+  position: relative;
+}
+
+
+/* Decorative background circle. */
+/* Dekoracyjne koło w tle. */
+.hero-glow {
+  position: absolute;
+  width: 520px;
+  height: 520px;
+  background: rgba(216, 155, 53, 0.12);
+  border-radius: 50%;
+  right: 5%;
+  top: 10%;
+  filter: blur(5px);
+  pointer-events: none;
+}
+
+
+/* Hero content should remain above decorations. */
+/* Treść hero powinna znajdować się nad dekoracjami. */
+.hero-content {
+  position: relative;
+  z-index: 2;
+}
+
+
+/* Small uppercase section label. */
+/* Mała etykieta sekcji pisana wielkimi literami. */
+.eyebrow {
+  color: var(--honey);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  margin-bottom: 20px;
+}
+
+
+/* Main hero heading. */
+/* Główny nagłówek hero. */
+.hero h1 {
+  max-width: 650px;
+  font-family: "Playfair Display", serif;
+  font-size: clamp(54px, 6vw, 86px);
+  font-weight: 500;
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+}
+
+
+/* Make the second line italic. */
+/* Sprawiamy, że druga linia jest pisana kursywą. */
+.hero h1 span {
+  display: block;
+  color: var(--honey);
+  font-style: italic;
+}
+
+
+/* Hero paragraph. */
+/* Akapit sekcji hero. */
+.hero-description {
+  max-width: 490px;
+  margin-top: 30px;
+  color: var(--brown-light);
+  font-size: 17px;
+}
+
+
+/* Hero buttons container. */
+/* Kontener przycisków hero. */
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 35px;
+}
+
+
+/* General button styling. */
+/* Ogólny styl przycisków. */
+.button {
+  min-height: 50px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 14px 22px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  transition: transform 0.25s ease, background 0.25s ease;
+}
+
+
+/* Dark button variation. */
+/* Ciemna wersja przycisku. */
+.button-dark {
+  background: var(--brown);
+  color: var(--white);
+}
+
+
+/* Light button variation. */
+/* Jasna wersja przycisku. */
+.button-light {
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.35);
+}
+
+
+/* Button hover animation. */
+/* Animacja przycisku po najechaniu. */
+.button:hover {
+  transform: translateY(-3px);
+}
+
+
+/* Small text below hero buttons. */
+/* Mały tekst pod przyciskami hero. */
+.hero-note {
+  margin-top: 28px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--brown-light);
+  font-size: 12px;
+}
+
+
+/* Hero image wrapper. */
+/* Kontener obrazu hero. */
+.hero-image-wrapper {
+  position: relative;
+  border-radius: 30px;
+  overflow: visible;
+}
+
+
+/* Main hero image. */
+/* Główne zdjęcie hero. */
+.hero-image {
+  width: 100%;
+  height: 620px;
+  object-fit: cover;
+  border-radius: 30px;
+  filter: saturate(0.9);
+}
+
+
+/* Floating card over hero image. */
+/* Pływająca karta nad zdjęciem hero. */
+.floating-card {
+  position: absolute;
+  left: -35px;
+  bottom: 35px;
+  background: rgba(255, 253, 248, 0.95);
+  backdrop-filter: blur(12px);
+  padding: 16px 20px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 15px 40px rgba(44, 36, 27, 0.12);
+}
+
+
+/* Floating card icon. */
+/* Ikona pływającej karty. */
+.floating-card > span {
+  font-size: 25px;
+}
+
+
+/* Floating card small label. */
+/* Mała etykieta pływającej karty. */
+.floating-card small {
+  display: block;
+  color: var(--brown-light);
+  font-size: 10px;
+}
+
+
+/* Floating card title. */
+/* Tytuł pływającej karty. */
+.floating-card strong {
+  display: block;
+  font-family: "Playfair Display", serif;
+  font-size: 17px;
+}
+
+
+/* =========================
+   PRODUCTS
+   PRODUKTY
+========================= */
+
+
+/* Products section. */
+/* Sekcja produktów. */
+.products-section {
+  width: min(1240px, calc(100% - 48px));
+  margin: 0 auto 130px;
+}
+
+
+/* Products heading. */
+/* Nagłówek sekcji produktów. */
+.section-heading {
+  max-width: 650px;
+  margin-bottom: 55px;
+}
+
+
+/* Products heading title. */
+/* Tytuł nagłówka produktów. */
+.section-heading h2,
+.story-content h2,
+.contact-section h2 {
+  font-family: "Playfair Display", serif;
+  font-size: clamp(40px, 5vw, 62px);
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+}
+
+
+/* Accent line inside headings. */
+/* Akcentowana linia wewnątrz nagłówków. */
+.section-heading h2 span,
+.story-content h2 span,
+.contact-section h2 span {
+  display: block;
+  color: var(--honey);
+  font-style: italic;
+}
+
+
+/* Products description. */
+/* Opis produktów. */
+.section-heading > p:last-child {
+  margin-top: 20px;
+  color: var(--brown-light);
+}
+
+
+/* Product grid. */
+/* Siatka produktów. */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 28px;
+}
+
+
+/* Product card. */
+/* Karta produktu. */
+.product-card {
+  background: var(--white);
+  border-radius: 25px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+
+/* Product card hover effect. */
+/* Efekt hover karty produktu. */
+.product-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 25px 60px rgba(44, 36, 27, 0.1);
+}
+
+
+/* Product image container. */
+/* Kontener zdjęcia produktu. */
+.product-image-wrapper {
+  position: relative;
+  overflow: hidden;
+}
+
+
+/* Product image. */
+/* Zdjęcie produktu. */
+.product-image {
+  width: 100%;
+  height: 430px;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+
+/* Zoom image when hovering the card. */
+/* Powiększamy zdjęcie po najechaniu na kartę. */
+.product-card:hover .product-image {
+  transform: scale(1.04);
+}
+
+
+/* Product badge. */
+/* Etykieta produktu. */
+.product-badge {
+  position: absolute;
+  left: 20px;
+  top: 20px;
+  background: rgba(255, 253, 248, 0.9);
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+
+/* Product information area. */
+/* Obszar informacji o produkcie. */
+.product-info {
+  padding: 25px;
+}
+
+
+/* Product title row. */
+/* Wiersz tytułu produktu. */
+.product-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+
+/* Product name. */
+/* Nazwa produktu. */
+.product-title-row h3 {
+  font-family: "Playfair Display", serif;
+  font-size: 28px;
+  font-weight: 500;
+}
+
+
+/* Product weight. */
+/* Waga produktu. */
+.product-title-row span {
+  color: var(--brown-light);
+  font-size: 12px;
+}
+
+
+/* Product description. */
+/* Opis produktu. */
+.product-info > p {
+  margin-top: 12px;
+  color: var(--brown-light);
+  font-size: 14px;
+}
+
+
+/* Product footer. */
+/* Dolna część karty produktu. */
+.product-footer {
+  margin-top: 25px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+
+/* Product price. */
+/* Cena produktu. */
+.product-footer strong {
+  font-family: "Playfair Display", serif;
+  font-size: 25px;
+}
+
+
+/* Product action link. */
+/* Link akcji produktu. */
+.product-footer a {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+
+/* =========================
+   STORY
+   HISTORIA
+========================= */
+
+
+/* Story section layout. */
+/* Układ sekcji historii. */
+.story-section {
+  width: min(1240px, calc(100% - 48px));
+  margin: 0 auto 130px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 90px;
+  align-items: center;
+}
+
+
+/* Story image. */
+/* Zdjęcie historii. */
+.story-image img {
+  width: 100%;
+  height: 620px;
+  object-fit: cover;
+  border-radius: 25px;
+}
+
+
+/* Story paragraphs. */
+/* Akapity historii. */
+.story-content > p:not(.eyebrow) {
+  margin-top: 25px;
+  color: var(--brown-light);
+  max-width: 500px;
+}
+
+
+/* Story link. */
+/* Link historii. */
+.text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 30px;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+
+/* =========================
+   CONTACT
+   KONTAKT
+========================= */
+
+
+/* Contact section. */
+/* Sekcja kontaktowa. */
+.contact-section {
+  width: min(1240px, calc(100% - 48px));
+  margin: 0 auto 100px;
+  padding: 70px;
+  border-radius: 30px;
+  background: var(--honey-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 50px;
+}
+
+
+/* Contact paragraph. */
+/* Akapit kontaktowy. */
+.contact-section > div > p:last-child {
+  margin-top: 20px;
+  max-width: 500px;
+  color: rgba(44, 36, 27, 0.75);
+}
+
+
+/* =========================
+   FOOTER
+   STOPKA
+========================= */
+
+
+/* Footer layout. */
+/* Układ stopki. */
+.footer {
+  width: min(1240px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: 30px 0 45px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--brown-light);
+  font-size: 12px;
+}
+
+
+/* =========================
+   RESPONSIVE DESIGN
+   RESPONSYWNOŚĆ
+========================= */
+
+
+/* Adjust layout for tablets and smaller laptops. */
+/* Dostosowujemy układ do tabletów i mniejszych laptopów. */
+@media (max-width: 900px) {
+
+  /* Reduce hero columns to one column. */
+  /* Zmieniamy hero na jedną kolumnę. */
+  .hero {
+    grid-template-columns: 1fr;
+    margin-top: 20px;
+  }
+
+  /* Reduce hero image height. */
+  /* Zmniejszamy wysokość zdjęcia hero. */
+  .hero-image {
+    height: 520px;
+  }
+
+  /* Stack story section vertically. */
+  /* Układamy sekcję historii pionowo. */
+  .story-section {
+    grid-template-columns: 1fr;
+    gap: 45px;
+  }
+
+  /* Reduce story image height. */
+  /* Zmniejszamy wysokość zdjęcia historii. */
+  .story-image img {
+    height: 500px;
+  }
+
+  /* Stack contact section. */
+  /* Układamy sekcję kontaktową pionowo. */
+  .contact-section {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+
+/* Adjust layout for mobile devices. */
+/* Dostosowujemy układ do urządzeń mobilnych. */
+@media (max-width: 650px) {
+
+  /* Reduce horizontal page margins. */
+  /* Zmniejszamy boczne marginesy strony. */
+  .navbar,
+  .hero,
+  .products-section,
+  .story-section,
+  .contact-section,
+  .footer {
+    width: min(100% - 30px, 1240px);
+  }
+
+  /* Simplify mobile navigation. */
+  /* Upraszczamy nawigację mobilną. */
+  .nav-links {
+    display: none;
+  }
+
+  /* Hide desktop navigation button on mobile. */
+  /* Ukrywamy przycisk nawigacji desktopowej na telefonie. */
+  .nav-button {
+    padding: 11px 15px;
+  }
+
+  /* Reduce hero spacing. */
+  /* Zmniejszamy odstępy w hero. */
+  .hero {
+    margin-bottom: 80px;
+    min-height: auto;
+  }
+
+  /* Reduce hero title size. */
+  /* Zmniejszamy rozmiar głównego nagłówka. */
+  .hero h1 {
+    font-size: clamp(48px, 14vw, 68px);
+  }
+
+  /* Reduce hero image height. */
+  /* Zmniejszamy wysokość zdjęcia hero. */
+  .hero-image {
+    height: 430px;
+  }
+
+  /* Move floating card inside the image area. */
+  /* Przesuwamy pływającą kartę do wnętrza obrazu. */
+  .floating-card {
+    left: 15px;
+    bottom: 15px;
+  }
+
+  /* Stack products vertically. */
+  /* Układamy produkty jeden pod drugim. */
+  .product-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Reduce product image height. */
+  /* Zmniejszamy wysokość zdjęcia produktu. */
+  .product-image {
+    height: 360px;
+  }
+
+  /* Reduce story image height. */
+  /* Zmniejszamy wysokość zdjęcia historii. */
+  .story-image img {
+    height: 400px;
+  }
+
+  /* Reduce contact section padding. */
+  /* Zmniejszamy wewnętrzne odstępy sekcji kontaktowej. */
+  .contact-section {
+    padding: 40px 25px;
+  }
+
+  /* Stack footer content. */
+  /* Układamy zawartość stopki pionowo. */
+  .footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+}
+
+
+/* Respect users who prefer reduced motion. */
+/* Szanujemy ustawienie użytkownika ograniczające animacje. */
+@media (prefers-reduced-motion: reduce) {
+
+  /* Disable smooth scrolling and transitions. */
+  /* Wyłączamy płynne przewijanie i animacje. */
+  html {
+    scroll-behavior: auto;
+  }
+
+  /* Remove transition effects. */
+  /* Usuwamy efekty przejścia. */
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+  }
+}
