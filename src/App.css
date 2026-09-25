@@ -1,10 +1,10 @@
-/* Import a modern serif and sans-serif font from Google Fonts. */
-/* Importujemy nowoczesną czcionkę szeryfową i bezszeryfową z Google Fonts. */
+/* Import the fonts used by the website. */
+/* Importujemy czcionki używane przez stronę. */
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap");
 
 
-/* Define reusable colors and design variables. */
-/* Definiujemy kolory i zmienne używane w całym projekcie. */
+/* Define the main colors used by the website. */
+/* Definiujemy główne kolory używane na stronie. */
 :root {
   --cream: #f7f3ea;
   --cream-dark: #eee7d8;
@@ -18,7 +18,7 @@
 
 
 /* Remove default browser spacing. */
-/* Usuwamy domyślne marginesy przeglądarki. */
+/* Usuwamy domyślne odstępy przeglądarki. */
 * {
   margin: 0;
   padding: 0;
@@ -26,15 +26,15 @@
 }
 
 
-/* Enable smooth scrolling between page sections. */
-/* Włączamy płynne przewijanie pomiędzy sekcjami strony. */
+/* Enable smooth scrolling. */
+/* Włączamy płynne przewijanie. */
 html {
   scroll-behavior: smooth;
 }
 
 
-/* Define the global page appearance. */
-/* Definiujemy globalny wygląd strony. */
+/* Set the main page font and colors. */
+/* Ustawiamy główną czcionkę i kolory strony. */
 body {
   font-family: "DM Sans", sans-serif;
   background: var(--cream);
@@ -43,24 +43,24 @@ body {
 }
 
 
-/* Remove default link styling. */
-/* Usuwamy domyślne style linków. */
+/* Remove the default link decoration. */
+/* Usuwamy domyślne dekoracje linków. */
 a {
   color: inherit;
   text-decoration: none;
 }
 
 
-/* Make images responsive. */
-/* Sprawiamy, że obrazy są responsywne. */
+/* Make all images responsive. */
+/* Sprawiamy, że wszystkie obrazy są responsywne. */
 img {
   display: block;
   max-width: 100%;
 }
 
 
-/* Main site container. */
-/* Główny kontener strony. */
+/* Define the main website container. */
+/* Definiujemy główny kontener strony. */
 .site {
   min-height: 100vh;
   overflow: hidden;
@@ -73,8 +73,8 @@ img {
 ========================= */
 
 
-/* Style the main navigation bar. */
-/* Stylizujemy główny pasek nawigacyjny. */
+/* Create the main navigation layout. */
+/* Tworzymy główny układ nawigacji. */
 .navbar {
   width: min(1240px, calc(100% - 48px));
   margin: 0 auto;
@@ -86,25 +86,15 @@ img {
 }
 
 
-/* Style the brand area. */
-/* Stylizujemy obszar marki. */
+/* Create the brand layout. */
+/* Tworzymy układ marki. */
 .brand {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   font-family: "Playfair Display", serif;
   font-size: 21px;
   line-height: 1;
-}
-
-
-/* Style the local company logo. */
-/* Stylizujemy lokalne logo firmy. */
-.brand-logo {
-  width: 52px;
-  height: 52px;
-  object-fit: contain;
-  border-radius: 12px;
 }
 
 
@@ -117,8 +107,16 @@ img {
 }
 
 
-/* Navigation links container. */
-/* Kontener linków nawigacyjnych. */
+/* Style the decorative brand icon. */
+/* Stylizujemy dekoracyjną ikonę marki. */
+.brand-icon {
+  color: var(--honey);
+  font-size: 25px;
+}
+
+
+/* Create the navigation links layout. */
+/* Tworzymy układ linków nawigacyjnych. */
 .nav-links {
   display: flex;
   align-items: center;
@@ -127,8 +125,8 @@ img {
 }
 
 
-/* Style individual navigation links. */
-/* Stylizujemy pojedyncze linki nawigacyjne. */
+/* Style each navigation link. */
+/* Stylizujemy każdy link nawigacyjny. */
 .nav-links a {
   color: var(--brown-light);
   font-size: 14px;
@@ -136,15 +134,15 @@ img {
 }
 
 
-/* Change link color on hover. */
+/* Change the navigation link color on hover. */
 /* Zmieniamy kolor linku po najechaniu. */
 .nav-links a:hover {
   color: var(--brown);
 }
 
 
-/* Main navigation button. */
-/* Główny przycisk nawigacji. */
+/* Style the main navigation button. */
+/* Stylizujemy główny przycisk nawigacji. */
 .nav-button {
   background: var(--brown);
   color: var(--white);
@@ -156,8 +154,8 @@ img {
 }
 
 
-/* Add a small hover movement. */
-/* Dodajemy niewielki ruch po najechaniu. */
+/* Move the navigation button slightly on hover. */
+/* Przesuwamy lekko przycisk po najechaniu. */
 .nav-button:hover {
   transform: translateY(-2px);
   background: #40352a;
@@ -170,8 +168,8 @@ img {
 ========================= */
 
 
-/* Main hero layout. */
-/* Główny układ sekcji hero. */
+/* Create the main hero layout. */
+/* Tworzymy główny układ sekcji hero. */
 .hero {
   width: min(1240px, calc(100% - 48px));
   margin: 30px auto 100px;
@@ -184,8 +182,8 @@ img {
 }
 
 
-/* Decorative background circle. */
-/* Dekoracyjne koło w tle. */
+/* Create the decorative background circle. */
+/* Tworzymy dekoracyjne koło w tle. */
 .hero-glow {
   position: absolute;
   width: 520px;
@@ -199,16 +197,16 @@ img {
 }
 
 
-/* Hero content should remain above decorations. */
-/* Treść hero powinna znajdować się nad dekoracjami. */
+/* Keep hero content above decorative elements. */
+/* Umieszczamy treść hero nad elementami dekoracyjnymi. */
 .hero-content {
   position: relative;
   z-index: 2;
 }
 
 
-/* Small uppercase section label. */
-/* Mała etykieta sekcji pisana wielkimi literami. */
+/* Style the small section label. */
+/* Stylizujemy małą etykietę sekcji. */
 .eyebrow {
   color: var(--honey);
   font-size: 11px;
@@ -218,8 +216,8 @@ img {
 }
 
 
-/* Main hero heading. */
-/* Główny nagłówek hero. */
+/* Style the main hero heading. */
+/* Stylizujemy główny nagłówek hero. */
 .hero h1 {
   max-width: 650px;
   font-family: "Playfair Display", serif;
@@ -230,8 +228,8 @@ img {
 }
 
 
-/* Make the second line italic. */
-/* Sprawiamy, że druga linia jest pisana kursywą. */
+/* Style the highlighted part of the hero heading. */
+/* Stylizujemy wyróżnioną część nagłówka hero. */
 .hero h1 span {
   display: block;
   color: var(--honey);
@@ -239,8 +237,8 @@ img {
 }
 
 
-/* Hero paragraph. */
-/* Akapit sekcji hero. */
+/* Style the hero description. */
+/* Stylizujemy opis sekcji hero. */
 .hero-description {
   max-width: 490px;
   margin-top: 30px;
@@ -249,8 +247,8 @@ img {
 }
 
 
-/* Hero buttons container. */
-/* Kontener przycisków hero. */
+/* Create the hero buttons layout. */
+/* Tworzymy układ przycisków hero. */
 .hero-actions {
   display: flex;
   flex-wrap: wrap;
@@ -259,8 +257,8 @@ img {
 }
 
 
-/* General button styling. */
-/* Ogólny styl przycisków. */
+/* Create the general button style. */
+/* Tworzymy podstawowy styl przycisku. */
 .button {
   min-height: 50px;
   display: inline-flex;
@@ -275,31 +273,31 @@ img {
 }
 
 
-/* Dark button variation. */
-/* Ciemna wersja przycisku. */
+/* Create the dark button style. */
+/* Tworzymy ciemny styl przycisku. */
 .button-dark {
   background: var(--brown);
   color: var(--white);
 }
 
 
-/* Light button variation. */
-/* Jasna wersja przycisku. */
+/* Create the light button style. */
+/* Tworzymy jasny styl przycisku. */
 .button-light {
   border: 1px solid var(--border);
   background: rgba(255, 255, 255, 0.35);
 }
 
 
-/* Button hover animation. */
-/* Animacja przycisku po najechaniu. */
+/* Move buttons slightly when hovered. */
+/* Przesuwamy lekko przyciski po najechaniu. */
 .button:hover {
   transform: translateY(-3px);
 }
 
 
-/* Small text below hero buttons. */
-/* Mały tekst pod przyciskami hero. */
+/* Style the small hero note. */
+/* Stylizujemy małą informację pod przyciskami. */
 .hero-note {
   margin-top: 28px;
   display: flex;
@@ -310,8 +308,8 @@ img {
 }
 
 
-/* Hero image wrapper. */
-/* Kontener obrazu hero. */
+/* Create the hero image container. */
+/* Tworzymy kontener zdjęcia hero. */
 .hero-image-wrapper {
   position: relative;
   border-radius: 30px;
@@ -319,8 +317,8 @@ img {
 }
 
 
-/* Main hero image. */
-/* Główne zdjęcie hero. */
+/* Style the main hero image. */
+/* Stylizujemy główne zdjęcie hero. */
 .hero-image {
   width: 100%;
   height: 620px;
@@ -330,8 +328,8 @@ img {
 }
 
 
-/* Floating card over hero image. */
-/* Pływająca karta nad zdjęciem hero. */
+/* Create the floating card over the hero image. */
+/* Tworzymy pływającą kartę nad zdjęciem hero. */
 .floating-card {
   position: absolute;
   left: -35px;
@@ -347,15 +345,15 @@ img {
 }
 
 
-/* Floating card icon. */
-/* Ikona pływającej karty. */
+/* Style the floating card icon. */
+/* Stylizujemy ikonę pływającej karty. */
 .floating-card > span {
   font-size: 25px;
 }
 
 
-/* Floating card small label. */
-/* Mała etykieta pływającej karty. */
+/* Style the small floating card label. */
+/* Stylizujemy małą etykietę pływającej karty. */
 .floating-card small {
   display: block;
   color: var(--brown-light);
@@ -363,8 +361,8 @@ img {
 }
 
 
-/* Floating card title. */
-/* Tytuł pływającej karty. */
+/* Style the floating card title. */
+/* Stylizujemy tytuł pływającej karty. */
 .floating-card strong {
   display: block;
   font-family: "Playfair Display", serif;
@@ -378,27 +376,26 @@ img {
 ========================= */
 
 
-/* Products section. */
-/* Sekcja produktów. */
+/* Create the products section container. */
+/* Tworzymy kontener sekcji produktów. */
 .products-section {
   width: min(1240px, calc(100% - 48px));
   margin: 0 auto 130px;
 }
 
 
-/* Products heading. */
-/* Nagłówek sekcji produktów. */
+/* Limit the products heading width. */
+/* Ograniczamy szerokość nagłówka produktów. */
 .section-heading {
   max-width: 650px;
   margin-bottom: 55px;
 }
 
 
-/* Products heading title. */
-/* Tytuł nagłówka produktów. */
+/* Style the main section headings. */
+/* Stylizujemy główne nagłówki sekcji. */
 .section-heading h2,
 .story-content h2,
-.production-content h2,
 .contact-section h2 {
   font-family: "Playfair Display", serif;
   font-size: clamp(40px, 5vw, 62px);
@@ -408,11 +405,10 @@ img {
 }
 
 
-/* Accent line inside headings. */
-/* Akcentowana linia wewnątrz nagłówków. */
+/* Highlight the second line of section headings. */
+/* Wyróżniamy drugą linię nagłówków sekcji. */
 .section-heading h2 span,
 .story-content h2 span,
-.production-content h2 span,
 .contact-section h2 span {
   display: block;
   color: var(--honey);
@@ -420,16 +416,16 @@ img {
 }
 
 
-/* Products description. */
-/* Opis produktów. */
+/* Style the products section description. */
+/* Stylizujemy opis sekcji produktów. */
 .section-heading > p:last-child {
   margin-top: 20px;
   color: var(--brown-light);
 }
 
 
-/* Product grid. */
-/* Siatka produktów. */
+/* Create the product grid. */
+/* Tworzymy siatkę produktów. */
 .product-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -437,8 +433,8 @@ img {
 }
 
 
-/* Product card. */
-/* Karta produktu. */
+/* Create the product card. */
+/* Tworzymy kartę produktu. */
 .product-card {
   background: var(--white);
   border-radius: 25px;
@@ -448,24 +444,24 @@ img {
 }
 
 
-/* Product card hover effect. */
-/* Efekt hover karty produktu. */
+/* Add a hover effect to product cards. */
+/* Dodajemy efekt hover do kart produktów. */
 .product-card:hover {
   transform: translateY(-6px);
   box-shadow: 0 25px 60px rgba(44, 36, 27, 0.1);
 }
 
 
-/* Product image container. */
-/* Kontener zdjęcia produktu. */
+/* Create the product image container. */
+/* Tworzymy kontener zdjęcia produktu. */
 .product-image-wrapper {
   position: relative;
   overflow: hidden;
 }
 
 
-/* Product image. */
-/* Zdjęcie produktu. */
+/* Style product images. */
+/* Stylizujemy zdjęcia produktów. */
 .product-image {
   width: 100%;
   height: 430px;
@@ -474,15 +470,15 @@ img {
 }
 
 
-/* Zoom image when hovering the card. */
-/* Powiększamy zdjęcie po najechaniu na kartę. */
+/* Slightly zoom the product image on hover. */
+/* Lekko powiększamy zdjęcie produktu po najechaniu. */
 .product-card:hover .product-image {
   transform: scale(1.04);
 }
 
 
-/* Product badge. */
-/* Etykieta produktu. */
+/* Create the product badge. */
+/* Tworzymy etykietę produktu. */
 .product-badge {
   position: absolute;
   left: 20px;
@@ -495,15 +491,15 @@ img {
 }
 
 
-/* Product information area. */
-/* Obszar informacji o produkcie. */
+/* Create the product information area. */
+/* Tworzymy obszar informacji o produkcie. */
 .product-info {
   padding: 25px;
 }
 
 
-/* Product title row. */
-/* Wiersz tytułu produktu. */
+/* Create the product title row. */
+/* Tworzymy wiersz tytułu produktu. */
 .product-title-row {
   display: flex;
   align-items: center;
@@ -512,8 +508,8 @@ img {
 }
 
 
-/* Product name. */
-/* Nazwa produktu. */
+/* Style the product name. */
+/* Stylizujemy nazwę produktu. */
 .product-title-row h3 {
   font-family: "Playfair Display", serif;
   font-size: 28px;
@@ -521,16 +517,16 @@ img {
 }
 
 
-/* Product weight. */
-/* Waga produktu. */
+/* Style the product weight. */
+/* Stylizujemy wagę produktu. */
 .product-title-row span {
   color: var(--brown-light);
   font-size: 12px;
 }
 
 
-/* Product description. */
-/* Opis produktu. */
+/* Style the product description. */
+/* Stylizujemy opis produktu. */
 .product-info > p {
   margin-top: 12px;
   color: var(--brown-light);
@@ -538,8 +534,8 @@ img {
 }
 
 
-/* Product footer. */
-/* Dolna część karty produktu. */
+/* Create the product footer. */
+/* Tworzymy dolną część karty produktu. */
 .product-footer {
   margin-top: 25px;
   padding-top: 20px;
@@ -550,108 +546,19 @@ img {
 }
 
 
-/* Product price. */
-/* Cena produktu. */
+/* Style the product price. */
+/* Stylizujemy cenę produktu. */
 .product-footer strong {
   font-family: "Playfair Display", serif;
   font-size: 25px;
 }
 
 
-/* Product action link. */
-/* Link akcji produktu. */
+/* Style the product action link. */
+/* Stylizujemy link akcji produktu. */
 .product-footer a {
   font-size: 13px;
   font-weight: 700;
-}
-
-
-/* =========================
-   ARTISAN PRODUCTION
-   RZEMIEŚLNICZA PRODUKCJA
-========================= */
-
-
-/* Main production section layout. */
-/* Główny układ sekcji produkcji. */
-.production-section {
-  width: min(1240px, calc(100% - 48px));
-  margin: 0 auto 130px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 90px;
-  align-items: center;
-}
-
-
-/* Production image container. */
-/* Kontener zdjęcia produkcji. */
-.production-image {
-  position: relative;
-}
-
-
-/* Production image. */
-/* Zdjęcie produkcji. */
-.production-image img {
-  width: 100%;
-  height: 620px;
-  object-fit: cover;
-  border-radius: 25px;
-}
-
-
-/* Production content. */
-/* Treść sekcji produkcji. */
-.production-content {
-  max-width: 560px;
-}
-
-
-/* Production paragraphs. */
-/* Akapity sekcji produkcji. */
-.production-content > p:not(.eyebrow) {
-  margin-top: 25px;
-  color: var(--brown-light);
-  max-width: 540px;
-}
-
-
-/* Production values row. */
-/* Wiersz najważniejszych cech produkcji. */
-.production-values {
-  margin-top: 35px;
-  padding-top: 25px;
-  border-top: 1px solid var(--border);
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-}
-
-
-/* Production value item. */
-/* Pojedyncza cecha produkcji. */
-.production-values div {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-
-/* Production value title. */
-/* Tytuł cechy produkcji. */
-.production-values strong {
-  font-family: "Playfair Display", serif;
-  font-size: 20px;
-  font-weight: 500;
-}
-
-
-/* Production value description. */
-/* Opis cechy produkcji. */
-.production-values span {
-  color: var(--brown-light);
-  font-size: 11px;
 }
 
 
@@ -661,8 +568,8 @@ img {
 ========================= */
 
 
-/* Story section layout. */
-/* Układ sekcji historii. */
+/* Create the story section layout. */
+/* Tworzymy układ sekcji historii. */
 .story-section {
   width: min(1240px, calc(100% - 48px));
   margin: 0 auto 130px;
@@ -673,8 +580,8 @@ img {
 }
 
 
-/* Story image. */
-/* Zdjęcie historii. */
+/* Style the story image. */
+/* Stylizujemy zdjęcie historii. */
 .story-image img {
   width: 100%;
   height: 620px;
@@ -683,8 +590,8 @@ img {
 }
 
 
-/* Story paragraphs. */
-/* Akapity historii. */
+/* Style the story paragraphs. */
+/* Stylizujemy akapity historii. */
 .story-content > p:not(.eyebrow) {
   margin-top: 25px;
   color: var(--brown-light);
@@ -692,8 +599,8 @@ img {
 }
 
 
-/* Story link. */
-/* Link historii. */
+/* Style the story link. */
+/* Stylizujemy link historii. */
 .text-link {
   display: inline-flex;
   align-items: center;
@@ -710,8 +617,8 @@ img {
 ========================= */
 
 
-/* Contact section. */
-/* Sekcja kontaktowa. */
+/* Create the contact section layout. */
+/* Tworzymy układ sekcji kontaktowej. */
 .contact-section {
   width: min(1240px, calc(100% - 48px));
   margin: 0 auto 100px;
@@ -725,8 +632,8 @@ img {
 }
 
 
-/* Contact paragraph. */
-/* Akapit kontaktowy. */
+/* Style the contact description. */
+/* Stylizujemy opis sekcji kontaktowej. */
 .contact-section > div > p:last-child {
   margin-top: 20px;
   max-width: 500px;
@@ -740,8 +647,8 @@ img {
 ========================= */
 
 
-/* Footer layout. */
-/* Układ stopki. */
+/* Create the footer layout. */
+/* Tworzymy układ stopki. */
 .footer {
   width: min(1240px, calc(100% - 48px));
   margin: 0 auto;
@@ -756,16 +663,16 @@ img {
 
 
 /* =========================
-   RESPONSIVE DESIGN
-   RESPONSYWNOŚĆ
+   TABLET
+   TABLET
 ========================= */
 
 
-/* Adjust layout for tablets and smaller laptops. */
-/* Dostosowujemy układ do tabletów i mniejszych laptopów. */
+/* Adjust the website for tablets. */
+/* Dostosowujemy stronę do tabletów. */
 @media (max-width: 900px) {
 
-  /* Reduce hero columns to one column. */
+  /* Change the hero to one column. */
   /* Zmieniamy hero na jedną kolumnę. */
   .hero {
     grid-template-columns: 1fr;
@@ -773,44 +680,29 @@ img {
   }
 
 
-  /* Reduce hero image height. */
+  /* Reduce the hero image height. */
   /* Zmniejszamy wysokość zdjęcia hero. */
   .hero-image {
     height: 520px;
   }
 
 
-  /* Stack production section vertically. */
-  /* Układamy sekcję produkcji pionowo. */
-  .production-section {
-    grid-template-columns: 1fr;
-    gap: 45px;
-  }
-
-
-  /* Reduce production image height. */
-  /* Zmniejszamy wysokość zdjęcia produkcji. */
-  .production-image img {
-    height: 500px;
-  }
-
-
-  /* Stack story section vertically. */
-  /* Układamy sekcję historii pionowo. */
+  /* Change the story section to one column. */
+  /* Zmieniamy sekcję historii na jedną kolumnę. */
   .story-section {
     grid-template-columns: 1fr;
     gap: 45px;
   }
 
 
-  /* Reduce story image height. */
+  /* Reduce the story image height. */
   /* Zmniejszamy wysokość zdjęcia historii. */
   .story-image img {
     height: 500px;
   }
 
 
-  /* Stack contact section. */
+  /* Stack the contact section vertically. */
   /* Układamy sekcję kontaktową pionowo. */
   .contact-section {
     align-items: flex-start;
@@ -819,16 +711,21 @@ img {
 }
 
 
-/* Adjust layout for mobile devices. */
-/* Dostosowujemy układ do urządzeń mobilnych. */
+/* =========================
+   MOBILE
+   TELEFON
+========================= */
+
+
+/* Adjust the website for mobile devices. */
+/* Dostosowujemy stronę do urządzeń mobilnych. */
 @media (max-width: 650px) {
 
-  /* Reduce horizontal page margins. */
+  /* Reduce the horizontal page margins. */
   /* Zmniejszamy boczne marginesy strony. */
   .navbar,
   .hero,
   .products-section,
-  .production-section,
   .story-section,
   .contact-section,
   .footer {
@@ -836,60 +733,52 @@ img {
   }
 
 
-  /* Make the logo slightly smaller on mobile. */
-  /* Zmniejszamy logo na telefonach. */
-  .brand-logo {
-    width: 44px;
-    height: 44px;
-  }
-
-
-  /* Simplify mobile navigation. */
-  /* Upraszczamy nawigację mobilną. */
+  /* Hide the desktop navigation links. */
+  /* Ukrywamy linki nawigacji desktopowej. */
   .nav-links {
     display: none;
   }
 
 
-  /* Hide desktop navigation button on mobile. */
-  /* Ukrywamy przycisk nawigacji desktopowej na telefonie. */
+  /* Reduce the mobile navigation button size. */
+  /* Zmniejszamy rozmiar przycisku na telefonie. */
   .nav-button {
     padding: 11px 15px;
   }
 
 
-  /* Reduce hero spacing. */
-  /* Zmniejszamy odstępy w hero. */
+  /* Reduce the hero spacing. */
+  /* Zmniejszamy odstępy sekcji hero. */
   .hero {
     margin-bottom: 80px;
     min-height: auto;
   }
 
 
-  /* Reduce hero title size. */
-  /* Zmniejszamy rozmiar głównego nagłówka. */
+  /* Reduce the hero heading size. */
+  /* Zmniejszamy rozmiar nagłówka hero. */
   .hero h1 {
     font-size: clamp(48px, 14vw, 68px);
   }
 
 
-  /* Reduce hero image height. */
+  /* Reduce the hero image height. */
   /* Zmniejszamy wysokość zdjęcia hero. */
   .hero-image {
     height: 430px;
   }
 
 
-  /* Move floating card inside the image area. */
-  /* Przesuwamy pływającą kartę do wnętrza obrazu. */
+  /* Move the floating card inside the image. */
+  /* Przenosimy pływającą kartę do wnętrza zdjęcia. */
   .floating-card {
     left: 15px;
     bottom: 15px;
   }
 
 
-  /* Stack products vertically. */
-  /* Układamy produkty jeden pod drugim. */
+  /* Change the products grid to one column. */
+  /* Zmieniamy siatkę produktów na jedną kolumnę. */
   .product-grid {
     grid-template-columns: 1fr;
   }
@@ -899,21 +788,6 @@ img {
   /* Zmniejszamy wysokość zdjęcia produktu. */
   .product-image {
     height: 360px;
-  }
-
-
-  /* Reduce production image height. */
-  /* Zmniejszamy wysokość zdjęcia produkcji. */
-  .production-image img {
-    height: 400px;
-  }
-
-
-  /* Stack production values vertically. */
-  /* Układamy cechy produkcji pionowo. */
-  .production-values {
-    grid-template-columns: 1fr;
-    gap: 18px;
   }
 
 
@@ -931,7 +805,7 @@ img {
   }
 
 
-  /* Stack footer content. */
+  /* Stack footer content vertically. */
   /* Układamy zawartość stopki pionowo. */
   .footer {
     flex-direction: column;
@@ -941,19 +815,19 @@ img {
 }
 
 
-/* Respect users who prefer reduced motion. */
+/* Respect the user's reduced-motion preference. */
 /* Szanujemy ustawienie użytkownika ograniczające animacje. */
 @media (prefers-reduced-motion: reduce) {
 
-  /* Disable smooth scrolling and transitions. */
-  /* Wyłączamy płynne przewijanie i animacje. */
+  /* Disable smooth scrolling. */
+  /* Wyłączamy płynne przewijanie. */
   html {
     scroll-behavior: auto;
   }
 
 
-  /* Remove transition effects. */
-  /* Usuwamy efekty przejścia. */
+  /* Disable all transition animations. */
+  /* Wyłączamy wszystkie animacje przejścia. */
   *,
   *::before,
   *::after {
