@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { siWhatsapp } from "simple-icons";
+import { Link, NavLink, useLocation } from "react-router-dom";
 
 // Import the stylesheet used by the application.
 // Importujemy arkusz stylów używany przez aplikację.
@@ -7,7 +8,6 @@ import "./App.css";
 
 // Import the local images from the src/assets folder.
 // Importujemy lokalne obrazy z folderu src/assets.
-import NaturalMiod from "./assets/NaturalMiod.jpeg";
 import MiodFaceliowy from "./assets/MiodFaceliowy.png";
 import MiodPiwnica from "./assets/MiodPiwnica.jpg";
 import ZlotkowskaPasiekaLogo from "./assets/ZlotkowskaPasiekaLogo.JPG";
@@ -27,6 +27,10 @@ import ProcessHoneyExtraction from "./assets/proces-1-wirowanie-miodu.jpeg";
 import ProcessHoneycombFrames from "./assets/proces-2-plastry-w-ramkach.jpeg";
 import ProcessFilteredHoney from "./assets/proces-4-miod-po-ekstrakcji.jpeg";
 import ProcessFilledJars from "./assets/proces-5-gotowe-sloiki.jpeg";
+import FamilyAtApiary from "./assets/rodzina-przy-miodobraniu.jpeg";
+import HoneyJarsOnTable from "./assets/sloiki-z-miodem-na-stole.jpeg";
+import HoneyVarieties from "./assets/odmiany-miodu-w-sloikach.jpeg";
+import ProcessPreparedComb from "./assets/proces-3-dojrzaly-plaster.jpeg";
 
 
 const products = [
@@ -152,9 +156,9 @@ const products = [
 // Pokazujemy dostępne zdjęcia w kolejności od pasieki do gotowych słoików.
 const processSteps = [
   {
-    // Identify the first process step.
-    // Określamy numer pierwszego etapu procesu.
-    number: "01",
+    // Match this entry to process-0, the apiary photo.
+    // Dopasowujemy etap do zdjęcia proces-0 przedstawiającego pasiekę.
+    number: "00",
     // Name the apiary stage.
     // Nazywamy etap pasieki.
     title: "Pasieka",
@@ -166,9 +170,9 @@ const processSteps = [
     image: ProcessApiary,
   },
   {
-    // Identify the second process step.
-    // Określamy numer drugiego etapu procesu.
-    number: "02",
+    // Match this entry to process-2, the honeycomb frames.
+    // Dopasowujemy etap do zdjęcia proces-2 przedstawiającego ramki z plastrami.
+    number: "01",
     // Name the frames containing ripe honey.
     // Nazywamy etap ramek z dojrzałym miodem.
     title: "Plastry w ramkach",
@@ -180,8 +184,22 @@ const processSteps = [
     image: ProcessHoneycombFrames,
   },
   {
-    // Identify the third process step.
-    // Określamy numer trzeciego etapu procesu.
+    // Match this entry to the newly added process-3 comb photo.
+    // Dopasowujemy etap do nowego zdjęcia proces-3 przedstawiającego plaster.
+    number: "02",
+    // Name the comb preparation stage.
+    // Nazywamy etap przygotowania plastrów.
+    title: "Przygotowanie plastrów",
+    // Explain that the combs are checked before extraction.
+    // Wyjaśniamy, że plastry są sprawdzane przed miodobraniem.
+    description: "Sprawdzamy dojrzałe plastry przed rozpoczęciem miodobrania.",
+    // Show the close-up comb photo for this stage.
+    // Pokazujemy zbliżenie plastra dla tego etapu.
+    image: ProcessPreparedComb,
+  },
+  {
+    // Match this entry to process-1, the honey extractor photo.
+    // Dopasowujemy etap do zdjęcia proces-1 przedstawiającego miodarkę.
     number: "03",
     // Name the honey extraction stage.
     // Nazywamy etap pozyskiwania miodu.
@@ -310,9 +328,163 @@ function handleOrderSubmit(event, cartItems, cartTotal) {
 }
 
 
+// Render the editable basket and order form inside the checkout drawer.
+// Wyświetlamy edytowalny koszyk i formularz zamówienia w wysuwanym panelu.
+function CheckoutPanel({ cartItems, cartQuantity, cartTotal, updateCart }) {
+  return (
+    <form
+      className="contact-form checkout-form"
+      onSubmit={(event) => handleOrderSubmit(event, cartItems, cartTotal)}
+    >
+      <div className="cart-summary" aria-live="polite">
+        <div className="cart-summary-heading">
+          <h3>Twój koszyk</h3>
+          <span>{cartQuantity} szt.</span>
+        </div>
+
+        {cartItems.length > 0 ? (
+          <>
+            <ul className="cart-items">
+              {cartItems.map(({ product, quantity }) => (
+                <li key={product.id} className="cart-item">
+                  {product.image ? (
+                    <img
+                      className="cart-item-image"
+                      src={product.image}
+                      alt=""
+                      loading="lazy"
+                    />
+                  ) : (
+                    <span className="cart-item-image cart-item-image-placeholder">
+                      Brak zdjęcia
+                    </span>
+                  )}
+                  <div className="cart-item-info">
+                    <span>{product.name} ({product.weight})</span>
+                    <strong>{product.price * quantity} zł</strong>
+                  </div>
+                  <div className="cart-item-controls">
+                    <div
+                      className="quantity-control cart-quantity-control"
+                      role="group"
+                      aria-label={`Liczba sztuk: ${product.name}, ${product.weight}`}
+                    >
+                      <button
+                        type="button"
+                        className="quantity-button"
+                        aria-label={`Zmniejsz ilość: ${product.name}, ${product.weight}`}
+                        onClick={() => updateCart(product.id, quantity - 1)}
+                      >
+                        −
+                      </button>
+                      <output className="quantity-value" aria-live="polite">
+                        {quantity}
+                      </output>
+                      <button
+                        type="button"
+                        className="quantity-button"
+                        aria-label={`Zwiększ ilość: ${product.name}, ${product.weight}`}
+                        onClick={() => updateCart(product.id, quantity + 1)}
+                      >
+                        +
+                      </button>
+                    </div>
+                    <button
+                      type="button"
+                      className="cart-remove-button"
+                      aria-label={`Usuń z koszyka: ${product.name}, ${product.weight}`}
+                      onClick={() => updateCart(product.id, 0)}
+                    >
+                      Usuń
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+            <p className="cart-total">Koszt produktów: {cartTotal} zł</p>
+          </>
+        ) : (
+          <p className="cart-empty">Koszyk jest pusty.</p>
+        )}
+      </div>
+
+      <label className="form-field" htmlFor="name">
+        Imię
+        <input
+          id="name"
+          name="name"
+          type="text"
+          autoComplete="given-name"
+          placeholder="Twoje imię"
+          required
+        />
+      </label>
+
+      <fieldset className="delivery-options">
+        <legend>Sposób odbioru zamówienia *</legend>
+        <label>
+          <input
+            type="radio"
+            name="delivery"
+            value="Odbiór osobisty: Złotkowo, ul. Lipowa 20"
+            required
+          />
+          Odbiór osobisty: Złotkowo, ul. Lipowa 20
+        </label>
+        <label>
+          <input
+            type="radio"
+            name="delivery"
+            value="Inny: wysyłka InPost na terenie całej Polski"
+          />
+          Inny: wysyłka InPost na terenie całej Polski (dodatkowo płatna). Koszt dostawy ustalimy przez WhatsApp w zależności od wagi i liczby produktów w zamówieniu.
+        </label>
+      </fieldset>
+
+      <label className="form-field" htmlFor="notes">
+        Uwagi do zamówienia
+        <textarea
+          id="notes"
+          name="notes"
+          placeholder="Wpisz, które słoiki zapakować w ozdobne kartoniki (5 zł/szt.)."
+          rows="3"
+        />
+      </label>
+
+      <button
+        className="button button-dark form-submit"
+        type="submit"
+        disabled={cartItems.length === 0}
+      >
+        <svg
+          className="whatsapp-icon"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <path fill="currentColor" d={siWhatsapp.path} />
+        </svg>
+        Zamów przez WhatsApp
+      </button>
+    </form>
+  );
+}
+
+
 // Main application component.
 // Główny komponent aplikacji.
 function App() {
+  // Read the current hash route so the shared shell can show the right page.
+  // Odczytujemy bieżącą trasę z hash, aby wspólny układ pokazał właściwą stronę.
+  const location = useLocation();
+
+  // Map each supported route to its page-specific CSS visibility class.
+  // Przypisujemy każdej trasie klasę określającą widoczną zawartość strony.
+  const pageClass = location.pathname === "/miody"
+    ? "page-products"
+    : location.pathname === "/pasieka"
+      ? "page-apiary"
+      : "page-home";
+
   // Store the quantity of each product selected by its id.
   // Przechowujemy ilość każdego produktu pod jego identyfikatorem.
   const [cart, setCart] = useState({});
@@ -324,6 +496,8 @@ function App() {
   // Track whether scrolling has started so the navigation can collapse.
   // Sprawdzamy, czy rozpoczęło się przewijanie, aby zwinąć nawigację.
   const [pageScrolled, setPageScrolled] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
+  const cartDialogRef = useRef(null);
 
   // Keep only products with a positive quantity and attach that quantity.
   // Zostawiamy produkty z ilością większą od zera i przypisujemy im ilość.
@@ -392,23 +566,39 @@ function App() {
     return () => window.removeEventListener("scroll", updateNavigationState);
   }, []);
 
+  // Start each destination page at the top and close the mobile menu.
+  // Otwieramy każdą stronę od góry i zamykamy menu mobilne.
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, [location.pathname]);
+
+  // Open the native modal when checkout is requested and close it when dismissed.
+  // Otwieramy natywne okno po wybraniu zamówienia i zamykamy po jego odrzuceniu.
+  useEffect(() => {
+    const dialog = cartDialogRef.current;
+
+    if (!dialog) {
+      return;
+    }
+
+    if (cartOpen && !dialog.open) {
+      dialog.showModal();
+    } else if (!cartOpen && dialog.open) {
+      dialog.close();
+    }
+  }, [cartOpen]);
+
   // Return the complete website.
 // Zwracamy kompletną stronę internetową.
   return (
-    <div className="site">
-
-      {/* =========================
-          NAVIGATION
-          NAWIGACJA
-      ========================== */}
-
+    <div className={`site ${pageClass}${cartQuantity > 0 ? " has-cart-items" : ""}`}>
       {/* Main navigation bar.
 // Główny pasek nawigacyjny. */}
       <header id="top" className={`navbar${pageScrolled ? " is-scrolled" : ""}`}>
 
         {/* Brand link leading to the top of the page.
 // Link marki prowadzący na górę strony. */}
-        <a href="#top" className="brand">
+        <Link to="/" className="brand" aria-label="Strona główna Złotkowskiej Pasieki">
 
           {/* Real company logo.
 // Prawdziwe logo firmy. */}
@@ -418,7 +608,7 @@ function App() {
             className="brand-logo"
           />
 
-        </a>
+        </Link>
 
 
         {/* Main navigation links.
@@ -428,30 +618,30 @@ function App() {
           className={`nav-links${mobileMenuOpen ? " is-open" : ""}`}
         >
 
+          <NavLink to="/" end onClick={() => setMobileMenuOpen(false)}>Start</NavLink>
           {/* Link to honey products.
 // Link do produktów z miodem. */}
-          <a href="#miody" onClick={() => setMobileMenuOpen(false)}>Miody</a>
+          <NavLink to="/miody" onClick={() => setMobileMenuOpen(false)}>Miody</NavLink>
 
           {/* Link to the apiary story.
 // Link do historii pasieki. */}
-          <a href="#pasieka" onClick={() => setMobileMenuOpen(false)}>Nasza pasieka</a>
+          <NavLink to="/pasieka" onClick={() => setMobileMenuOpen(false)}>Nasza pasieka</NavLink>
 
-          {/* Link to contact.
-// Link do kontaktu. */}
-          <a href="#kontakt" onClick={() => setMobileMenuOpen(false)}>Kontakt</a>
+          <NavLink to="/miody" onClick={() => setMobileMenuOpen(false)}>Zamówienia</NavLink>
 
         </nav>
 
 
         {/* Main navigation button.
 // Główny przycisk nawigacji. */}
-        <a
-          href="#kontakt"
+        <button
+          type="button"
           className="nav-button cart-nav-button"
           aria-label={`Przejdź do koszyka, ${cartQuantity} produktów`}
+          onClick={() => setCartOpen(true)}
         >
           Koszyk (<span key={cartQuantity} className="cart-count-pop">{cartQuantity}</span>)
-        </a>
+        </button>
 
         <button
           type="button"
@@ -478,7 +668,7 @@ function App() {
 
       {/* Main hero section.
 // Główna sekcja hero. */}
-      <main>
+      <main className="page-main">
 
         <section className="hero">
 
@@ -494,23 +684,23 @@ function App() {
             {/* Location label.
 // Etykieta lokalizacji. */}
             <p className="eyebrow">
-              ZŁOTKOWO K. POZNANIA
+              RODZINNA PASIEKA · ZŁOTKOWO K. POZNANIA
             </p>
 
 
             {/* Main website heading.
 // Główny nagłówek strony. */}
             <h1>
-              Naturalny smak
-              <span>prosto z pasieki.</span>
+              Naturalny miód
+              <span>z rodzinnej pasieki.</span>
             </h1>
 
 
             {/* Hero description.
 // Opis sekcji hero. */}
             <p className="hero-description">
-              Poznaj naturalny miód produkowany przez nasze pszczoły
-              w sercu Złotkowa.
+              Rodzina, pszczoły i praca blisko natury. Nasz miód powstaje
+              w małej pasiece w Złotkowie.
             </p>
 
 
@@ -520,16 +710,16 @@ function App() {
 
               {/* Main products button.
 // Główny przycisk produktów. */}
-              <a href="#miody" className="button button-dark">
+              <Link to="/miody" className="button button-dark">
                 Zobacz nasze miody
-              </a>
+              </Link>
 
 
               {/* Story button.
 // Przycisk historii. */}
-              <a href="#pasieka" className="button button-light">
+              <Link to="/pasieka" className="button button-light">
                 Poznaj naszą historię
-              </a>
+              </Link>
 
             </div>
 
@@ -553,8 +743,8 @@ function App() {
               {/* Main natural honey image.
 // Główne zdjęcie naturalnego miodu. */}
               <img
-                src={NaturalMiod}
-                alt="Naturalny miód Złotkowskiej Pasieki"
+                src={FamilyAtApiary}
+                alt="Rodzina podczas pracy przy miodobraniu w pasiece"
                 className="hero-image"
               />
 
@@ -570,6 +760,33 @@ function App() {
             PRODUCTS
             PRODUKTY
         ========================== */}
+
+        <section className="home-family-section">
+          <div className="home-family-copy">
+            <p className="eyebrow">RODZINNA TRADYCJA</p>
+            <h2>Blisko pszczół. Blisko natury.</h2>
+            <p>
+              Każdy słoik zaczyna się od pracy pszczół i rodzinnego zaangażowania.
+              Dbamy o małą skalę, naturalny smak i uczciwe pochodzenie miodu.
+            </p>
+            <Link className="text-link" to="/pasieka">
+              Poznaj naszą pasiekę
+              <span>→</span>
+            </Link>
+          </div>
+          <div className="home-family-photos">
+            <img
+              src={HoneyJarsOnTable}
+              alt="Słoiki miodu przygotowane w pasiece"
+              loading="lazy"
+            />
+            <img
+              src={HoneyVarieties}
+              alt="Różne odmiany miodu z rodzinnej pasieki"
+              loading="lazy"
+            />
+          </div>
+        </section>
 
         <section className="products-section" id="miody">
 
@@ -700,7 +917,7 @@ function App() {
             KONTAKT
         ========================== */}
 
-        <section className="contact-section" id="kontakt">
+        <section className="contact-section contact-cta" id="kontakt">
 
           <div className="contact-copy">
 
@@ -731,143 +948,16 @@ function App() {
               <span>↗</span>
             </a>
 
-          </div>
-
-
-          <form
-            className="contact-form"
-            onSubmit={(event) => handleOrderSubmit(event, cartItems, cartTotal)}
-          >
-            <div className="cart-summary" aria-live="polite">
-              <div className="cart-summary-heading">
-                <h3>Twój koszyk</h3>
-                <span>{cartQuantity} szt.</span>
-              </div>
-
-              {cartItems.length > 0 ? (
-                <>
-                  <ul className="cart-items">
-                    {cartItems.map(({ product, quantity }) => (
-                      <li key={product.id} className="cart-item">
-                        {product.image ? (
-                          <img
-                            className="cart-item-image"
-                            src={product.image}
-                            alt=""
-                            loading="lazy"
-                          />
-                        ) : (
-                          <span className="cart-item-image cart-item-image-placeholder">
-                            Brak zdjęcia
-                          </span>
-                        )}
-                        <div className="cart-item-info">
-                          <span>{product.name} ({product.weight})</span>
-                          <strong>{product.price * quantity} zł</strong>
-                        </div>
-                        <div className="cart-item-controls">
-                          <div
-                            className="quantity-control cart-quantity-control"
-                            role="group"
-                            aria-label={`Liczba sztuk: ${product.name}, ${product.weight}`}
-                          >
-                            <button
-                              type="button"
-                              className="quantity-button"
-                              aria-label={`Zmniejsz ilość: ${product.name}, ${product.weight}`}
-                              onClick={() => updateCart(product.id, quantity - 1)}
-                            >
-                              −
-                            </button>
-                            <output className="quantity-value" aria-live="polite">
-                              {quantity}
-                            </output>
-                            <button
-                              type="button"
-                              className="quantity-button"
-                              aria-label={`Zwiększ ilość: ${product.name}, ${product.weight}`}
-                              onClick={() => updateCart(product.id, quantity + 1)}
-                            >
-                              +
-                            </button>
-                          </div>
-                          <button
-                            type="button"
-                            className="cart-remove-button"
-                            aria-label={`Usuń z koszyka: ${product.name}, ${product.weight}`}
-                            onClick={() => updateCart(product.id, 0)}
-                          >
-                            Usuń
-                          </button>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                  <p className="cart-total">Koszt produktów: {cartTotal} zł</p>
-                </>
-              ) : (
-                <p className="cart-empty">Koszyk jest pusty.</p>
-              )}
-            </div>
-
-            <label className="form-field" htmlFor="name">
-              Imię
-              <input
-                id="name"
-                name="name"
-                type="text"
-                autoComplete="given-name"
-                placeholder="Twoje imię"
-                required
-              />
-            </label>
-
-            <fieldset className="delivery-options">
-              <legend>Sposób odbioru zamówienia *</legend>
-              <label>
-                <input
-                  type="radio"
-                  name="delivery"
-                  value="Odbiór osobisty: Złotkowo, ul. Lipowa 20"
-                  required
-                />
-                Odbiór osobisty: Złotkowo, ul. Lipowa 20
-              </label>
-              <label>
-                <input
-                  type="radio"
-                  name="delivery"
-                  value="Inny: wysyłka InPost na terenie całej Polski"
-                />
-                Inny: wysyłka InPost na terenie całej Polski (dodatkowo płatna). Koszt dostawy ustalimy przez WhatsApp w zależności od wagi i liczby produktów w zamówieniu.
-              </label>
-            </fieldset>
-
-            <label className="form-field" htmlFor="notes">
-              Uwagi do zamówienia
-              <textarea
-                id="notes"
-                name="notes"
-                placeholder="Wpisz, które słoiki zapakować w ozdobne kartoniki (5 zł/szt.)."
-                rows="3"
-              />
-            </label>
-
             <button
-              className="button button-dark form-submit"
-              type="submit"
-              disabled={cartItems.length === 0}
+              type="button"
+              className="button button-dark contact-order-button"
+              aria-haspopup="dialog"
+              onClick={() => setCartOpen(true)}
             >
-              <svg
-                className="whatsapp-icon"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
-                <path fill="currentColor" d={siWhatsapp.path} />
-              </svg>
-              Zamów przez WhatsApp
+              Otwórz koszyk i zamów ({cartQuantity})
             </button>
-          </form>
+
+          </div>
 
         </section>
 
@@ -928,10 +1018,10 @@ function App() {
             </p>
 
 
-            <a href="#kontakt" className="text-link">
-              Dowiedz się więcej
+            <Link to="/miody" className="text-link">
+              Zobacz nasze miody
               <span>→</span>
-            </a>
+            </Link>
 
           </div>
 
@@ -1044,6 +1134,60 @@ function App() {
 
 
       </main>
+
+
+      {/* Show the complete cart and order form without leaving the catalog. */}
+      {/* Pokazujemy koszyk i formularz bez opuszczania katalogu. */}
+      <dialog
+        ref={cartDialogRef}
+        className="checkout-dialog"
+        aria-labelledby="checkout-heading"
+        onClose={() => setCartOpen(false)}
+        onClick={(event) => {
+          if (event.target === event.currentTarget) {
+            setCartOpen(false);
+          }
+        }}
+      >
+        <div className="checkout-dialog-content">
+          <header className="checkout-dialog-header">
+            <div>
+              <p className="eyebrow">ZAMÓWIENIE</p>
+              <h2 id="checkout-heading">Złóż zamówienie</h2>
+            </div>
+            <button
+              type="button"
+              className="checkout-close-button"
+              aria-label="Zamknij koszyk"
+              onClick={() => setCartOpen(false)}
+            >
+              ×
+            </button>
+          </header>
+          <CheckoutPanel
+            cartItems={cartItems}
+            cartQuantity={cartQuantity}
+            cartTotal={cartTotal}
+            updateCart={updateCart}
+          />
+        </div>
+      </dialog>
+
+
+      {/* Keep a direct checkout action near the thumb on mobile. */}
+      {/* Zapewniamy szybki dostęp do zamówienia na urządzeniach mobilnych. */}
+      {cartQuantity > 0 && (
+        <div className="mobile-checkout-bar" role="region" aria-label="Szybkie zamówienie">
+          <span>{cartQuantity} szt. · {cartTotal} zł</span>
+          <button
+            type="button"
+            className="button button-dark"
+            onClick={() => setCartOpen(true)}
+          >
+            Otwórz koszyk
+          </button>
+        </div>
+      )}
 
 
       {/* =========================

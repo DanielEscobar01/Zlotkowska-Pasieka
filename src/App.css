@@ -67,6 +67,26 @@ img {
 }
 
 
+/* Show only the sections belonging to the current hash route. */
+/* Pokazujemy tylko sekcje przypisane do bieżącej trasy. */
+.site.page-home .products-section,
+.site.page-home .contact-section,
+.site.page-home .story-section,
+.site.page-home .map-section,
+.site.page-products .hero,
+.site.page-products .home-family-section,
+.site.page-products .story-section,
+.site.page-products .process-section,
+.site.page-products .map-section,
+.site.page-apiary .hero,
+.site.page-apiary .home-family-section,
+.site.page-apiary .products-section,
+.site.page-apiary .contact-section,
+.site.page-apiary .process-section {
+  display: none;
+}
+
+
 /* =========================
    NAVIGATION
    NAWIGACJA
@@ -146,11 +166,20 @@ img {
 }
 
 
+.nav-links a.active {
+  color: var(--brown);
+
+  font-weight: 700;
+}
+
+
 /* Style the main navigation button. */
 /* Stylizujemy główny przycisk nawigacji. */
 .nav-button {
   background: var(--brown);
   color: var(--white);
+
+  border: 0;
 
   padding: 11px 18px;
 
@@ -158,8 +187,11 @@ img {
 
   font-size: 13px;
   font-weight: 600;
+  font-family: inherit;
 
   white-space: nowrap;
+
+  cursor: pointer;
 
   transition:
     transform 0.25s ease,
@@ -512,6 +544,73 @@ img {
   width: min(1240px, calc(100% - 48px));
 
   margin: 0 auto 84px;
+}
+
+
+.home-family-section {
+  width: min(1240px, calc(100% - 48px));
+
+  margin: 0 auto 80px;
+
+  display: grid;
+
+  grid-template-columns: 0.8fr 1.2fr;
+
+  align-items: center;
+
+  gap: 48px;
+}
+
+
+.home-family-copy {
+  max-width: 500px;
+}
+
+
+.home-family-copy h2 {
+  margin-top: 12px;
+
+  font-family: "Playfair Display", serif;
+
+  font-size: 42px;
+
+  font-weight: 500;
+
+  line-height: 1.12;
+}
+
+
+.home-family-copy > p:not(.eyebrow) {
+  margin-top: 18px;
+
+  color: var(--brown-light);
+}
+
+
+.home-family-copy .text-link {
+  display: inline-flex;
+
+  margin-top: 20px;
+}
+
+
+.home-family-photos {
+  display: grid;
+
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  gap: 14px;
+}
+
+
+.home-family-photos img {
+  width: 100%;
+
+  aspect-ratio: 3 / 4;
+
+  border-radius: 8px;
+
+  object-fit: cover;
 }
 
 
@@ -1244,6 +1343,16 @@ img {
 }
 
 
+.contact-section.contact-cta {
+  grid-template-columns: 1fr;
+}
+
+
+.contact-order-button {
+  margin-top: 18px;
+}
+
+
 main > section[id] {
   scroll-margin-top: 120px;
 }
@@ -1269,6 +1378,121 @@ main > section[id] {
   display: grid;
 
   gap: 18px;
+}
+
+
+.checkout-dialog {
+  position: fixed;
+
+  inset: 0 0 0 auto;
+
+  width: min(560px, 100%);
+
+  max-width: none;
+
+  height: 100vh;
+
+  height: 100dvh;
+
+  max-height: none;
+
+  margin: 0;
+
+  padding: 0;
+
+  border: 0;
+
+  background: var(--white);
+
+  color: var(--brown);
+
+  overflow-y: auto;
+
+  box-shadow: -20px 0 60px rgba(44, 36, 27, 0.18);
+}
+
+
+.checkout-dialog::backdrop {
+  background: rgba(25, 20, 15, 0.48);
+
+  backdrop-filter: blur(2px);
+}
+
+
+.checkout-dialog-content {
+  min-height: 100%;
+
+  padding: 30px 32px 36px;
+}
+
+
+.checkout-dialog-header {
+  display: flex;
+
+  align-items: flex-start;
+
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding-bottom: 20px;
+
+  border-bottom: 1px solid var(--border);
+}
+
+
+.checkout-dialog-header h2 {
+  margin-top: 6px;
+
+  font-family: "Playfair Display", serif;
+
+  font-size: 30px;
+
+  font-weight: 500;
+}
+
+
+.checkout-close-button {
+  width: 40px;
+
+  height: 40px;
+
+  display: grid;
+
+  place-items: center;
+
+  border: 1px solid var(--border);
+
+  border-radius: 50%;
+
+  background: transparent;
+
+  color: var(--brown);
+
+  font: inherit;
+
+  font-size: 24px;
+
+  line-height: 1;
+
+  cursor: pointer;
+}
+
+
+.checkout-close-button:focus-visible {
+  outline: 2px solid var(--brown);
+
+  outline-offset: 2px;
+}
+
+
+.checkout-form {
+  margin-top: 20px;
+}
+
+
+.mobile-checkout-bar {
+  display: none;
 }
 
 
@@ -1535,6 +1759,13 @@ main > section[id] {
   }
 
 
+  .home-family-section {
+    grid-template-columns: 1fr;
+
+    gap: 28px;
+  }
+
+
   /* Reduce story image height. */
   /* Zmniejszamy wysokość zdjęcia historii. */
   .story-image img {
@@ -1566,6 +1797,7 @@ main > section[id] {
   .navbar,
   .hero,
   .products-section,
+  .home-family-section,
   .process-section,
   .story-section,
   .contact-section,
@@ -1718,6 +1950,16 @@ main > section[id] {
   }
 
 
+  .home-family-copy h2 {
+    font-size: 32px;
+  }
+
+
+  .home-family-photos {
+    gap: 10px;
+  }
+
+
   /* Reduce hero image height. */
   /* Zmniejszamy wysokość zdjęcia hero. */
   .hero-image {
@@ -1757,6 +1999,83 @@ main > section[id] {
   /* Zmniejszamy wewnętrzne odstępy sekcji kontaktowej. */
   .contact-section {
     padding: 32px 20px;
+  }
+
+
+  .contact-section.contact-cta {
+    grid-template-columns: 1fr;
+  }
+
+
+  .contact-order-button {
+    width: 100%;
+  }
+
+
+  .checkout-dialog {
+    width: 100%;
+
+    border-radius: 0;
+  }
+
+
+  .checkout-dialog-content {
+    padding: 22px 16px calc(24px + env(safe-area-inset-bottom));
+  }
+
+
+  .checkout-dialog-header h2 {
+    font-size: 26px;
+  }
+
+
+  .mobile-checkout-bar {
+    position: fixed;
+
+    right: 0;
+
+    bottom: 0;
+
+    left: 0;
+
+    z-index: 24;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 12px;
+
+    padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+
+    border-top: 1px solid var(--border);
+
+    background: var(--white);
+
+    box-shadow: 0 -8px 24px rgba(44, 36, 27, 0.08);
+  }
+
+
+  .mobile-checkout-bar > span {
+    font-size: 13px;
+
+    font-weight: 700;
+  }
+
+
+  .mobile-checkout-bar .button {
+    min-height: 44px;
+
+    padding: 10px 15px;
+
+    font-size: 12px;
+  }
+
+
+  .site.has-cart-items main {
+    padding-bottom: 76px;
   }
 
 
