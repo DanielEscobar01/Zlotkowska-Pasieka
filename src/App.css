@@ -1493,6 +1493,27 @@ main > section[id] {
 }
 
 
+.order-actions {
+  display: grid;
+
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  gap: 12px;
+}
+
+
+.order-actions .form-submit {
+  width: 100%;
+
+  justify-self: stretch;
+}
+
+
+.sms-submit {
+  color: var(--brown);
+}
+
+
 .mobile-checkout-bar {
   display: none;
 }
@@ -2021,6 +2042,13 @@ main > section[id] {
 
   .checkout-dialog-header h2 {
     font-size: 26px;
+  }
+
+
+  .order-actions {
+    grid-template-columns: 1fr;
+
+    gap: 10px;
   }
 
 

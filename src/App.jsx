@@ -263,14 +263,18 @@ function handleOrderSubmit(event, cartItems, cartTotal) {
   // Odczytujemy dodatkowe uwagi, na przykład które słoiki zapakować na prezent.
   const notes = formData.get("notes").trim();
 
+  // Read which messaging app the customer selected with the submit button.
+  // Odczytujemy aplikację wybraną przez klienta przyciskiem wysyłania.
+  const channel = event.nativeEvent.submitter?.value ?? "whatsapp";
+
   // Convert each cart row into a product line with its quantity and cost.
   // Zamieniamy każdy produkt z koszyka na wiersz z ilością i kosztem.
   const order = cartItems.map(({ product, quantity }) =>
     `${quantity} × ${product.name} (${product.weight}) - ${product.price * quantity} zł`
   ).join("\n");
 
-  // Build the complete message that WhatsApp will open for the customer.
-  // Tworzymy pełną wiadomość, którą WhatsApp otworzy dla klienta.
+  // Build the order text that the selected messaging app will open.
+  // Tworzymy treść zamówienia, którą otworzy wybrana aplikacja.
   const message = [
     // Start with a short greeting and order confirmation.
     // Zaczynamy od krótkiego powitania i informacji o zamówieniu.
@@ -308,24 +312,23 @@ function handleOrderSubmit(event, cartItems, cartTotal) {
     // Usuwamy puste pola opcjonalne i łączymy treść w jedną wiadomość.
   ].filter(Boolean).join("\n");
 
-  // Open the WhatsApp chat with the order text prefilled for the customer to send.
-  // Otwieramy czat WhatsApp z gotową treścią, którą klient może wysłać.
-  window.open(
-    // Encode the message so Polish text and line breaks work in the URL.
-    // Kodujemy wiadomość, aby polskie znaki i podziały wierszy działały w adresie.
-    `https://wa.me/48571092031?text=${encodeURIComponent(message)}`,
+  // Encode Polish text and line breaks for either messaging URL.
+  // Kodujemy polskie znaki i podziały wierszy dla obu adresów.
+  const encodedMessage = encodeURIComponent(message);
 
-    // Open WhatsApp in a separate tab.
-    // Otwieramy WhatsApp w nowej karcie.
-    "_blank",
+  // Choose the WhatsApp chat or the phone's SMS composer.
+  // Wybieramy czat WhatsApp albo aplikację SMS w telefonie.
+  const smsSeparator = /iPad|iPhone|iPod/.test(navigator.userAgent) ? "&" : "?";
+  const messageUrl = channel === "sms"
+    ? `sms:+48604117492${smsSeparator}body=${encodedMessage}`
+    : `https://wa.me/48604117492?text=${encodedMessage}`;
 
-    // Prevent the new tab from controlling the original page.
-    // Uniemożliwiamy nowej karcie sterowanie pierwotną stroną.
-    "noopener,noreferrer",
-  );
+  // Open the selected app with the order ready for the customer to send.
+  // Otwieramy wybraną aplikację z zamówieniem gotowym do wysłania.
+  window.open(messageUrl, "_blank", "noopener,noreferrer");
 
-  // Clear entered details after opening WhatsApp; the message still needs to be sent there.
-  // Czyścimy formularz po otwarciu WhatsApp; wiadomość nadal trzeba wysłać w aplikacji.
+  // Clear the form; the customer still needs to tap Send in the messaging app.
+  // Czyścimy formularz; klient musi jeszcze nacisnąć Wyślij w aplikacji.
   event.currentTarget.reset();
 }
 
@@ -453,20 +456,33 @@ function CheckoutPanel({ cartItems, cartQuantity, cartTotal, updateCart, onSubmi
         />
       </label>
 
-      <button
-        className="button button-dark form-submit"
-        type="submit"
-        disabled={cartItems.length === 0}
-      >
-        <svg
-          className="whatsapp-icon"
-          viewBox="0 0 24 24"
-          aria-hidden="true"
+      <div className="order-actions">
+        <button
+          className="button button-dark form-submit"
+          type="submit"
+          name="channel"
+          value="whatsapp"
+          disabled={cartItems.length === 0}
         >
-          <path fill="currentColor" d={siWhatsapp.path} />
-        </svg>
-        Zamów przez WhatsApp
-      </button>
+          <svg
+            className="whatsapp-icon"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path fill="currentColor" d={siWhatsapp.path} />
+          </svg>
+          Wyślij przez WhatsApp
+        </button>
+        <button
+          className="button button-light form-submit sms-submit"
+          type="submit"
+          name="channel"
+          value="sms"
+          disabled={cartItems.length === 0}
+        >
+          Wyślij SMS
+        </button>
+      </div>
     </form>
   );
 }
@@ -681,7 +697,7 @@ function App() {
       {orderNotice && (
         <div className="order-notice" role="status" aria-live="polite">
           <p>
-            Wiadomość jest przygotowana w WhatsApp. Naciśnij Wyślij w aplikacji,
+            Wiadomość jest przygotowana w wybranej aplikacji. Naciśnij Wyślij,
             aby złożyć zamówienie. Koszyk został wyczyszczony.
           </p>
           <button
