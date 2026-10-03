@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { siWhatsapp } from "simple-icons";
-import { Link, NavLink, useLocation } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 
 // Import the stylesheet used by the application.
 // Importujemy arkusz stylów używany przez aplikację.
@@ -8,7 +8,6 @@ import "./App.css";
 
 // Import the local images from the src/assets folder.
 // Importujemy lokalne obrazy z folderu src/assets.
-import MiodFaceliowy from "./assets/MiodFaceliowy.png";
 import MiodPiwnica from "./assets/MiodPiwnica.jpg";
 import ZlotkowskaPasiekaLogo from "./assets/ZlotkowskaPasiekaLogo.JPG";
 import HoneyAcaciaFacelia12 from "./assets/miod-akacjowo-faceliowy-1-2-kg.jpeg";
@@ -27,7 +26,6 @@ import ProcessHoneyExtraction from "./assets/proces-1-wirowanie-miodu.jpeg";
 import ProcessHoneycombFrames from "./assets/proces-2-plastry-w-ramkach.jpeg";
 import ProcessFilteredHoney from "./assets/proces-4-miod-po-ekstrakcji.jpeg";
 import ProcessFilledJars from "./assets/proces-5-gotowe-sloiki.jpeg";
-import FamilyAtApiary from "./assets/rodzina-przy-miodobraniu.jpeg";
 import HoneyJarsOnTable from "./assets/sloiki-z-miodem-na-stole.jpeg";
 import HoneyVarieties from "./assets/odmiany-miodu-w-sloikach.jpeg";
 import ProcessPreparedComb from "./assets/proces-3-dojrzaly-plaster.jpeg";
@@ -325,16 +323,20 @@ function handleOrderSubmit(event, cartItems, cartTotal) {
     // Uniemożliwiamy nowej karcie sterowanie pierwotną stroną.
     "noopener,noreferrer",
   );
+
+  // Clear entered details after opening WhatsApp; the message still needs to be sent there.
+  // Czyścimy formularz po otwarciu WhatsApp; wiadomość nadal trzeba wysłać w aplikacji.
+  event.currentTarget.reset();
 }
 
 
 // Render the editable basket and order form inside the checkout drawer.
 // Wyświetlamy edytowalny koszyk i formularz zamówienia w wysuwanym panelu.
-function CheckoutPanel({ cartItems, cartQuantity, cartTotal, updateCart }) {
+function CheckoutPanel({ cartItems, cartQuantity, cartTotal, updateCart, onSubmitOrder }) {
   return (
     <form
       className="contact-form checkout-form"
-      onSubmit={(event) => handleOrderSubmit(event, cartItems, cartTotal)}
+      onSubmit={onSubmitOrder}
     >
       <div className="cart-summary" aria-live="polite">
         <div className="cart-summary-heading">
@@ -476,6 +478,7 @@ function App() {
   // Read the current hash route so the shared shell can show the right page.
   // Odczytujemy bieżącą trasę z hash, aby wspólny układ pokazał właściwą stronę.
   const location = useLocation();
+  const navigate = useNavigate();
 
   // Map each supported route to its page-specific CSS visibility class.
   // Przypisujemy każdej trasie klasę określającą widoczną zawartość strony.
@@ -497,6 +500,7 @@ function App() {
   // Sprawdzamy, czy rozpoczęło się przewijanie, aby zwinąć nawigację.
   const [pageScrolled, setPageScrolled] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
+  const [orderNotice, setOrderNotice] = useState(false);
   const cartDialogRef = useRef(null);
 
   // Keep only products with a positive quantity and attach that quantity.
@@ -521,6 +525,12 @@ function App() {
     // Zamieniamy podaną ilość na nieujemną liczbę całkowitą.
     const quantity = Math.max(0, Math.floor(Number(value) || 0));
 
+    // Dismiss the previous order notice when a new basket starts.
+    // Ukrywamy poprzedni komunikat, gdy zaczyna się nowe zamówienie.
+    if (quantity > 0) {
+      setOrderNotice(false);
+    }
+
     // Update the cart from its latest state to avoid stale button values.
     // Aktualizujemy koszyk na podstawie najnowszego stanu, aby uniknąć starych wartości.
     setCart((currentCart) => {
@@ -542,6 +552,16 @@ function App() {
       // Zwracamy zaktualizowany koszyk, aby React odświeżył zamówienie.
       return nextCart;
     });
+  }
+
+  // Open WhatsApp, reset the completed order, and return to the home route.
+  // Otwieramy WhatsApp, czyścimy zakończone zamówienie i wracamy na stronę główną.
+  function submitOrder(event) {
+    handleOrderSubmit(event, cartItems, cartTotal);
+    setCart({});
+    setCartOpen(false);
+    setOrderNotice(true);
+    navigate("/");
   }
 
   // Collapse the full navigation after the user starts scrolling.
@@ -627,8 +647,6 @@ function App() {
 // Link do historii pasieki. */}
           <NavLink to="/pasieka" onClick={() => setMobileMenuOpen(false)}>Nasza pasieka</NavLink>
 
-          <NavLink to="/miody" onClick={() => setMobileMenuOpen(false)}>Zamówienia</NavLink>
-
         </nav>
 
 
@@ -660,6 +678,22 @@ function App() {
 
       </header>
 
+      {orderNotice && (
+        <div className="order-notice" role="status" aria-live="polite">
+          <p>
+            Wiadomość jest przygotowana w WhatsApp. Naciśnij Wyślij w aplikacji,
+            aby złożyć zamówienie. Koszyk został wyczyszczony.
+          </p>
+          <button
+            type="button"
+            aria-label="Zamknij komunikat"
+            onClick={() => setOrderNotice(false)}
+          >
+            ×
+          </button>
+        </div>
+      )}
+
 
       {/* =========================
           HERO
@@ -671,12 +705,6 @@ function App() {
       <main className="page-main">
 
         <section className="hero">
-
-          {/* Decorative background element.
-// Dekoracyjny element tła. */}
-          <div className="hero-glow"></div>
-
-
           {/* Hero text content.
 // Treść tekstowa sekcji hero. */}
           <div className="hero-content">
@@ -733,25 +761,6 @@ function App() {
 
           </div>
 
-
-          {/* Hero image area.
-// Obszar zdjęcia hero. */}
-          <div className="hero-visual">
-
-            <div className="hero-image-wrapper">
-
-              {/* Main natural honey image.
-// Główne zdjęcie naturalnego miodu. */}
-              <img
-                src={FamilyAtApiary}
-                alt="Rodzina podczas pracy przy miodobraniu w pasiece"
-                className="hero-image"
-              />
-
-
-            </div>
-
-          </div>
 
         </section>
 
@@ -1040,8 +1049,8 @@ function App() {
           <div className="story-image">
 
             <img
-              src={MiodFaceliowy}
-              alt="Naturalny miód faceliowy"
+              src={HoneyVarieties}
+              alt="Kilka odmian miodu z rodzinnej pasieki"
             />
 
           </div>
@@ -1169,6 +1178,7 @@ function App() {
             cartQuantity={cartQuantity}
             cartTotal={cartTotal}
             updateCart={updateCart}
+            onSubmitOrder={submitOrder}
           />
         </div>
       </dialog>

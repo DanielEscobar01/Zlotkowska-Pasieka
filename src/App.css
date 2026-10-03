@@ -323,40 +323,13 @@ img {
 .hero {
   width: min(1240px, calc(100% - 48px));
 
-  margin: 24px auto 72px;
+  margin: 28px auto 56px;
 
-  min-height: 580px;
+  min-height: auto;
 
-  display: grid;
-
-  grid-template-columns: 0.9fr 1.1fr;
-
-  gap: 52px;
-
-  align-items: center;
+  padding: 28px 0 0;
 
   position: relative;
-}
-
-
-/* Create the decorative honey-colored circle. */
-/* Tworzymy dekoracyjne koło w kolorze miodowym. */
-.hero-glow {
-  position: absolute;
-
-  width: 520px;
-  height: 520px;
-
-  background: rgba(216, 155, 53, 0.12);
-
-  border-radius: 50%;
-
-  right: 5%;
-  top: 10%;
-
-  filter: blur(5px);
-
-  pointer-events: none;
 }
 
 
@@ -365,6 +338,8 @@ img {
 .hero-content {
   position: relative;
   z-index: 2;
+
+  max-width: 860px;
 }
 
 
@@ -506,29 +481,56 @@ img {
 }
 
 
-/* Hero image container. */
-/* Kontener obrazu hero. */
-.hero-image-wrapper {
-  position: relative;
+.order-notice {
+  position: fixed;
 
-  border-radius: 30px;
+  top: 108px;
 
-  overflow: visible;
+  left: 50%;
+
+  z-index: 25;
+
+  width: min(620px, calc(100% - 32px));
+
+  display: flex;
+
+  align-items: flex-start;
+
+  justify-content: space-between;
+
+  gap: 16px;
+
+  padding: 15px 18px;
+
+  border: 1px solid var(--border);
+
+  border-radius: 8px;
+
+  background: var(--white);
+
+  box-shadow: 0 12px 32px rgba(44, 36, 27, 0.14);
 }
 
 
-/* Style the main hero image. */
-/* Stylizujemy główne zdjęcie hero. */
-.hero-image {
-  width: 100%;
+.order-notice p {
+  font-size: 14px;
+}
 
-  height: 520px;
 
-  object-fit: cover;
+.order-notice button {
+  flex: 0 0 auto;
 
-  border-radius: 30px;
+  border: 0;
 
-  filter: saturate(0.9);
+  background: transparent;
+
+  color: var(--brown-light);
+
+  font-size: 22px;
+
+  line-height: 1;
+
+  cursor: pointer;
 }
 
 
@@ -1743,13 +1745,6 @@ main > section[id] {
   }
 
 
-  /* Reduce hero image height. */
-  /* Zmniejszamy wysokość zdjęcia hero. */
-  .hero-image {
-    height: 520px;
-  }
-
-
   /* Stack the story section vertically. */
   /* Układamy sekcję historii pionowo. */
   .story-section {
@@ -1960,10 +1955,10 @@ main > section[id] {
   }
 
 
-  /* Reduce hero image height. */
-  /* Zmniejszamy wysokość zdjęcia hero. */
-  .hero-image {
-    height: 320px;
+  .order-notice {
+    top: 118px;
+
+    padding: 12px 14px;
   }
 
 
