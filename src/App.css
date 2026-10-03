@@ -176,7 +176,81 @@ img {
 
 
 .mobile-menu-toggle {
+  width: 40px;
+
+  height: 40px;
+
   display: none;
+
+  place-items: center;
+
+  border: 1px solid var(--border);
+
+  border-radius: 50%;
+
+  background: var(--white);
+
+  color: var(--brown);
+
+  cursor: pointer;
+}
+
+
+.navbar.is-scrolled .nav-links:not(.is-open) {
+  display: none;
+}
+
+
+.navbar.is-scrolled .mobile-menu-toggle {
+  display: grid;
+}
+
+
+.navbar.is-scrolled .nav-links.is-open {
+  position: absolute;
+
+  top: calc(100% + 8px);
+
+  right: 0;
+
+  display: flex;
+
+  width: min(300px, calc(100vw - 32px));
+
+  flex-direction: column;
+
+  align-items: stretch;
+
+  gap: 0;
+
+  margin: 0;
+
+  padding: 8px 18px;
+
+  border: 1px solid var(--border);
+
+  border-radius: 8px;
+
+  background: var(--cream);
+
+  box-shadow: 0 15px 40px rgba(44, 36, 27, 0.12);
+}
+
+
+.navbar.is-scrolled .nav-links.is-open a {
+  display: block;
+
+  padding: 12px 4px;
+
+  border-bottom: 1px solid var(--border);
+
+  color: var(--brown);
+
+  font-family: "DM Sans", sans-serif;
+
+  font-size: 15px;
+
+  font-weight: 500;
 }
 
 
@@ -217,15 +291,15 @@ img {
 .hero {
   width: min(1240px, calc(100% - 48px));
 
-  margin: 30px auto 100px;
+  margin: 24px auto 72px;
 
-  min-height: 650px;
+  min-height: 580px;
 
   display: grid;
 
   grid-template-columns: 0.9fr 1.1fr;
 
-  gap: 70px;
+  gap: 52px;
 
   align-items: center;
 
@@ -416,7 +490,7 @@ img {
 .hero-image {
   width: 100%;
 
-  height: 620px;
+  height: 520px;
 
   object-fit: cover;
 
@@ -437,7 +511,7 @@ img {
 .products-section {
   width: min(1240px, calc(100% - 48px));
 
-  margin: 0 auto 130px;
+  margin: 0 auto 84px;
 }
 
 
@@ -446,7 +520,7 @@ img {
 .section-heading {
   max-width: 650px;
 
-  margin-bottom: 55px;
+  margin-bottom: 36px;
 }
 
 
@@ -496,7 +570,7 @@ img {
 
   grid-template-columns: repeat(2, 1fr);
 
-  gap: 28px;
+  gap: 22px;
 }
 
 
@@ -541,7 +615,7 @@ img {
 .product-image {
   width: 100%;
 
-  height: 430px;
+  height: 320px;
 
   object-fit: cover;
 
@@ -780,7 +854,7 @@ img {
 .cart-items li {
   display: grid;
 
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: 48px minmax(0, 1fr) auto;
 
   align-items: center;
 
@@ -793,6 +867,36 @@ img {
   font-size: 14px;
 
   animation: cart-item-added 240ms ease-out;
+}
+
+
+.cart-item-image {
+  width: 48px;
+
+  height: 48px;
+
+  border-radius: 6px;
+
+  background: var(--cream-dark);
+
+  object-fit: cover;
+}
+
+
+.cart-item-image-placeholder {
+  display: grid;
+
+  place-items: center;
+
+  padding: 4px;
+
+  color: var(--brown-light);
+
+  font-size: 9px;
+
+  line-height: 1.1;
+
+  text-align: center;
 }
 
 
@@ -920,13 +1024,13 @@ img {
 .story-section {
   width: min(1240px, calc(100% - 48px));
 
-  margin: 0 auto 130px;
+  margin: 0 auto 80px;
 
   display: grid;
 
   grid-template-columns: 1fr 1fr;
 
-  gap: 90px;
+  gap: 52px;
 
   align-items: center;
 }
@@ -937,7 +1041,7 @@ img {
 .story-image img {
   width: 100%;
 
-  height: 620px;
+  height: 500px;
 
   object-fit: cover;
 
@@ -948,7 +1052,7 @@ img {
 /* Style story paragraphs. */
 /* Stylizujemy akapity historii. */
 .story-content > p:not(.eyebrow) {
-  margin-top: 25px;
+  margin-top: 18px;
 
   color: var(--brown-light);
 
@@ -1006,6 +1110,109 @@ img {
 }
 
 
+/* Keep the process gallery aligned with the main content width. */
+/* Dopasowujemy galerię procesu do szerokości głównej treści. */
+.process-section {
+  width: min(1240px, calc(100% - 48px));
+
+  margin: 0 auto 80px;
+}
+
+
+/* Limit the process introduction width for readable lines. */
+/* Ograniczamy szerokość wstępu, aby tekst był czytelny. */
+.process-heading {
+  max-width: 650px;
+
+  margin-bottom: 32px;
+}
+
+
+/* Use the site's display font for the process title. */
+/* Używamy kroju nagłówkowego strony w tytule procesu. */
+.process-heading h2 {
+  margin-top: 8px;
+
+  font-family: "Playfair Display", serif;
+
+  font-size: 38px;
+
+  font-weight: 500;
+
+  line-height: 1.15;
+}
+
+
+/* Space the process cards evenly across the page. */
+/* Równomiernie rozmieszczamy etapy procesu na stronie. */
+.process-grid {
+  display: grid;
+
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+
+  gap: 24px;
+
+  list-style: none;
+}
+
+
+/* Prevent process cards from forcing wider grid columns. */
+/* Zapobiegamy poszerzaniu kolumn przez karty procesu. */
+.process-card {
+  min-width: 0;
+}
+
+
+/* Give each process photo a consistent frame. */
+/* Nadajemy każdemu zdjęciu procesu stałe proporcje. */
+.process-image {
+  width: 100%;
+
+  aspect-ratio: 4 / 3;
+
+  object-fit: cover;
+
+  border-radius: 8px;
+}
+
+
+/* Highlight the step number. */
+/* Wyróżniamy numer etapu. */
+.process-number {
+  margin-top: 12px;
+
+  color: var(--honey);
+
+  font-size: 11px;
+
+  font-weight: 700;
+}
+
+
+/* Style process names consistently with the site's headings. */
+/* Stylizujemy nazwy etapów zgodnie z nagłówkami strony. */
+.process-card h3 {
+  margin-top: 4px;
+
+  font-family: "Playfair Display", serif;
+
+  font-size: 21px;
+
+  font-weight: 500;
+}
+
+
+/* Keep process descriptions compact and easy to scan. */
+/* Utrzymujemy opisy procesu krótkie i łatwe do przeczytania. */
+.process-card > p:last-child {
+  margin-top: 6px;
+
+  color: var(--brown-light);
+
+  font-size: 13px;
+}
+
+
 /* =========================
    CONTACT
    KONTAKT
@@ -1017,11 +1224,11 @@ img {
 .contact-section {
   width: min(1240px, calc(100% - 48px));
 
-  margin: 0 auto 100px;
+  margin: 0 auto 76px;
 
   scroll-margin-top: 110px;
 
-  padding: 70px;
+  padding: 52px;
 
   border-radius: 30px;
 
@@ -1033,7 +1240,7 @@ img {
 
   align-items: start;
 
-  gap: 50px;
+  gap: 38px;
 }
 
 
@@ -1044,12 +1251,17 @@ main > section[id] {
 
 /* Style the contact description. */
 /* Stylizujemy opis kontaktu. */
-.contact-copy > p:last-child {
+.contact-copy > p:last-of-type {
   margin-top: 20px;
 
   max-width: 500px;
 
   color: rgba(44, 36, 27, 0.75);
+}
+
+
+.contact-directions-link {
+  margin-top: 14px;
 }
 
 
@@ -1185,9 +1397,9 @@ main > section[id] {
 .map-section {
   width: min(1240px, calc(100% - 48px));
 
-  margin: 0 auto 90px;
+  margin: 0 auto 56px;
 
-  padding-top: 42px;
+  padding: 42px 24px 0;
 
   border-top: 1px solid var(--border);
 
@@ -1202,6 +1414,10 @@ main > section[id] {
 
 
 .map-preview {
+  width: 100%;
+
+  min-width: 0;
+
   min-height: 320px;
 
   aspect-ratio: 16 / 9;
@@ -1315,14 +1531,21 @@ main > section[id] {
   .story-section {
     grid-template-columns: 1fr;
 
-    gap: 45px;
+    gap: 34px;
   }
 
 
   /* Reduce story image height. */
   /* Zmniejszamy wysokość zdjęcia historii. */
   .story-image img {
-    height: 500px;
+    height: 400px;
+  }
+
+
+  .process-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 20px;
   }
 
 
@@ -1343,6 +1566,7 @@ main > section[id] {
   .navbar,
   .hero,
   .products-section,
+  .process-section,
   .story-section,
   .contact-section,
   .map-section,
@@ -1446,29 +1670,13 @@ main > section[id] {
 
 
   .mobile-menu-toggle {
-    width: 40px;
-
-    height: 40px;
-
     display: grid;
 
     grid-column: 3;
 
     grid-row: 1;
 
-    place-items: center;
-
     justify-self: end;
-
-    border: 1px solid var(--border);
-
-    border-radius: 50%;
-
-    background: var(--white);
-
-    color: var(--brown);
-
-    cursor: pointer;
   }
 
 
@@ -1497,7 +1705,7 @@ main > section[id] {
   /* Reduce hero spacing. */
   /* Zmniejszamy odstępy sekcji hero. */
   .hero {
-    margin-bottom: 80px;
+    margin-bottom: 60px;
 
     min-height: auto;
   }
@@ -1513,7 +1721,7 @@ main > section[id] {
   /* Reduce hero image height. */
   /* Zmniejszamy wysokość zdjęcia hero. */
   .hero-image {
-    height: 430px;
+    height: 320px;
   }
 
 
@@ -1527,14 +1735,14 @@ main > section[id] {
   /* Reduce product image height. */
   /* Zmniejszamy wysokość zdjęcia produktu. */
   .product-image {
-    height: 360px;
+    height: 270px;
   }
 
 
   /* Reduce story image height. */
   /* Zmniejszamy wysokość zdjęcia historii. */
   .story-image img {
-    height: 400px;
+    height: 320px;
   }
 
 
@@ -1548,14 +1756,24 @@ main > section[id] {
   /* Reduce contact section padding. */
   /* Zmniejszamy wewnętrzne odstępy sekcji kontaktowej. */
   .contact-section {
-    padding: 40px 25px;
+    padding: 32px 20px;
+  }
+
+
+  .process-heading h2 {
+    font-size: 30px;
+  }
+
+
+  .process-grid {
+    gap: 16px 12px;
   }
 
 
   .map-section {
-    margin-bottom: 60px;
+    margin-bottom: 48px;
 
-    padding-top: 32px;
+    padding: 32px 12px 0;
 
     grid-template-columns: 1fr;
 
@@ -1565,6 +1783,20 @@ main > section[id] {
 
   .map-copy h2 {
     font-size: 28px;
+  }
+
+
+  .cart-items li {
+    grid-template-columns: 42px minmax(0, 1fr) auto;
+
+    gap: 8px;
+  }
+
+
+  .cart-item-image {
+    width: 42px;
+
+    height: 42px;
   }
 
 
