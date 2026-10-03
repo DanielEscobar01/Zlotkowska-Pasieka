@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { siWhatsapp } from "simple-icons";
 
 // Import the stylesheet used by the application.
 // Importujemy arkusz stylów używany przez aplikację.
@@ -16,7 +17,7 @@ const products = [
   {
     id: 1,
     name: "Miód rzepakowy",
-    description: "Naturalny miód z lokalnej pasieki.",
+    description: "Łagodny smak i jasna barwa. Szybko krystalizuje, tworząc kremową konsystencję, którą łatwo rozsmarować na pieczywie.",
     weight: "1,2 kg",
     price: 40,
     image: NaturalMiod,
@@ -25,7 +26,7 @@ const products = [
   {
     id: 2,
     name: "Miód faceliowy",
-    description: "Naturalny miód z lokalnej pasieki.",
+    description: "Delikatny, kwiatowy aromat i subtelny smak. Dobra propozycja, jeśli szukasz łagodniejszej alternatywy dla rzepakowego.",
     weight: "1,2 kg",
     price: 45,
     image: MiodFaceliowy,
@@ -34,7 +35,7 @@ const products = [
   {
     id: 3,
     name: "Miód akacjowo-faceliowy",
-    description: "Naturalny miód z lokalnej pasieki.",
+    description: "Łączy łagodną słodycz akacji z kwiatowym aromatem facelii, tworząc delikatny, zbalansowany smak.",
     weight: "1,2 kg",
     price: 45,
     image: NaturalMiod,
@@ -43,7 +44,7 @@ const products = [
   {
     id: 4,
     name: "Ziołomiód",
-    description: "Mięta, pokrzywa, wrotycz.",
+    description: "Wyrazisty, ziołowy aromat mięty, pokrzywy i wrotyczu. Alternatywa dla klasycznych miodów kwiatowych.",
     weight: "1,2 kg",
     price: 35,
     image: NaturalMiod,
@@ -52,7 +53,7 @@ const products = [
   {
     id: 5,
     name: "Miód rzepakowy",
-    description: "Naturalny miód z lokalnej pasieki.",
+    description: "Łagodny smak i jasna barwa. Szybko krystalizuje, tworząc kremową konsystencję, którą łatwo rozsmarować na pieczywie.",
     weight: "0,4 kg",
     price: 15,
     image: NaturalMiod,
@@ -61,7 +62,7 @@ const products = [
   {
     id: 6,
     name: "Miód faceliowy",
-    description: "Naturalny miód z lokalnej pasieki.",
+    description: "Delikatny, kwiatowy aromat i subtelny smak. Dobra propozycja, jeśli szukasz łagodniejszej alternatywy dla rzepakowego.",
     weight: "0,4 kg",
     price: 20,
     image: MiodFaceliowy,
@@ -70,7 +71,7 @@ const products = [
   {
     id: 7,
     name: "Miód wielokwiatowy",
-    description: "Naturalny miód z lokalnej pasieki.",
+    description: "Powstaje z nektaru różnych kwiatów, dlatego jego smak i aromat mogą się różnić w zależności od sezonu.",
     weight: "0,4 kg",
     price: 20,
     image: NaturalMiod,
@@ -79,7 +80,7 @@ const products = [
   {
     id: 8,
     name: "Miód lipowy",
-    description: "Naturalny miód z lokalnej pasieki.",
+    description: "Charakterystyczny, kwiatowy aromat lipy i wyrazistszy smak z delikatną, ziołową nutą.",
     weight: "0,4 kg",
     price: 20,
     image: NaturalMiod,
@@ -88,7 +89,7 @@ const products = [
   {
     id: 9,
     name: "Ziołomiód",
-    description: "Mięta, pokrzywa, wrotycz.",
+    description: "Wyrazisty, ziołowy aromat mięty, pokrzywy i wrotyczu. Alternatywa dla klasycznych miodów kwiatowych.",
     weight: "0,4 kg",
     price: 15,
     image: NaturalMiod,
@@ -97,7 +98,7 @@ const products = [
   {
     id: 10,
     name: "Pyłek pszczeli",
-    description: "Pyłek pszczeli z lokalnej pasieki.",
+    description: "Ziarnisty produkt pszczeli o kwiatowo-roślinnym smaku. Można dodawać go do jogurtu, owsianki lub koktajlu.",
     weight: "0,5 kg",
     price: 30,
     image: MiodPiwnica,
@@ -106,7 +107,7 @@ const products = [
   {
     id: 11,
     name: "Zestaw prezentowy",
-    description: "3 rodzaje miodu po 0,38 kg w ozdobnym kartoniku.",
+    description: "Trzy rodzaje miodu po 0,38 kg w ozdobnym kartoniku. Pozwala spróbować różnych odmian.",
     weight: "3 × 0,38 kg",
     price: 50,
     image: MiodPiwnica,
@@ -115,7 +116,7 @@ const products = [
   {
     id: 12,
     name: "Zestaw prezentowy",
-    description: "2 rodzaje miodu po 0,38 kg i 200 g pyłku pszczelego w ozdobnym kartoniku.",
+    description: "Dwa rodzaje miodu po 0,38 kg oraz 200 g pyłku pszczelego w ozdobnym kartoniku.",
     weight: "2 × 0,38 kg + 200 g",
     price: 50,
     image: MiodPiwnica,
@@ -124,7 +125,7 @@ const products = [
   {
     id: 13,
     name: "Kartonik prezentowy",
-    description: "Duży lub średni słoik można zapakować w ozdobny kartonik.",
+    description: "Ozdobny kartonik do dużego lub średniego słoika. W uwagach do zamówienia napisz, które słoiki zapakować.",
     weight: "1 szt.",
     price: 5,
     image: MiodPiwnica,
@@ -166,6 +167,7 @@ function handleOrderSubmit(event, cartItems, cartTotal) {
 // Główny komponent aplikacji.
 function App() {
   const [cart, setCart] = useState({});
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const cartItems = products
     .filter((product) => cart[product.id] > 0)
     .map((product) => ({ product, quantity: cart[product.id] }));
@@ -222,28 +224,50 @@ function App() {
 
         {/* Main navigation links.
 // Główne linki nawigacyjne. */}
-        <nav className="nav-links">
+        <nav
+          id="main-navigation"
+          className={`nav-links${mobileMenuOpen ? " is-open" : ""}`}
+        >
 
           {/* Link to honey products.
 // Link do produktów z miodem. */}
-          <a href="#miody">Miody</a>
+          <a href="#miody" onClick={() => setMobileMenuOpen(false)}>Miody</a>
 
           {/* Link to the apiary story.
 // Link do historii pasieki. */}
-          <a href="#pasieka">Nasza pasieka</a>
+          <a href="#pasieka" onClick={() => setMobileMenuOpen(false)}>Nasza pasieka</a>
 
           {/* Link to contact.
 // Link do kontaktu. */}
-          <a href="#kontakt">Kontakt</a>
+          <a href="#kontakt" onClick={() => setMobileMenuOpen(false)}>Kontakt</a>
 
         </nav>
 
 
         {/* Main navigation button.
 // Główny przycisk nawigacji. */}
-        <a href="#miody" className="nav-button">
-          Odkryj miody
+        <a
+          href="#kontakt"
+          className="nav-button cart-nav-button"
+          aria-label={`Przejdź do koszyka, ${cartQuantity} produktów`}
+        >
+          Koszyk (<span key={cartQuantity} className="cart-count-pop">{cartQuantity}</span>)
         </a>
+
+        <button
+          type="button"
+          className="mobile-menu-toggle"
+          aria-label={mobileMenuOpen ? "Zamknij menu" : "Otwórz menu"}
+          aria-expanded={mobileMenuOpen}
+          aria-controls="main-navigation"
+          onClick={() => setMobileMenuOpen((isOpen) => !isOpen)}
+        >
+          <span className="menu-icon" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+          </span>
+        </button>
 
       </header>
 
@@ -271,7 +295,7 @@ function App() {
             {/* Location label.
 // Etykieta lokalizacji. */}
             <p className="eyebrow">
-              ZŁOTKOWO · POLSKA
+              ZŁOTKOWO K. POZNANIA
             </p>
 
 
@@ -430,17 +454,35 @@ function App() {
                       {product.price} zł
                     </strong>
 
-                    <label className="product-quantity">
-                      Ilość
-                      <input
-                        type="number"
-                        min="0"
-                        step="1"
-                        value={cart[product.id] ?? 0}
+                    <div className="product-quantity">
+                      <span>Ilość</span>
+                      <div
+                        className="quantity-control"
+                        role="group"
                         aria-label={`Liczba sztuk: ${product.name}, ${product.weight}`}
-                        onChange={(event) => updateCart(product.id, event.target.value)}
-                      />
-                    </label>
+                      >
+                        <button
+                          type="button"
+                          className="quantity-button"
+                          aria-label={`Zmniejsz ilość: ${product.name}, ${product.weight}`}
+                          disabled={!cart[product.id]}
+                          onClick={() => updateCart(product.id, (cart[product.id] ?? 0) - 1)}
+                        >
+                          −
+                        </button>
+                        <output className="quantity-value" aria-live="polite">
+                          {cart[product.id] ?? 0}
+                        </output>
+                        <button
+                          type="button"
+                          className="quantity-button"
+                          aria-label={`Zwiększ ilość: ${product.name}, ${product.weight}`}
+                          onClick={() => updateCart(product.id, (cart[product.id] ?? 0) + 1)}
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
 
                   </div>
 
@@ -451,6 +493,161 @@ function App() {
             ))}
 
           </div>
+
+        </section>
+
+
+        {/* =========================
+            CONTACT
+            KONTAKT
+        ========================== */}
+
+        <section className="contact-section" id="kontakt">
+
+          <div className="contact-copy">
+
+            <p className="eyebrow">
+              ZAMÓWIENIA
+            </p>
+
+
+            <h2>
+              Masz ochotę na
+              <span>prawdziwy miód?</span>
+            </h2>
+
+
+            <p>
+              Po kliknięciu otworzy się WhatsApp z gotową treścią zamówienia.
+              Wyślij wiadomość, a wkrótce potwierdzimy szczegóły i przekażemy
+              informacje o płatności.
+            </p>
+
+          </div>
+
+
+          <form
+            className="contact-form"
+            onSubmit={(event) => handleOrderSubmit(event, cartItems, cartTotal)}
+          >
+            <div className="cart-summary" aria-live="polite">
+              <div className="cart-summary-heading">
+                <h3>Twój koszyk</h3>
+                <span>{cartQuantity} szt.</span>
+              </div>
+
+              {cartItems.length > 0 ? (
+                <>
+                  <ul className="cart-items">
+                    {cartItems.map(({ product, quantity }) => (
+                      <li key={product.id} className="cart-item">
+                        <div className="cart-item-info">
+                          <span>{product.name} ({product.weight})</span>
+                          <strong>{product.price * quantity} zł</strong>
+                        </div>
+                        <div className="cart-item-controls">
+                          <div
+                            className="quantity-control cart-quantity-control"
+                            role="group"
+                            aria-label={`Liczba sztuk: ${product.name}, ${product.weight}`}
+                          >
+                            <button
+                              type="button"
+                              className="quantity-button"
+                              aria-label={`Zmniejsz ilość: ${product.name}, ${product.weight}`}
+                              onClick={() => updateCart(product.id, quantity - 1)}
+                            >
+                              −
+                            </button>
+                            <output className="quantity-value" aria-live="polite">
+                              {quantity}
+                            </output>
+                            <button
+                              type="button"
+                              className="quantity-button"
+                              aria-label={`Zwiększ ilość: ${product.name}, ${product.weight}`}
+                              onClick={() => updateCart(product.id, quantity + 1)}
+                            >
+                              +
+                            </button>
+                          </div>
+                          <button
+                            type="button"
+                            className="cart-remove-button"
+                            aria-label={`Usuń z koszyka: ${product.name}, ${product.weight}`}
+                            onClick={() => updateCart(product.id, 0)}
+                          >
+                            Usuń
+                          </button>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                  <p className="cart-total">Suma produktów: {cartTotal} zł</p>
+                </>
+              ) : (
+                <p className="cart-empty">Koszyk jest pusty.</p>
+              )}
+            </div>
+
+            <label className="form-field" htmlFor="name">
+              Imię
+              <input
+                id="name"
+                name="name"
+                type="text"
+                autoComplete="given-name"
+                placeholder="Twoje imię"
+                required
+              />
+            </label>
+
+            <fieldset className="delivery-options">
+              <legend>Sposób odbioru zamówienia *</legend>
+              <label>
+                <input
+                  type="radio"
+                  name="delivery"
+                  value="Odbiór osobisty: Złotkowo, ul. Lipowa 20"
+                  required
+                />
+                Odbiór osobisty: Złotkowo, ul. Lipowa 20
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="delivery"
+                  value="Inny: wysyłka InPost na terenie całej Polski"
+                />
+                Inny: wysyłka InPost na terenie całej Polski (dodatkowo płatna). Koszt dostawy ustalimy przez WhatsApp w zależności od wagi i liczby produktów w zamówieniu.
+              </label>
+            </fieldset>
+
+            <label className="form-field" htmlFor="notes">
+              Uwagi do zamówienia
+              <textarea
+                id="notes"
+                name="notes"
+                placeholder="Wpisz, które słoiki zapakować w ozdobne kartoniki (5 zł/szt.)."
+                rows="3"
+              />
+            </label>
+
+            <button
+              className="button button-dark form-submit"
+              type="submit"
+              disabled={cartItems.length === 0}
+            >
+              <svg
+                className="whatsapp-icon"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path fill="currentColor" d={siWhatsapp.path} />
+              </svg>
+              Zamów przez WhatsApp
+            </button>
+          </form>
 
         </section>
 
@@ -572,116 +769,32 @@ function App() {
         </section>
 
 
-        {/* =========================
-            CONTACT
-            KONTAKT
-        ========================== */}
-
-        <section className="contact-section" id="kontakt">
-
-          <div className="contact-copy">
-
-            <p className="eyebrow">
-              ZAMÓWIENIA
-            </p>
-
-
-            <h2>
-              Masz ochotę na
-              <span>prawdziwy miód?</span>
-            </h2>
-
-
-            <p>
-              Po kliknięciu otworzy się WhatsApp z gotową treścią zamówienia.
-              Wyślij wiadomość, a wkrótce potwierdzimy szczegóły i przekażemy
-              informacje o płatności.
-            </p>
-
-          </div>
-
-
-          <form
-            className="contact-form"
-            onSubmit={(event) => handleOrderSubmit(event, cartItems, cartTotal)}
-          >
-            <div className="cart-summary" aria-live="polite">
-              <div className="cart-summary-heading">
-                <h3>Twój koszyk</h3>
-                <span>{cartQuantity} szt.</span>
-              </div>
-
-              {cartItems.length > 0 ? (
-                <>
-                  <ul className="cart-items">
-                    {cartItems.map(({ product, quantity }) => (
-                      <li key={product.id}>
-                        <span>{quantity} × {product.name} ({product.weight})</span>
-                        <strong>{product.price * quantity} zł</strong>
-                      </li>
-                    ))}
-                  </ul>
-                  <p className="cart-total">Suma produktów: {cartTotal} zł</p>
-                </>
-              ) : (
-                <p className="cart-empty">Koszyk jest pusty.</p>
-              )}
-            </div>
-
-            <label className="form-field" htmlFor="name">
-              Imię
-              <input
-                id="name"
-                name="name"
-                type="text"
-                autoComplete="given-name"
-                placeholder="Twoje imię"
-                required
-              />
-            </label>
-
-            <fieldset className="delivery-options">
-              <legend>Sposób odbioru zamówienia *</legend>
-              <label>
-                <input
-                  type="radio"
-                  name="delivery"
-                  value="Odbiór osobisty - Złotkowo, ul. Lipowa 20"
-                  required
-                />
-                Odbiór osobisty - Złotkowo, ul. Lipowa 20
-              </label>
-              <label>
-                <input
-                  type="radio"
-                  name="delivery"
-                  value="Inny - do ustalenia telefonicznie"
-                />
-                Inny - do ustalenia telefonicznie - <a href="tel:+48698095824">698 095 824</a>
-              </label>
-            </fieldset>
-
-            <label className="form-field" htmlFor="notes">
-              Uwagi do zamówienia
-              <textarea
-                id="notes"
-                name="notes"
-                placeholder="Wpisz, które słoiki zapakować w ozdobne kartoniki (5 zł/szt.)."
-                rows="3"
-              />
-            </label>
-
-            <button
-              className="button button-dark form-submit"
-              type="submit"
-              disabled={cartItems.length === 0}
+        <section className="map-section" aria-labelledby="map-heading">
+          <div className="map-copy">
+            <p className="eyebrow">ODBIÓR OSOBISTY</p>
+            <h2 id="map-heading">Jak do nas trafić?</h2>
+            <p>Złotkowo k. Poznania, ul. Lipowa 20</p>
+            <a
+              className="button button-dark map-link"
+              href="https://www.google.com/maps/dir/?api=1&destination=Z%C5%82otkowo%2C%20ul.%20Lipowa%2020%2C%20Polska"
+              target="_blank"
+              rel="noreferrer"
             >
-              Zamów przez WhatsApp
+              Otwórz trasę w Google Maps
               <span>↗</span>
-            </button>
-          </form>
-
+            </a>
+          </div>
+          <div className="map-preview">
+            <iframe
+              src="https://maps.google.com/maps?q=Z%C5%82otkowo%2C%20ul.%20Lipowa%2020%2C%20Polska&output=embed"
+              title="Mapa dojazdu do Złotkowskiej Pasieki w Złotkowie"
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              allowFullScreen
+            />
+          </div>
         </section>
+
 
       </main>
 
