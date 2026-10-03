@@ -1,6 +1,4 @@
-// Import React so we can create the application component.
-// Importujemy React, aby móc tworzyć główny komponent aplikacji.
-import React from "react";
+import { useState } from "react";
 
 // Import the stylesheet used by the application.
 // Importujemy arkusz stylów używany przez aplikację.
@@ -14,68 +12,185 @@ import MiodPiwnica from "./assets/MiodPiwnica.jpg";
 import ZlotkowskaPasiekaLogo from "./assets/ZlotkowskaPasiekaLogo.JPG";
 
 
-// Store the products displayed on the website.
-// Przechowujemy produkty wyświetlane na stronie.
 const products = [
   {
-    // Unique product identifier.
-    // Unikalny identyfikator produktu.
     id: 1,
-
-    // Product name.
-    // Nazwa produktu.
-    name: "Miód wielokwiatowy",
-
-    // Product description.
-    // Opis produktu.
-    description:
-      "Naturalny miód o delikatnym, kwiatowym smaku, pozyskiwany w okolicach Złotkowa.",
-
-    // Product weight.
-    // Waga produktu.
-    weight: "500 g",
-
-    // Product price.
-    // Cena produktu.
-    price: "25 zł",
-
-    // Use the local facelia honey image.
-    // Używamy lokalnego zdjęcia miodu faceliowego.
-    image: MiodFaceliowy,
-  },
-
-  {
-    // Unique product identifier.
-    // Unikalny identyfikator produktu.
-    id: 2,
-
-    // Product name.
-    // Nazwa produktu.
-    name: "Miód naturalny",
-
-    // Product description.
-    // Opis produktu.
-    description:
-      "Naturalny miód produkowany w małej pasiece, bez przemysłowej produkcji i zbędnych dodatków.",
-
-    // Product weight.
-    // Waga produktu.
-    weight: "500 g",
-
-    // Product price.
-    // Cena produktu.
-    price: "30 zł",
-
-    // Use the natural honey image.
-    // Używamy zdjęcia naturalnego miodu.
+    name: "Miód rzepakowy",
+    description: "Naturalny miód z lokalnej pasieki.",
+    weight: "1,2 kg",
+    price: 40,
     image: NaturalMiod,
+    badge: "Naturalny",
+  },
+  {
+    id: 2,
+    name: "Miód faceliowy",
+    description: "Naturalny miód z lokalnej pasieki.",
+    weight: "1,2 kg",
+    price: 45,
+    image: MiodFaceliowy,
+    badge: "Naturalny",
+  },
+  {
+    id: 3,
+    name: "Miód akacjowo-faceliowy",
+    description: "Naturalny miód z lokalnej pasieki.",
+    weight: "1,2 kg",
+    price: 45,
+    image: NaturalMiod,
+    badge: "Naturalny",
+  },
+  {
+    id: 4,
+    name: "Ziołomiód",
+    description: "Mięta, pokrzywa, wrotycz.",
+    weight: "1,2 kg",
+    price: 35,
+    image: NaturalMiod,
+    badge: "Naturalny",
+  },
+  {
+    id: 5,
+    name: "Miód rzepakowy",
+    description: "Naturalny miód z lokalnej pasieki.",
+    weight: "0,4 kg",
+    price: 15,
+    image: NaturalMiod,
+    badge: "Naturalny",
+  },
+  {
+    id: 6,
+    name: "Miód faceliowy",
+    description: "Naturalny miód z lokalnej pasieki.",
+    weight: "0,4 kg",
+    price: 20,
+    image: MiodFaceliowy,
+    badge: "Naturalny",
+  },
+  {
+    id: 7,
+    name: "Miód wielokwiatowy",
+    description: "Naturalny miód z lokalnej pasieki.",
+    weight: "0,4 kg",
+    price: 20,
+    image: NaturalMiod,
+    badge: "Naturalny",
+  },
+  {
+    id: 8,
+    name: "Miód lipowy",
+    description: "Naturalny miód z lokalnej pasieki.",
+    weight: "0,4 kg",
+    price: 20,
+    image: NaturalMiod,
+    badge: "Naturalny",
+  },
+  {
+    id: 9,
+    name: "Ziołomiód",
+    description: "Mięta, pokrzywa, wrotycz.",
+    weight: "0,4 kg",
+    price: 15,
+    image: NaturalMiod,
+    badge: "Naturalny",
+  },
+  {
+    id: 10,
+    name: "Pyłek pszczeli",
+    description: "Pyłek pszczeli z lokalnej pasieki.",
+    weight: "0,5 kg",
+    price: 30,
+    image: MiodPiwnica,
+    badge: "Produkt pszczeli",
+  },
+  {
+    id: 11,
+    name: "Zestaw prezentowy",
+    description: "3 rodzaje miodu po 0,38 kg w ozdobnym kartoniku.",
+    weight: "3 × 0,38 kg",
+    price: 50,
+    image: MiodPiwnica,
+    badge: "Prezent",
+  },
+  {
+    id: 12,
+    name: "Zestaw prezentowy",
+    description: "2 rodzaje miodu po 0,38 kg i 200 g pyłku pszczelego w ozdobnym kartoniku.",
+    weight: "2 × 0,38 kg + 200 g",
+    price: 50,
+    image: MiodPiwnica,
+    badge: "Prezent",
+  },
+  {
+    id: 13,
+    name: "Kartonik prezentowy",
+    description: "Duży lub średni słoik można zapakować w ozdobny kartonik.",
+    weight: "1 szt.",
+    price: 5,
+    image: MiodPiwnica,
+    badge: "Dodatek",
   },
 ];
+
+
+function handleOrderSubmit(event, cartItems, cartTotal) {
+  event.preventDefault();
+
+  const formData = new FormData(event.currentTarget);
+  const name = formData.get("name").trim();
+  const delivery = formData.get("delivery");
+  const notes = formData.get("notes").trim();
+  const order = cartItems.map(({ product, quantity }) =>
+    `${quantity} × ${product.name} (${product.weight}) - ${product.price * quantity} zł`
+  ).join("\n");
+  const message = [
+    "Dzień dobry, składam zamówienie:",
+    `Imię: ${name}`,
+    "",
+    order,
+    `Suma produktów: ${cartTotal} zł`,
+    "",
+    `Sposób odbioru: ${delivery}`,
+    notes ? `Uwagi do zamówienia: ${notes}` : "",
+  ].filter(Boolean).join("\n");
+
+  window.open(
+    `https://wa.me/48571092031?text=${encodeURIComponent(message)}`,
+    "_blank",
+    "noopener,noreferrer",
+  );
+}
 
 
 // Main application component.
 // Główny komponent aplikacji.
 function App() {
+  const [cart, setCart] = useState({});
+  const cartItems = products
+    .filter((product) => cart[product.id] > 0)
+    .map((product) => ({ product, quantity: cart[product.id] }));
+  const cartQuantity = cartItems.reduce((total, item) => total + item.quantity, 0);
+  const cartTotal = cartItems.reduce(
+    (total, item) => total + item.product.price * item.quantity,
+    0,
+  );
+
+  function updateCart(productId, value) {
+    const quantity = Math.max(0, Math.floor(Number(value) || 0));
+
+    setCart((currentCart) => {
+      const nextCart = { ...currentCart };
+
+      if (quantity === 0) {
+        delete nextCart[productId];
+      } else {
+        nextCart[productId] = quantity;
+      }
+
+      return nextCart;
+    });
+  }
+
   // Return the complete website.
 // Zwracamy kompletną stronę internetową.
   return (
@@ -221,19 +336,6 @@ function App() {
               />
 
 
-              {/* Small floating information card.
-// Mała pływająca karta informacyjna. */}
-              <div className="floating-card">
-
-                <span>🍯</span>
-
-                <div>
-                  <small>Nasza pasieka</small>
-                  <strong>Złotkowo</strong>
-                </div>
-
-              </div>
-
             </div>
 
           </div>
@@ -288,13 +390,13 @@ function App() {
 
                   <img
                     src={product.image}
-                    alt={product.name}
+                    alt=""
                     className="product-image"
                   />
 
 
                   <span className="product-badge">
-                    Naturalny
+                    {product.badge}
                   </span>
 
                 </div>
@@ -325,14 +427,20 @@ function App() {
                   <div className="product-footer">
 
                     <strong>
-                      {product.price}
+                      {product.price} zł
                     </strong>
 
-
-                    <a href="#kontakt">
-                      Zamów
-                      <span>↗</span>
-                    </a>
+                    <label className="product-quantity">
+                      Ilość
+                      <input
+                        type="number"
+                        min="0"
+                        step="1"
+                        value={cart[product.id] ?? 0}
+                        aria-label={`Liczba sztuk: ${product.name}, ${product.weight}`}
+                        onChange={(event) => updateCart(product.id, event.target.value)}
+                      />
+                    </label>
 
                   </div>
 
@@ -471,7 +579,7 @@ function App() {
 
         <section className="contact-section" id="kontakt">
 
-          <div>
+          <div className="contact-copy">
 
             <p className="eyebrow">
               ZAMÓWIENIA
@@ -485,20 +593,93 @@ function App() {
 
 
             <p>
-              Napisz do nas, aby dowiedzieć się więcej o dostępnych
-              miodach i aktualnych partiach produkcyjnych.
+              Po kliknięciu otworzy się WhatsApp z gotową treścią zamówienia.
+              Wyślij wiadomość, a wkrótce potwierdzimy szczegóły i przekażemy
+              informacje o płatności.
             </p>
 
           </div>
 
 
-          <a
-            href="mailto:kontakt@example.com"
-            className="button button-dark"
+          <form
+            className="contact-form"
+            onSubmit={(event) => handleOrderSubmit(event, cartItems, cartTotal)}
           >
-            Napisz do nas
-            <span>↗</span>
-          </a>
+            <div className="cart-summary" aria-live="polite">
+              <div className="cart-summary-heading">
+                <h3>Twój koszyk</h3>
+                <span>{cartQuantity} szt.</span>
+              </div>
+
+              {cartItems.length > 0 ? (
+                <>
+                  <ul className="cart-items">
+                    {cartItems.map(({ product, quantity }) => (
+                      <li key={product.id}>
+                        <span>{quantity} × {product.name} ({product.weight})</span>
+                        <strong>{product.price * quantity} zł</strong>
+                      </li>
+                    ))}
+                  </ul>
+                  <p className="cart-total">Suma produktów: {cartTotal} zł</p>
+                </>
+              ) : (
+                <p className="cart-empty">Koszyk jest pusty.</p>
+              )}
+            </div>
+
+            <label className="form-field" htmlFor="name">
+              Imię
+              <input
+                id="name"
+                name="name"
+                type="text"
+                autoComplete="given-name"
+                placeholder="Twoje imię"
+                required
+              />
+            </label>
+
+            <fieldset className="delivery-options">
+              <legend>Sposób odbioru zamówienia *</legend>
+              <label>
+                <input
+                  type="radio"
+                  name="delivery"
+                  value="Odbiór osobisty - Złotkowo, ul. Lipowa 20"
+                  required
+                />
+                Odbiór osobisty - Złotkowo, ul. Lipowa 20
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="delivery"
+                  value="Inny - do ustalenia telefonicznie"
+                />
+                Inny - do ustalenia telefonicznie - <a href="tel:+48698095824">698 095 824</a>
+              </label>
+            </fieldset>
+
+            <label className="form-field" htmlFor="notes">
+              Uwagi do zamówienia
+              <textarea
+                id="notes"
+                name="notes"
+                placeholder="Wpisz, które słoiki zapakować w ozdobne kartoniki (5 zł/szt.)."
+                rows="3"
+              />
+            </label>
+
+            <button
+              className="button button-dark form-submit"
+              type="submit"
+              disabled={cartItems.length === 0}
+            >
+              Zamów przez WhatsApp
+              <span>↗</span>
+            </button>
+          </form>
 
         </section>
 

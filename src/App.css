@@ -391,62 +391,6 @@ img {
 }
 
 
-/* Create the floating card over the image. */
-/* Tworzymy pływającą kartę nad obrazem. */
-.floating-card {
-  position: absolute;
-
-  left: -35px;
-
-  bottom: 35px;
-
-  background: rgba(255, 253, 248, 0.95);
-
-  backdrop-filter: blur(12px);
-
-  padding: 16px 20px;
-
-  border-radius: 18px;
-
-  display: flex;
-
-  align-items: center;
-
-  gap: 12px;
-
-  box-shadow: 0 15px 40px rgba(44, 36, 27, 0.12);
-}
-
-
-/* Style the floating card icon. */
-/* Stylizujemy ikonę pływającej karty. */
-.floating-card > span {
-  font-size: 25px;
-}
-
-
-/* Style the floating card label. */
-/* Stylizujemy małą etykietę pływającej karty. */
-.floating-card small {
-  display: block;
-
-  color: var(--brown-light);
-
-  font-size: 10px;
-}
-
-
-/* Style the floating card title. */
-/* Stylizujemy tytuł pływającej karty. */
-.floating-card strong {
-  display: block;
-
-  font-family: "Playfair Display", serif;
-
-  font-size: 17px;
-}
-
-
 /* =========================
    PRODUCTS
    PRODUKTY
@@ -675,12 +619,111 @@ img {
 }
 
 
-/* Style the product action link. */
-/* Stylizujemy link akcji produktu. */
-.product-footer a {
+/* Style the product quantity selector. */
+/* Stylizujemy wybór ilości produktu. */
+.product-quantity {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
   font-size: 13px;
 
   font-weight: 700;
+}
+
+
+.product-quantity input {
+  width: 76px;
+
+  height: 42px;
+
+  padding: 8px 10px;
+
+  border: 1px solid var(--border);
+
+  border-radius: 6px;
+
+  background: var(--white);
+
+  color: var(--brown);
+
+  font: inherit;
+}
+
+
+.cart-summary {
+  padding-bottom: 20px;
+
+  border-bottom: 1px solid var(--border);
+}
+
+
+.cart-summary-heading {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+}
+
+
+.cart-summary-heading h3 {
+  font-family: "Playfair Display", serif;
+
+  font-size: 22px;
+
+  font-weight: 500;
+}
+
+
+.cart-summary-heading > span,
+.cart-empty {
+  color: var(--brown-light);
+
+  font-size: 13px;
+}
+
+
+.cart-items {
+  margin-top: 12px;
+
+  list-style: none;
+}
+
+
+.cart-items li {
+  display: flex;
+
+  justify-content: space-between;
+
+  gap: 16px;
+
+  padding: 12px 0;
+
+  border-bottom: 1px solid var(--border);
+
+  font-size: 14px;
+}
+
+
+.cart-items li strong {
+  white-space: nowrap;
+}
+
+
+.cart-total {
+  margin-top: 16px;
+
+  text-align: right;
+
+  font-weight: 700;
+}
+
+
+.cart-empty {
+  margin-top: 12px;
 }
 
 
@@ -800,11 +843,11 @@ img {
 
   background: var(--honey-light);
 
-  display: flex;
+  display: grid;
 
-  align-items: center;
+  grid-template-columns: 1fr 1.1fr;
 
-  justify-content: space-between;
+  align-items: start;
 
   gap: 50px;
 }
@@ -812,12 +855,130 @@ img {
 
 /* Style the contact description. */
 /* Stylizujemy opis kontaktu. */
-.contact-section > div > p:last-child {
+.contact-copy > p:last-child {
   margin-top: 20px;
 
   max-width: 500px;
 
   color: rgba(44, 36, 27, 0.75);
+}
+
+
+.contact-form {
+  display: grid;
+
+  gap: 18px;
+}
+
+
+.form-field {
+  display: grid;
+
+  gap: 8px;
+
+  font-size: 13px;
+
+  font-weight: 700;
+}
+
+
+.form-field textarea,
+.form-field input[type="text"] {
+  width: 100%;
+
+  padding: 13px 15px;
+
+  border: 1px solid var(--border);
+
+  border-radius: 8px;
+
+  background: var(--white);
+
+  color: var(--brown);
+
+  font: inherit;
+
+  font-weight: 400;
+}
+
+
+.form-field textarea {
+  min-height: 100px;
+
+  resize: vertical;
+}
+
+
+.form-field textarea::placeholder,
+.form-field input::placeholder {
+  color: var(--brown-light);
+
+  opacity: 0.8;
+}
+
+
+.delivery-options {
+  display: grid;
+
+  gap: 12px;
+
+  padding: 16px;
+
+  border: 1px solid var(--border);
+
+  border-radius: 8px;
+}
+
+
+.delivery-options legend {
+  padding: 0 6px;
+
+  font-size: 13px;
+
+  font-weight: 700;
+}
+
+
+.delivery-options label {
+  display: flex;
+
+  align-items: flex-start;
+
+  gap: 9px;
+
+  font-size: 13px;
+}
+
+
+.delivery-options input {
+  margin-top: 4px;
+
+  accent-color: var(--brown);
+}
+
+
+.delivery-options a {
+  text-decoration: underline;
+}
+
+
+.form-submit {
+  justify-self: start;
+
+  border: 0;
+
+  cursor: pointer;
+
+  font: inherit;
+
+  font-size: 13px;
+}
+
+
+.form-submit:disabled {
+  cursor: not-allowed;
+
+  opacity: 0.55;
 }
 
 
@@ -895,9 +1056,7 @@ img {
   /* Stack the contact section vertically. */
   /* Układamy sekcję kontaktową pionowo. */
   .contact-section {
-    align-items: flex-start;
-
-    flex-direction: column;
+    grid-template-columns: 1fr;
   }
 }
 
@@ -963,15 +1122,6 @@ img {
   /* Zmniejszamy wysokość zdjęcia hero. */
   .hero-image {
     height: 430px;
-  }
-
-
-  /* Move floating card inside the image. */
-  /* Przesuwamy pływającą kartę do wnętrza obrazu. */
-  .floating-card {
-    left: 15px;
-
-    bottom: 15px;
   }
 
 
