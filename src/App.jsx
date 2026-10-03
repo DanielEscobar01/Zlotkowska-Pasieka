@@ -316,20 +316,24 @@ function handleOrderSubmit(event, cartItems, cartTotal) {
   // Kodujemy polskie znaki i podziały wierszy dla obu adresów.
   const encodedMessage = encodeURIComponent(message);
 
-  // Choose the WhatsApp chat or the phone's SMS composer.
-  // Wybieramy czat WhatsApp albo aplikację SMS w telefonie.
-  const smsSeparator = /iPad|iPhone|iPod/.test(navigator.userAgent) ? "&" : "?";
+  // Build the SMS URL using Apple's body separator on iOS devices.
+  // Tworzymy adres SMS z separatorem body wymaganym przez urządzenia Apple.
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
+    || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  const smsSeparator = isIOS ? "&" : "?";
+  const smsUrl = `sms:+48604117492${smsSeparator}body=${encodedMessage}`;
+
+  // Prepare the URL for the selected messaging channel.
+  // Przygotowujemy adres wybranego kanału wiadomości.
   const messageUrl = channel === "sms"
-    ? `sms:+48604117492${smsSeparator}body=${encodedMessage}`
+    ? smsUrl
     : `https://wa.me/48604117492?text=${encodedMessage}`;
 
-  // Open the selected app with the order ready for the customer to send.
-  // Otwieramy wybraną aplikację z zamówieniem gotowym do wysłania.
-  window.open(messageUrl, "_blank", "noopener,noreferrer");
-
-  // Clear the form; the customer still needs to tap Send in the messaging app.
-  // Czyścimy formularz; klient musi jeszcze nacisnąć Wyślij w aplikacji.
+  // Clear the form and return the channel URL to the submit handler.
+  // Czyścimy formularz i przekazujemy adres do obsługi wysyłania.
   event.currentTarget.reset();
+
+  return { channel, messageUrl };
 }
 
 
@@ -573,11 +577,21 @@ function App() {
   // Open WhatsApp, reset the completed order, and return to the home route.
   // Otwieramy WhatsApp, czyścimy zakończone zamówienie i wracamy na stronę główną.
   function submitOrder(event) {
-    handleOrderSubmit(event, cartItems, cartTotal);
+    const preparedMessage = handleOrderSubmit(event, cartItems, cartTotal);
     setCart({});
     setCartOpen(false);
     setOrderNotice(true);
     navigate("/");
+
+    if (preparedMessage.channel === "sms") {
+      // Hand off directly to iOS Messages or the Android SMS composer.
+      // Przekazujemy wiadomość do iOS Messages lub aplikacji SMS na Androidzie.
+      window.location.assign(preparedMessage.messageUrl);
+    } else {
+      // Open WhatsApp in a new tab with the same prepared order.
+      // Otwieramy WhatsApp w nowej karcie z tym samym zamówieniem.
+      window.open(preparedMessage.messageUrl, "_blank", "noopener,noreferrer");
+    }
   }
 
   // Collapse the full navigation after the user starts scrolling.
@@ -696,9 +710,13 @@ function App() {
 
       {orderNotice && (
         <div className="order-notice" role="status" aria-live="polite">
+          <span className="order-notice-icon" aria-hidden="true">✓</span>
           <p>
-            Wiadomość jest przygotowana w wybranej aplikacji. Naciśnij Wyślij,
-            aby złożyć zamówienie. Koszyk został wyczyszczony.
+            <strong>Dziękujemy za zainteresowanie!</strong>
+            <br />
+            Wiadomość jest gotowa w wybranej aplikacji. Naciśnij „Wyślij”, aby
+            do nas napisać. Wkrótce odpowiemy i potwierdzimy szczegóły zamówienia.
+            Koszyk został wyczyszczony.
           </p>
           <button
             type="button"
@@ -973,6 +991,10 @@ function App() {
               <span>↗</span>
             </a>
 
+            <a className="contact-phone-link" href="tel:+48604117492">
+              Szybka informacja? Zadzwoń: +48 604 117 492
+            </a>
+
             <button
               type="button"
               className="button button-dark contact-order-button"
@@ -1136,6 +1158,9 @@ function App() {
             <p className="eyebrow">ODBIÓR OSOBISTY</p>
             <h2 id="map-heading">Jak do nas trafić?</h2>
             <p>Złotkowo k. Poznania, ul. Lipowa 20</p>
+            <a className="map-phone-link" href="tel:+48604117492">
+              Szybki kontakt: +48 604 117 492
+            </a>
             <a
               className="button button-dark map-link"
               href="https://www.google.com/maps/dir/?api=1&destination=Z%C5%82otkowo%2C%20ul.%20Lipowa%2020%2C%20Polska"
