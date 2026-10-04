@@ -27,7 +27,7 @@ export const translations = {
     },
     notice: {
       title: "Dziękujemy za zainteresowanie!",
-      body: "Wiadomość jest gotowa w wybranej aplikacji. Naciśnij „Wyślij”, aby do nas napisać. Wkrótce odpowiemy i potwierdzimy szczegóły zamówienia. Koszyk został wyczyszczony.",
+      body: "Po wysłaniu wiadomości przez WhatsApp lub SMS skontaktujemy się z Tobą, aby ustalić odbiór lub wysyłkę zgodnie z wybraną opcją. Koszyk został wyczyszczony.",
       close: "Zamknij komunikat",
     },
     hero: {
@@ -170,7 +170,7 @@ export const translations = {
     },
     notice: {
       title: "Thanks so much!",
-      body: "Your message is ready – just tap “Send” in the app and it's on its way to us. We'll get back to you soon to sort out the details. Your cart is now empty.",
+      body: "Once you've sent the message on WhatsApp or by text, our team will get in touch to arrange delivery the way you chose. Your cart is now empty.",
       close: "Close",
     },
     hero: {
@@ -313,7 +313,7 @@ export const translations = {
     },
     notice: {
       title: "Щиро дякуємо!",
-      body: "Повідомлення вже готове — просто натисніть «Надіслати» в застосунку, і воно прийде до нас. Ми скоро відповімо й домовимося про деталі. Кошик тепер порожній.",
+      body: "Щойно ви надішлете повідомлення у WhatsApp чи SMS, наша команда зв'яжеться з вами, щоб домовитися про отримання обраним способом. Кошик тепер порожній.",
       close: "Закрити",
     },
     hero: {
@@ -456,7 +456,7 @@ export const translations = {
     },
     notice: {
       title: "¡Muchas gracias!",
-      body: "Tu mensaje ya está listo: solo pulsa «Enviar» en la aplicación y nos llegará. Te responderemos pronto para concretar los detalles. Tu carrito ya está vacío.",
+      body: "Una vez que envíes el mensaje por WhatsApp o SMS, nuestro equipo se pondrá en contacto contigo para coordinar la entrega según el método que elegiste. Tu carrito ya está vacío.",
       close: "Cerrar",
     },
     hero: {
