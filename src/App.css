@@ -87,6 +87,21 @@ img {
 }
 
 
+/* Match the home hero's gap below the navbar on the other pages. */
+.site.page-products .page-main,
+.site.page-apiary .page-main {
+  padding-top: 56px;
+}
+
+
+@media (max-width: 900px) {
+  .site.page-products .page-main,
+  .site.page-apiary .page-main {
+    padding-top: 48px;
+  }
+}
+
+
 /* =========================
    NAVIGATION
    NAWIGACJA
