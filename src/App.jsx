@@ -689,6 +689,7 @@ function App() {
             alt="Złotkowska Pasieka"
             className="brand-logo"
           />
+          <span className="brand-since">{t.nav.since}</span>
 
         </Link>
 

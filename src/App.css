@@ -132,8 +132,26 @@ img {
 .brand {
   display: flex;
   align-items: center;
+  gap: 14px;
 
   flex-shrink: 0;
+}
+
+
+.brand-since {
+  padding-left: 14px;
+
+  border-left: 1px solid var(--border);
+
+  color: var(--brown-light);
+
+  font-family: "Playfair Display", serif;
+
+  font-size: 16px;
+
+  font-style: italic;
+
+  white-space: nowrap;
 }
 
 
@@ -2215,6 +2233,12 @@ main > section[id] {
   /* Zmniejszamy logo na telefonach. */
   .brand-logo {
     height: 62px;
+  }
+
+
+  /* No room beside the logo on phones; the hero eyebrow still says "since 1977". */
+  .brand-since {
+    display: none;
   }
 
 

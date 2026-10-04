@@ -24,6 +24,7 @@ export const translations = {
       openMenu: "Otwórz menu",
       closeMenu: "Zamknij menu",
       language: "Język strony",
+      since: "Od 1977",
     },
     notice: {
       title: "Dziękujemy za zainteresowanie!",
@@ -31,7 +32,7 @@ export const translations = {
       close: "Zamknij komunikat",
     },
     hero: {
-      eyebrow: "RODZINNA PASIEKA · ZŁOTKOWO K. POZNANIA",
+      eyebrow: "RODZINNA PASIEKA OD 1977 · ZŁOTKOWO K. POZNANIA",
       titleA: "Naturalny miód",
       titleB: "z rodzinnej pasieki.",
       description: "Rodzina, pszczoły i praca blisko natury. Nasz miód powstaje w małej pasiece w Złotkowie.",
@@ -88,7 +89,7 @@ export const translations = {
       eyebrow: "NASZA PASIEKA",
       titleA: "Miód, który zaczyna się",
       titleB: "w Złotkowie.",
-      p1: "Złotkowska Pasieka powstała z miłości do pszczół, natury i prostych, prawdziwych produktów.",
+      p1: "Robimy miód od 1977 roku. Złotkowska Pasieka powstała z miłości do pszczół, natury i prostych, prawdziwych produktów.",
       p2: "Nasz miód powstaje w małej, lokalnej pasiece. Pszczoły pracują wśród naturalnych kwiatów, a my dbamy o to, aby każda partia zachowała swój naturalny smak i charakter.",
       p3: "Nie jesteśmy przemysłową produkcją. Pracujemy w ograniczonych ilościach, bez chemicznych dodatków i bez masowej produkcji. Każdy słoik powstaje z troską i szacunkiem dla natury.",
       link: "Zobacz nasze miody",
@@ -153,7 +154,7 @@ export const translations = {
       sms: "Wyślij SMS",
     },
     mobileBar: { label: "Szybkie zamówienie", open: "Otwórz koszyk" },
-    footer: "© 2026 · Złotkowo, Polska",
+    footer: "Od 1977 · Złotkowo, Polska · © 2026",
   },
 
   en: {
@@ -167,6 +168,7 @@ export const translations = {
       openMenu: "Open menu",
       closeMenu: "Close menu",
       language: "Choose language",
+      since: "Since 1977",
     },
     notice: {
       title: "Thanks so much!",
@@ -174,7 +176,7 @@ export const translations = {
       close: "Close",
     },
     hero: {
-      eyebrow: "FAMILY APIARY · ZŁOTKOWO, NEAR POZNAŃ",
+      eyebrow: "FAMILY APIARY SINCE 1977 · ZŁOTKOWO, NEAR POZNAŃ",
       titleA: "Real honey",
       titleB: "from our family's bees.",
       description: "Our family, our bees and a lot of love for nature. We make our honey in a small apiary in Złotkowo.",
@@ -231,7 +233,7 @@ export const translations = {
       eyebrow: "OUR APIARY",
       titleA: "Honey that starts",
       titleB: "in Złotkowo.",
-      p1: "Złotkowska Pasieka grew out of our love for bees, nature and simple, honest food.",
+      p1: "We've been making honey since 1977. Złotkowska Pasieka grew out of our love for bees, nature and simple, honest food.",
       p2: "We keep our bees in a small local apiary. They gather nectar from wild flowers, and we make sure every harvest keeps its natural taste.",
       p3: "We're not a factory. We make small amounts, with no chemicals and no shortcuts – every jar is made with care and respect for nature.",
       link: "See our honey",
@@ -296,7 +298,7 @@ export const translations = {
       sms: "Send by text message",
     },
     mobileBar: { label: "Your order", open: "View cart" },
-    footer: "© 2026 · Złotkowo, Poland",
+    footer: "Since 1977 · Złotkowo, Poland · © 2026",
   },
 
   uk: {
@@ -310,6 +312,7 @@ export const translations = {
       openMenu: "Відкрити меню",
       closeMenu: "Закрити меню",
       language: "Вибрати мову",
+      since: "З 1977 року",
     },
     notice: {
       title: "Щиро дякуємо!",
@@ -317,7 +320,7 @@ export const translations = {
       close: "Закрити",
     },
     hero: {
-      eyebrow: "СІМЕЙНА ПАСІКА · ЗЛОТКОВО, БІЛЯ ПОЗНАНІ",
+      eyebrow: "СІМЕЙНА ПАСІКА З 1977 РОКУ · ЗЛОТКОВО, БІЛЯ ПОЗНАНІ",
       titleA: "Справжній мед",
       titleB: "від наших бджіл.",
       description: "Наша родина, наші бджоли й багато любові до природи. Ми робимо мед на невеликій пасіці у Злоткові.",
@@ -374,7 +377,7 @@ export const translations = {
       eyebrow: "НАША ПАСІКА",
       titleA: "Мед, що народжується",
       titleB: "у Злоткові.",
-      p1: "Złotkowska Pasieka виросла з нашої любові до бджіл, природи та простих, чесних продуктів.",
+      p1: "Ми робимо мед із 1977 року. Złotkowska Pasieka виросла з нашої любові до бджіл, природи та простих, чесних продуктів.",
       p2: "Наші бджоли живуть на невеликій місцевій пасіці. Вони збирають нектар із польових квітів, а ми дбаємо, щоб кожен урожай зберіг свій природний смак.",
       p3: "Ми не фабрика. Робимо небагато, без хімії та без компромісів — кожна баночка зроблена з турботою та повагою до природи.",
       link: "Переглянути мед",
@@ -439,7 +442,7 @@ export const translations = {
       sms: "Надіслати SMS",
     },
     mobileBar: { label: "Ваше замовлення", open: "Переглянути кошик" },
-    footer: "© 2026 · Złotkowo, Польща",
+    footer: "З 1977 року · Złotkowo, Польща · © 2026",
   },
 
   es: {
@@ -453,6 +456,7 @@ export const translations = {
       openMenu: "Abrir menú",
       closeMenu: "Cerrar menú",
       language: "Elegir idioma",
+      since: "Desde 1977",
     },
     notice: {
       title: "¡Muchas gracias!",
@@ -460,7 +464,7 @@ export const translations = {
       close: "Cerrar",
     },
     hero: {
-      eyebrow: "COLMENAR FAMILIAR · ZŁOTKOWO, CERCA DE POZNAŃ",
+      eyebrow: "COLMENAR FAMILIAR DESDE 1977 · ZŁOTKOWO, CERCA DE POZNAŃ",
       titleA: "Miel de verdad",
       titleB: "de nuestras abejas.",
       description: "Nuestra familia, nuestras abejas y mucho cariño por la naturaleza. Hacemos nuestra miel en un pequeño colmenar en Złotkowo.",
@@ -517,7 +521,7 @@ export const translations = {
       eyebrow: "NUESTRO COLMENAR",
       titleA: "Una miel que nace",
       titleB: "en Złotkowo.",
-      p1: "Złotkowska Pasieka nació de nuestro amor por las abejas, la naturaleza y las cosas sencillas y auténticas.",
+      p1: "Hacemos miel desde 1977. Złotkowska Pasieka nació de nuestro amor por las abejas, la naturaleza y las cosas sencillas y auténticas.",
       p2: "Tenemos nuestras abejas en un pequeño colmenar de la zona. Ellas recogen el néctar de las flores del campo y nosotros cuidamos que cada cosecha conserve su sabor natural.",
       p3: "No somos una fábrica. Hacemos poca cantidad, sin químicos y sin atajos: cada frasco está hecho con cariño y respeto por la naturaleza.",
       link: "Ver nuestra miel",
@@ -582,6 +586,6 @@ export const translations = {
       sms: "Enviar por SMS",
     },
     mobileBar: { label: "Tu pedido", open: "Ver carrito" },
-    footer: "© 2026 · Złotkowo, Polonia",
+    footer: "Desde 1977 · Złotkowo, Polonia · © 2026",
   },
 };
