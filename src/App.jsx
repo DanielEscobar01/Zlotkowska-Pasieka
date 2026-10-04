@@ -6,6 +6,7 @@ import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 // Importujemy arkusz stylów używany przez aplikację.
 import "./App.css";
 import { LANGUAGES, LANGUAGE_NAMES_PL, translations } from "./i18n";
+import LanguagePicker from "./LanguagePicker";
 
 // Import the local images from the src/assets folder.
 // Importujemy lokalne obrazy z folderu src/assets.
@@ -711,18 +712,7 @@ function App() {
         </nav>
 
 
-        <select
-          className="language-select"
-          aria-label={t.nav.language}
-          value={lang}
-          onChange={(event) => changeLanguage(event.target.value)}
-        >
-          {LANGUAGES.map((language) => (
-            <option key={language.code} value={language.code} title={language.name}>
-              {language.label}
-            </option>
-          ))}
-        </select>
+        <LanguagePicker lang={lang} onChange={changeLanguage} label={t.nav.language} />
 
 
         {/* Main navigation button.
