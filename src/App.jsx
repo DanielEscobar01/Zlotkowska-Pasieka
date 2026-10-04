@@ -689,7 +689,8 @@ function App() {
             alt="Złotkowska Pasieka"
             className="brand-logo"
           />
-          <span className="brand-since">{t.nav.since}</span>
+          {/* The logo itself already says "OD 1977" in Polish. */}
+          {lang !== "pl" && <span className="brand-since">{t.nav.since}</span>}
 
         </Link>
 
