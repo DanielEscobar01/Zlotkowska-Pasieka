@@ -125,10 +125,9 @@ img {
 /* Style the main logo image. */
 /* Stylizujemy główny obraz logo. */
 .brand-logo {
-  width: 155px;
-  height: auto;
+  width: auto;
+  height: 78px;
 
-  max-height: 65px;
   object-fit: contain;
 }
 
@@ -2099,9 +2098,7 @@ main > section[id] {
   /* Make the logo slightly smaller on phones. */
   /* Zmniejszamy logo na telefonach. */
   .brand-logo {
-    width: 125px;
-
-    max-height: 55px;
+    height: 62px;
   }
 
 

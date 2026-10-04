@@ -10,7 +10,7 @@ import { LANGUAGES, LANGUAGE_NAMES_PL, translations } from "./i18n";
 // Import the local images from the src/assets folder.
 // Importujemy lokalne obrazy z folderu src/assets.
 import MiodPiwnica from "./assets/MiodPiwnica.webp";
-import ZlotkowskaPasiekaLogo from "./assets/ZlotkowskaPasiekaLogo.jpg";
+import ZlotkowskaPasiekaLogo from "./assets/ZlotkowskaPasiekaLogo.webp";
 import HoneyAcaciaFacelia12 from "./assets/MiodAkacjowoFaceliowy1200g.webp";
 import HoneyFacelia038 from "./assets/MiodFaceliowy380g.webp";
 import HoneyFacelia12 from "./assets/MiodFaceliowy1200g.webp";
