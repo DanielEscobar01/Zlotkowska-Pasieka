@@ -511,22 +511,21 @@ function App() {
   const [giftBoxes, setGiftBoxes] = useState({});
   const [selectedVariants, setSelectedVariants] = useState({});
 
-  // Use the saved language, then the browser language, then Polish.
+  // Polish by default; only a language the visitor explicitly picked is remembered.
   const [lang, setLang] = useState(() => {
-    const isSupported = (code) => LANGUAGES.some((language) => language.code === code);
-    const saved = localStorage.getItem("lang");
-    if (isSupported(saved)) {
-      return saved;
-    }
-    const browser = navigator.language.slice(0, 2);
-    return isSupported(browser) ? browser : "pl";
+    const saved = localStorage.getItem("chosenLang");
+    return LANGUAGES.some((language) => language.code === saved) ? saved : "pl";
   });
   const t = translations[lang];
 
   useEffect(() => {
     document.documentElement.lang = lang;
-    localStorage.setItem("lang", lang);
   }, [lang]);
+
+  function changeLanguage(code) {
+    setLang(code);
+    localStorage.setItem("chosenLang", code);
+  }
 
   // Track whether the compact mobile navigation menu is open.
   // Sprawdzamy, czy kompaktowe menu mobilne jest otwarte.
@@ -712,7 +711,7 @@ function App() {
           className="language-select"
           aria-label={t.nav.language}
           value={lang}
-          onChange={(event) => setLang(event.target.value)}
+          onChange={(event) => changeLanguage(event.target.value)}
         >
           {LANGUAGES.map((language) => (
             <option key={language.code} value={language.code} title={language.name}>
