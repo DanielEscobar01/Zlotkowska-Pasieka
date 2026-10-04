@@ -5,149 +5,62 @@ import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 // Import the stylesheet used by the application.
 // Importujemy arkusz stylów używany przez aplikację.
 import "./App.css";
+import { LANGUAGES, LANGUAGE_NAMES_PL, translations } from "./i18n";
 
 // Import the local images from the src/assets folder.
 // Importujemy lokalne obrazy z folderu src/assets.
-import MiodPiwnica from "./assets/MiodPiwnica.jpg";
-import ZlotkowskaPasiekaLogo from "./assets/ZlotkowskaPasiekaLogo.JPG";
-import HoneyAcaciaFacelia12 from "./assets/miod-akacjowo-faceliowy-1-2-kg.jpeg";
-import HoneyFacelia038 from "./assets/miod-faceliowy-0-38-kg.jpeg";
-import HoneyFacelia12 from "./assets/miod-faceliowy-1-2-kg.jpeg";
-import HoneyLinden038 from "./assets/miod-lipowy-0-38-kg.jpeg";
-import HoneyMultifloral038 from "./assets/miod-wielokwiatowy-0-38-kg.jpeg";
-import HoneyRapeseed038 from "./assets/miod-rzepakowy-0-38-kg.jpeg";
-import HoneyRapeseed12 from "./assets/miod-rzepakowy-1-2-kg.jpeg";
-import HerbalHoney038 from "./assets/ziolomiod-0-38-kg.jpeg";
-import BeePollen from "./assets/pylek-pszczeli-0-5-kg.jpg";
-import GiftSetThreeHoneys from "./assets/zestaw-prezentowy-3-miody-0-38-kg.jpg";
-import GiftSetTwoHoneysAndPollen from "./assets/zestaw-prezentowy-2-miody-pylek.jpg";
-import ProcessApiary from "./assets/proces-0-pasieka.jpeg";
-import ProcessHoneyExtraction from "./assets/proces-1-wirowanie-miodu.jpeg";
-import ProcessHoneycombFrames from "./assets/proces-2-plastry-w-ramkach.jpeg";
-import ProcessFilteredHoney from "./assets/proces-4-miod-po-ekstrakcji.jpeg";
-import ProcessFilledJars from "./assets/proces-5-gotowe-sloiki.jpeg";
-import HoneyJarsOnTable from "./assets/sloiki-z-miodem-na-stole.jpeg";
-import HoneyVarieties from "./assets/odmiany-miodu-w-sloikach.jpeg";
-import ProcessPreparedComb from "./assets/proces-3-dojrzaly-plaster.jpeg";
+import MiodPiwnica from "./assets/MiodPiwnica.webp";
+import ZlotkowskaPasiekaLogo from "./assets/ZlotkowskaPasiekaLogo.jpg";
+import HoneyAcaciaFacelia12 from "./assets/MiodAkacjowoFaceliowy1200g.webp";
+import HoneyFacelia038 from "./assets/MiodFaceliowy380g.webp";
+import HoneyFacelia12 from "./assets/MiodFaceliowy1200g.webp";
+import HoneyLinden038 from "./assets/MiodLipowy380g.webp";
+import HoneyMultifloral038 from "./assets/MiodWielokwiatowy380g.webp";
+import HoneyRapeseed038 from "./assets/MiodRzepakowy380g.webp";
+import HoneyRapeseed12 from "./assets/MiodRzepakowy1200g.webp";
+import HerbalHoney038 from "./assets/Ziolomiod380g.webp";
+import BeePollen from "./assets/PylekPszczeli500g.webp";
+import GiftSetThreeHoneys from "./assets/ZestawPrezentowy3Miody380g.webp";
+import GiftSetTwoHoneysAndPollen from "./assets/ZestawPrezentowy2MiodyPylek.webp";
+import ProcessApiary from "./assets/Proces0Pasieka.webp";
+import ProcessHoneyExtraction from "./assets/Proces1WirowanieMiodu.webp";
+import ProcessHoneycombFrames from "./assets/Proces2PlastryWRamkach.webp";
+import ProcessFilteredHoney from "./assets/Proces4MiodPoEkstrakcji.webp";
+import ProcessFilledJars from "./assets/Proces5GotoweSloiki.webp";
+import HoneyJarsOnTable from "./assets/SloikiZMiodemNaStole.webp";
+import HoneyVarieties from "./assets/OdmianyMioduWSloikach.webp";
+import ProcessPreparedComb from "./assets/Proces3DojrzalyPlaster.webp";
 
 
+const GIFT_BOX_PRICE = 5;
+
+
+// Names and descriptions live in i18n.js under products[textKey].
 const products = [
-  {
-    id: 1,
-    name: "Miód rzepakowy",
-    description: "Łagodny smak i jasna barwa. Szybko krystalizuje, tworząc kremową konsystencję, którą łatwo rozsmarować na pieczywie.",
-    weight: "1,2 kg",
-    price: 40,
-    image: HoneyRapeseed12,
-    badge: "Naturalny",
-  },
-  {
-    id: 2,
-    name: "Miód faceliowy",
-    description: "Delikatny, kwiatowy aromat i subtelny smak. Dobra propozycja, jeśli szukasz łagodniejszej alternatywy dla rzepakowego.",
-    weight: "1,2 kg",
-    price: 45,
-    image: HoneyFacelia12,
-    badge: "Naturalny",
-  },
-  {
-    id: 3,
-    name: "Miód akacjowo-faceliowy",
-    description: "Łączy łagodną słodycz akacji z kwiatowym aromatem facelii, tworząc delikatny, zbalansowany smak.",
-    weight: "1,2 kg",
-    price: 45,
-    image: HoneyAcaciaFacelia12,
-    badge: "Naturalny",
-  },
-  {
-    id: 4,
-    name: "Ziołomiód",
-    description: "Wyrazisty, ziołowy aromat mięty, pokrzywy i wrotyczu. Alternatywa dla klasycznych miodów kwiatowych.",
-    weight: "1,2 kg",
-    price: 35,
-    badge: "Naturalny",
-  },
-  {
-    id: 5,
-    name: "Miód rzepakowy",
-    description: "Łagodny smak i jasna barwa. Szybko krystalizuje, tworząc kremową konsystencję, którą łatwo rozsmarować na pieczywie.",
-    weight: "0,4 kg",
-    price: 15,
-    image: HoneyRapeseed038,
-    badge: "Naturalny",
-  },
-  {
-    id: 6,
-    name: "Miód faceliowy",
-    description: "Delikatny, kwiatowy aromat i subtelny smak. Dobra propozycja, jeśli szukasz łagodniejszej alternatywy dla rzepakowego.",
-    weight: "0,4 kg",
-    price: 20,
-    image: HoneyFacelia038,
-    badge: "Naturalny",
-  },
-  {
-    id: 7,
-    name: "Miód wielokwiatowy",
-    description: "Powstaje z nektaru różnych kwiatów, dlatego jego smak i aromat mogą się różnić w zależności od sezonu.",
-    weight: "0,4 kg",
-    price: 20,
-    image: HoneyMultifloral038,
-    badge: "Naturalny",
-  },
-  {
-    id: 8,
-    name: "Miód lipowy",
-    description: "Charakterystyczny, kwiatowy aromat lipy i wyrazistszy smak z delikatną, ziołową nutą.",
-    weight: "0,4 kg",
-    price: 20,
-    image: HoneyLinden038,
-    badge: "Naturalny",
-  },
-  {
-    id: 9,
-    name: "Ziołomiód",
-    description: "Wyrazisty, ziołowy aromat mięty, pokrzywy i wrotyczu. Alternatywa dla klasycznych miodów kwiatowych.",
-    weight: "0,4 kg",
-    price: 15,
-    image: HerbalHoney038,
-    badge: "Naturalny",
-  },
-  {
-    id: 10,
-    name: "Pyłek pszczeli",
-    description: "Ziarnisty produkt pszczeli o kwiatowo-roślinnym smaku. Można dodawać go do jogurtu, owsianki lub koktajlu.",
-    weight: "0,5 kg",
-    price: 30,
-    image: BeePollen,
-    badge: "Produkt pszczeli",
-  },
-  {
-    id: 11,
-    name: "Zestaw prezentowy",
-    description: "Trzy rodzaje miodu po 0,38 kg w ozdobnym kartoniku. Pozwala spróbować różnych odmian.",
-    weight: "3 × 0,38 kg",
-    price: 50,
-    image: GiftSetThreeHoneys,
-    badge: "Prezent",
-  },
-  {
-    id: 12,
-    name: "Zestaw prezentowy",
-    description: "Dwa rodzaje miodu po 0,38 kg oraz 200 g pyłku pszczelego w ozdobnym kartoniku.",
-    weight: "2 × 0,38 kg + 200 g",
-    price: 50,
-    image: GiftSetTwoHoneysAndPollen,
-    badge: "Prezent",
-  },
-  {
-    id: 13,
-    name: "Kartonik prezentowy",
-    description: "Ozdobny kartonik do dużego lub średniego słoika. W uwagach do zamówienia napisz, które słoiki zapakować.",
-    weight: "1 szt.",
-    price: 5,
-    badge: "Dodatek",
-  },
+  { id: 1, textKey: "rapeseed", weight: "1,2 kg", price: 40, image: HoneyRapeseed12, badgeKey: "natural", giftBox: true },
+  { id: 2, textKey: "facelia", weight: "1,2 kg", price: 45, image: HoneyFacelia12, badgeKey: "natural", giftBox: true },
+  { id: 3, textKey: "acaciaFacelia", weight: "1,2 kg", price: 45, image: HoneyAcaciaFacelia12, badgeKey: "natural", giftBox: true },
+  { id: 5, textKey: "rapeseed", weight: "0,4 kg", price: 15, image: HoneyRapeseed038, badgeKey: "natural", giftBox: true },
+  { id: 6, textKey: "facelia", weight: "0,4 kg", price: 20, image: HoneyFacelia038, badgeKey: "natural", giftBox: true },
+  { id: 7, textKey: "multifloral", weight: "0,4 kg", price: 20, image: HoneyMultifloral038, badgeKey: "natural", giftBox: true },
+  { id: 8, textKey: "linden", weight: "0,4 kg", price: 20, image: HoneyLinden038, badgeKey: "natural", giftBox: true },
+  { id: 9, textKey: "herbal", weight: "0,4 kg", price: 15, image: HerbalHoney038, badgeKey: "natural", giftBox: true },
+  { id: 10, textKey: "pollen", weight: "0,5 kg", price: 30, image: BeePollen, badgeKey: "beeProduct" },
+  { id: 11, textKey: "giftSet3", weight: "3 × 0,38 kg", price: 50, image: GiftSetThreeHoneys, badgeKey: "gift" },
+  { id: 12, textKey: "giftSet2", weight: "2 × 0,38 kg + 200 g", price: 50, image: GiftSetTwoHoneysAndPollen, badgeKey: "gift" },
 ];
+
+
+// One card per product; sizes of the same honey become selectable variants (smallest first).
+const productGroups = Object.values(
+  products.reduce((groups, product) => {
+    (groups[product.textKey] ??= []).push(product);
+    return groups;
+  }, {}),
+).map((variants) => {
+  const sorted = [...variants].sort((a, b) => a.price - b.price);
+  return { key: sorted[0].id, variants: sorted };
+});
 
 
 // Show the available photos in the order honey moves from the apiary to finished jars.
@@ -157,12 +70,7 @@ const processSteps = [
     // Match this entry to process-0, the apiary photo.
     // Dopasowujemy etap do zdjęcia proces-0 przedstawiającego pasiekę.
     number: "00",
-    // Name the apiary stage.
-    // Nazywamy etap pasieki.
-    title: "Pasieka",
-    // Explain what happens while bees gather nectar.
-    // Wyjaśniamy, co dzieje się podczas zbierania nektaru przez pszczoły.
-    description: "Pszczoły zbierają nektar, z którego powstaje miód.",
+    textKey: "apiary",
     // Show the apiary photo for this stage.
     // Pokazujemy zdjęcie pasieki dla tego etapu.
     image: ProcessApiary,
@@ -171,12 +79,7 @@ const processSteps = [
     // Match this entry to process-2, the honeycomb frames.
     // Dopasowujemy etap do zdjęcia proces-2 przedstawiającego ramki z plastrami.
     number: "01",
-    // Name the frames containing ripe honey.
-    // Nazywamy etap ramek z dojrzałym miodem.
-    title: "Plastry w ramkach",
-    // Explain that the frames are prepared for extraction.
-    // Wyjaśniamy, że ramki są przygotowywane do miodobrania.
-    description: "Dojrzałe plastry są przygotowywane do miodobrania.",
+    textKey: "frames",
     // Show the honeycomb frames photo for this stage.
     // Pokazujemy zdjęcie ramek z plastrami dla tego etapu.
     image: ProcessHoneycombFrames,
@@ -185,12 +88,7 @@ const processSteps = [
     // Match this entry to the newly added process-3 comb photo.
     // Dopasowujemy etap do nowego zdjęcia proces-3 przedstawiającego plaster.
     number: "02",
-    // Name the comb preparation stage.
-    // Nazywamy etap przygotowania plastrów.
-    title: "Przygotowanie plastrów",
-    // Explain that the combs are checked before extraction.
-    // Wyjaśniamy, że plastry są sprawdzane przed miodobraniem.
-    description: "Sprawdzamy dojrzałe plastry przed rozpoczęciem miodobrania.",
+    textKey: "comb",
     // Show the close-up comb photo for this stage.
     // Pokazujemy zbliżenie plastra dla tego etapu.
     image: ProcessPreparedComb,
@@ -199,12 +97,7 @@ const processSteps = [
     // Match this entry to process-1, the honey extractor photo.
     // Dopasowujemy etap do zdjęcia proces-1 przedstawiającego miodarkę.
     number: "03",
-    // Name the honey extraction stage.
-    // Nazywamy etap pozyskiwania miodu.
-    title: "Miodobranie",
-    // Explain that honey is separated from the combs.
-    // Wyjaśniamy, że miód jest oddzielany od plastrów.
-    description: "Miód jest oddzielany od plastrów w miodarce.",
+    textKey: "extraction",
     // Show the extractor photo for this stage.
     // Pokazujemy zdjęcie miodarki dla tego etapu.
     image: ProcessHoneyExtraction,
@@ -213,12 +106,7 @@ const processSteps = [
     // Identify the fourth process step.
     // Określamy numer czwartego etapu procesu.
     number: "04",
-    // Name the honey collected after extraction.
-    // Nazywamy etap zebranego miodu po ekstrakcji.
-    title: "Świeży miód",
-    // Explain that the honey is prepared for the next stage.
-    // Wyjaśniamy, że miód jest przygotowywany do kolejnego etapu.
-    description: "Zebrany miód trafia do dalszego przygotowania.",
+    textKey: "fresh",
     // Show the collected honey photo for this stage.
     // Pokazujemy zdjęcie zebranego miodu dla tego etapu.
     image: ProcessFilteredHoney,
@@ -227,12 +115,7 @@ const processSteps = [
     // Identify the fifth process step.
     // Określamy numer piątego etapu procesu.
     number: "05",
-    // Name the finished jars.
-    // Nazywamy etap gotowych słoików.
-    title: "Gotowe słoiki",
-    // Explain that jars are prepared for customer pickup.
-    // Wyjaśniamy, że słoiki są przygotowywane do odbioru.
-    description: "Miód jest rozlewany i przygotowywany do odbioru.",
+    textKey: "jars",
     // Show the finished jars photo for this stage.
     // Pokazujemy zdjęcie gotowych słoików dla tego etapu.
     image: ProcessFilledJars,
@@ -242,7 +125,7 @@ const processSteps = [
 
 // Open a prepared WhatsApp order after the customer submits the form.
 // Otwieramy przygotowane zamówienie w WhatsApp po wysłaniu formularza.
-function handleOrderSubmit(event, cartItems, cartTotal) {
+function handleOrderSubmit(event, cartItems, cartTotal, lang) {
   // Prevent the browser from reloading the page when the form is submitted.
   // Zapobiegamy ponownemu załadowaniu strony po wysłaniu formularza.
   event.preventDefault();
@@ -259,6 +142,14 @@ function handleOrderSubmit(event, cartItems, cartTotal) {
   // Pobieramy wybraną opcję odbioru lub wysyłki.
   const delivery = formData.get("delivery");
 
+  // Build a Polish-format address block only for shipping orders.
+  const address = delivery === "shipping"
+    ? [
+      `${formData.get("street").trim()}${formData.get("apartment").trim() ? ` m. ${formData.get("apartment").trim()}` : ""}`,
+      `${formData.get("postalCode").trim()} ${formData.get("city").trim()}`,
+    ]
+    : [];
+
   // Read extra instructions, such as which jars need gift boxes.
   // Odczytujemy dodatkowe uwagi, na przykład które słoiki zapakować na prezent.
   const notes = formData.get("notes").trim();
@@ -269,9 +160,13 @@ function handleOrderSubmit(event, cartItems, cartTotal) {
 
   // Convert each cart row into a product line with its quantity and cost.
   // Zamieniamy każdy produkt z koszyka na wiersz z ilością i kosztem.
-  const order = cartItems.map(({ product, quantity }) =>
-    `${quantity} × ${product.name} (${product.weight}) - ${product.price * quantity} zł`
+  // The beekeeper only reads Polish, so the order always uses Polish product names.
+  const pl = translations.pl;
+  const order = cartItems.map(({ product, quantity, giftBoxCount, lineTotal }) =>
+    `${quantity} × ${pl.products[product.textKey].name} (${product.weight})${giftBoxCount ? `, w tym ${giftBoxCount} w kartoniku prezentowym` : ""} - ${lineTotal} zł`
   ).join("\n");
+
+  const customerLanguage = LANGUAGE_NAMES_PL[lang];
 
   // Build the order text that the selected messaging app will open.
   // Tworzymy treść zamówienia, którą otworzy wybrana aplikacja.
@@ -279,6 +174,10 @@ function handleOrderSubmit(event, cartItems, cartTotal) {
     // Start with a short greeting and order confirmation.
     // Zaczynamy od krótkiego powitania i informacji o zamówieniu.
     "Dzień dobry, składam zamówienie:",
+
+    customerLanguage
+      ? `⚠️ Uwaga: klient korzysta ze strony w języku: ${customerLanguage.name}. Imię i uwagi mogą być w tym języku. Odpowiedz ${customerLanguage.reply}, np. z pomocą Tłumacza Google.`
+      : "",
 
     // Include the customer's name so the apiary knows who is ordering.
     // Dodajemy imię klienta, aby pasieka wiedziała, kto składa zamówienie.
@@ -302,7 +201,9 @@ function handleOrderSubmit(event, cartItems, cartTotal) {
 
     // Include the chosen pickup or shipping method.
     // Dodajemy wybrany sposób odbioru lub wysyłki.
-    `Sposób odbioru: ${delivery}`,
+    `Sposób odbioru: ${delivery === "shipping" ? "Wysyłka InPost" : "Odbiór osobisty: Złotkowo, ul. Lipowa 20"}`,
+
+    address.length ? `Adres dostawy:\n${address.join("\n")}` : "",
 
     // Include notes only when the customer entered them.
     // Dodajemy uwagi tylko wtedy, gdy klient je wpisał.
@@ -337,24 +238,67 @@ function handleOrderSubmit(event, cartItems, cartTotal) {
 }
 
 
+function Stepper({ label, value, max = Infinity, onChange, className = "", t }) {
+  return (
+    <div className={`quantity-control ${className}`} role="group" aria-label={label}>
+      <button
+        type="button"
+        className="quantity-button"
+        aria-label={`${t.product.decrease}: ${label}`}
+        disabled={value <= 0}
+        onClick={() => onChange(value - 1)}
+      >
+        −
+      </button>
+      <output className="quantity-value" aria-live="polite">
+        {value}
+      </output>
+      <button
+        type="button"
+        className="quantity-button"
+        aria-label={`${t.product.increase}: ${label}`}
+        disabled={value >= max}
+        onClick={() => onChange(value + 1)}
+      >
+        +
+      </button>
+    </div>
+  );
+}
+
+
+// Keep Polish postal codes in the 00-000 format while the customer types.
+function formatPostalCode(event) {
+  const digits = event.target.value.replace(/\D/g, "").slice(0, 5);
+  event.target.value = digits.length > 2 ? `${digits.slice(0, 2)}-${digits.slice(2)}` : digits;
+}
+
+
 // Render the editable basket and order form inside the checkout drawer.
 // Wyświetlamy edytowalny koszyk i formularz zamówienia w wysuwanym panelu.
-function CheckoutPanel({ cartItems, cartQuantity, cartTotal, updateCart, onSubmitOrder }) {
+function CheckoutPanel({ cartItems, cartQuantity, cartTotal, updateCart, updateGiftBoxes, onSubmitOrder, t }) {
+  const [delivery, setDelivery] = useState("");
+  const c = t.checkout;
+
   return (
     <form
       className="contact-form checkout-form"
       onSubmit={onSubmitOrder}
+      onReset={() => setDelivery("")}
     >
       <div className="cart-summary" aria-live="polite">
         <div className="cart-summary-heading">
-          <h3>Twój koszyk</h3>
-          <span>{cartQuantity} szt.</span>
+          <h3>{c.yourCart}</h3>
+          <span>{cartQuantity} {c.pcs}</span>
         </div>
 
         {cartItems.length > 0 ? (
           <>
             <ul className="cart-items">
-              {cartItems.map(({ product, quantity }) => (
+              {cartItems.map(({ product, quantity, giftBoxCount, lineTotal }) => {
+                const productName = `${t.products[product.textKey].name}, ${product.weight}`;
+
+                return (
                 <li key={product.id} className="cart-item">
                   {product.image ? (
                     <img
@@ -365,100 +309,153 @@ function CheckoutPanel({ cartItems, cartQuantity, cartTotal, updateCart, onSubmi
                     />
                   ) : (
                     <span className="cart-item-image cart-item-image-placeholder">
-                      Brak zdjęcia
+                      {c.noPhoto}
                     </span>
                   )}
                   <div className="cart-item-info">
-                    <span>{product.name} ({product.weight})</span>
-                    <strong>{product.price * quantity} zł</strong>
+                    <span>{t.products[product.textKey].name} ({product.weight})</span>
+                    {product.giftBox && (
+                      <div className="gift-box-row">
+                        <span>{c.giftBox(GIFT_BOX_PRICE)}</span>
+                        <Stepper
+                          label={`${t.product.giftBoxes}: ${productName}`}
+                          value={giftBoxCount}
+                          max={quantity}
+                          onChange={(value) => updateGiftBoxes(product.id, value)}
+                          className="small-quantity-control"
+                          t={t}
+                        />
+                      </div>
+                    )}
+                    <strong>{lineTotal} zł</strong>
                   </div>
                   <div className="cart-item-controls">
-                    <div
-                      className="quantity-control cart-quantity-control"
-                      role="group"
-                      aria-label={`Liczba sztuk: ${product.name}, ${product.weight}`}
-                    >
-                      <button
-                        type="button"
-                        className="quantity-button"
-                        aria-label={`Zmniejsz ilość: ${product.name}, ${product.weight}`}
-                        onClick={() => updateCart(product.id, quantity - 1)}
-                      >
-                        −
-                      </button>
-                      <output className="quantity-value" aria-live="polite">
-                        {quantity}
-                      </output>
-                      <button
-                        type="button"
-                        className="quantity-button"
-                        aria-label={`Zwiększ ilość: ${product.name}, ${product.weight}`}
-                        onClick={() => updateCart(product.id, quantity + 1)}
-                      >
-                        +
-                      </button>
-                    </div>
+                    <Stepper
+                      label={`${t.product.quantity}: ${productName}`}
+                      value={quantity}
+                      onChange={(value) => updateCart(product.id, value)}
+                      className="cart-quantity-control"
+                      t={t}
+                    />
                     <button
                       type="button"
                       className="cart-remove-button"
-                      aria-label={`Usuń z koszyka: ${product.name}, ${product.weight}`}
+                      aria-label={`${c.removeAria}: ${productName}`}
                       onClick={() => updateCart(product.id, 0)}
                     >
-                      Usuń
+                      {c.remove}
                     </button>
                   </div>
                 </li>
-              ))}
+                );
+              })}
             </ul>
-            <p className="cart-total">Koszt produktów: {cartTotal} zł</p>
+            <p className="cart-total">{c.total}: {cartTotal} zł</p>
           </>
         ) : (
-          <p className="cart-empty">Koszyk jest pusty.</p>
+          <p className="cart-empty">{c.empty}</p>
         )}
       </div>
 
       <label className="form-field" htmlFor="name">
-        Imię
+        {c.name}
         <input
           id="name"
           name="name"
           type="text"
           autoComplete="given-name"
-          placeholder="Twoje imię"
+          placeholder={c.namePlaceholder}
           required
         />
       </label>
 
       <fieldset className="delivery-options">
-        <legend>Sposób odbioru zamówienia *</legend>
+        <legend>{c.delivery} *</legend>
         <label>
           <input
             type="radio"
             name="delivery"
-            value="Odbiór osobisty: Złotkowo, ul. Lipowa 20"
+            value="pickup"
             required
+            onChange={(event) => setDelivery(event.target.value)}
           />
-          Odbiór osobisty: Złotkowo, ul. Lipowa 20
+          {c.pickup}
         </label>
         <label>
           <input
             type="radio"
             name="delivery"
-            value="Inny: wysyłka InPost na terenie całej Polski"
+            value="shipping"
+            onChange={(event) => setDelivery(event.target.value)}
           />
-          Inny: wysyłka InPost na terenie całej Polski (dodatkowo płatna). Koszt dostawy ustalimy przez WhatsApp w zależności od wagi i liczby produktów w zamówieniu.
+          {c.shipping}
         </label>
       </fieldset>
 
+      {delivery === "shipping" && (
+        <fieldset className="address-fields">
+          <legend>{c.address} *</legend>
+          <p className="address-note">{c.addressNote}</p>
+          <label className="form-field address-street" htmlFor="street">
+            {c.street}
+            <input
+              id="street"
+              name="street"
+              type="text"
+              autoComplete="address-line1"
+              placeholder={c.streetPlaceholder}
+              required
+            />
+          </label>
+          <label className="form-field" htmlFor="apartment">
+            {c.apartment}
+            <input
+              id="apartment"
+              name="apartment"
+              type="text"
+              autoComplete="address-line2"
+            />
+          </label>
+          <label className="form-field" htmlFor="postalCode">
+            {c.postalCode}
+            <input
+              id="postalCode"
+              name="postalCode"
+              type="text"
+              inputMode="numeric"
+              autoComplete="postal-code"
+              placeholder="00-000"
+              pattern="[0-9]{2}-[0-9]{3}"
+              title={c.postalCodeHint}
+              maxLength={6}
+              onInput={formatPostalCode}
+              required
+            />
+          </label>
+          <label className="form-field" htmlFor="city">
+            {c.city}
+            <input
+              id="city"
+              name="city"
+              type="text"
+              autoComplete="address-level2"
+              required
+            />
+          </label>
+        </fieldset>
+      )}
+
       <label className="form-field" htmlFor="notes">
-        Uwagi do zamówienia
+        {c.notes}
         <textarea
           id="notes"
           name="notes"
-          placeholder="Wpisz, które słoiki zapakować w ozdobne kartoniki (5 zł/szt.)."
+          placeholder={c.notesPlaceholder}
           rows="3"
         />
       </label>
+
+      {c.polishNote && <p className="polish-note">{c.polishNote}</p>}
 
       <div className="order-actions">
         <button
@@ -475,7 +472,7 @@ function CheckoutPanel({ cartItems, cartQuantity, cartTotal, updateCart, onSubmi
           >
             <path fill="currentColor" d={siWhatsapp.path} />
           </svg>
-          Wyślij przez WhatsApp
+          {c.whatsapp}
         </button>
         <button
           className="button button-light form-submit sms-submit"
@@ -484,7 +481,7 @@ function CheckoutPanel({ cartItems, cartQuantity, cartTotal, updateCart, onSubmi
           value="sms"
           disabled={cartItems.length === 0}
         >
-          Wyślij SMS
+          {c.sms}
         </button>
       </div>
     </form>
@@ -511,6 +508,25 @@ function App() {
   // Store the quantity of each product selected by its id.
   // Przechowujemy ilość każdego produktu pod jego identyfikatorem.
   const [cart, setCart] = useState({});
+  const [giftBoxes, setGiftBoxes] = useState({});
+  const [selectedVariants, setSelectedVariants] = useState({});
+
+  // Use the saved language, then the browser language, then Polish.
+  const [lang, setLang] = useState(() => {
+    const isSupported = (code) => LANGUAGES.some((language) => language.code === code);
+    const saved = localStorage.getItem("lang");
+    if (isSupported(saved)) {
+      return saved;
+    }
+    const browser = navigator.language.slice(0, 2);
+    return isSupported(browser) ? browser : "pl";
+  });
+  const t = translations[lang];
+
+  useEffect(() => {
+    document.documentElement.lang = lang;
+    localStorage.setItem("lang", lang);
+  }, [lang]);
 
   // Track whether the compact mobile navigation menu is open.
   // Sprawdzamy, czy kompaktowe menu mobilne jest otwarte.
@@ -527,7 +543,12 @@ function App() {
   // Zostawiamy produkty z ilością większą od zera i przypisujemy im ilość.
   const cartItems = products
     .filter((product) => cart[product.id] > 0)
-    .map((product) => ({ product, quantity: cart[product.id] }));
+    .map((product) => {
+      const quantity = cart[product.id];
+      const giftBoxCount = product.giftBox ? Math.min(giftBoxes[product.id] ?? 0, quantity) : 0;
+      const lineTotal = product.price * quantity + GIFT_BOX_PRICE * giftBoxCount;
+      return { product, quantity, giftBoxCount, lineTotal };
+    });
 
   // Count all individual units currently in the cart.
   // Zliczamy wszystkie sztuki znajdujące się w koszyku.
@@ -535,10 +556,12 @@ function App() {
 
   // Calculate the total product cost, excluding shipping.
   // Obliczamy koszt produktów bez kosztu wysyłki.
-  const cartTotal = cartItems.reduce(
-    (total, item) => total + item.product.price * item.quantity,
-    0,
-  );
+  const cartTotal = cartItems.reduce((total, item) => total + item.lineTotal, 0);
+
+  function updateGiftBoxes(productId, value) {
+    const count = Math.max(0, Math.min(Math.floor(Number(value) || 0), cart[productId] ?? 0));
+    setGiftBoxes((current) => ({ ...current, [productId]: count }));
+  }
 
   function updateCart(productId, value) {
     // Convert the requested quantity to a non-negative whole number.
@@ -572,13 +595,18 @@ function App() {
       // Zwracamy zaktualizowany koszyk, aby React odświeżył zamówienie.
       return nextCart;
     });
+
+    setGiftBoxes((current) => (
+      (current[productId] ?? 0) > quantity ? { ...current, [productId]: quantity } : current
+    ));
   }
 
   // Open WhatsApp, reset the completed order, and return to the home route.
   // Otwieramy WhatsApp, czyścimy zakończone zamówienie i wracamy na stronę główną.
   function submitOrder(event) {
-    const preparedMessage = handleOrderSubmit(event, cartItems, cartTotal);
+    const preparedMessage = handleOrderSubmit(event, cartItems, cartTotal, lang);
     setCart({});
+    setGiftBoxes({});
     setCartOpen(false);
     setOrderNotice(true);
     navigate("/");
@@ -648,7 +676,7 @@ function App() {
 
         {/* Brand link leading to the top of the page.
 // Link marki prowadzący na górę strony. */}
-        <Link to="/" className="brand" aria-label="Strona główna Złotkowskiej Pasieki">
+        <Link to="/" className="brand" aria-label={t.nav.home}>
 
           {/* Real company logo.
 // Prawdziwe logo firmy. */}
@@ -668,16 +696,30 @@ function App() {
           className={`nav-links${mobileMenuOpen ? " is-open" : ""}`}
         >
 
-          <NavLink to="/" end onClick={() => setMobileMenuOpen(false)}>Start</NavLink>
+          <NavLink to="/" end onClick={() => setMobileMenuOpen(false)}>{t.nav.start}</NavLink>
           {/* Link to honey products.
 // Link do produktów z miodem. */}
-          <NavLink to="/miody" onClick={() => setMobileMenuOpen(false)}>Miody</NavLink>
+          <NavLink to="/miody" onClick={() => setMobileMenuOpen(false)}>{t.nav.honeys}</NavLink>
 
           {/* Link to the apiary story.
 // Link do historii pasieki. */}
-          <NavLink to="/pasieka" onClick={() => setMobileMenuOpen(false)}>Nasza pasieka</NavLink>
+          <NavLink to="/pasieka" onClick={() => setMobileMenuOpen(false)}>{t.nav.apiary}</NavLink>
 
         </nav>
+
+
+        <select
+          className="language-select"
+          aria-label={t.nav.language}
+          value={lang}
+          onChange={(event) => setLang(event.target.value)}
+        >
+          {LANGUAGES.map((language) => (
+            <option key={language.code} value={language.code} title={language.name}>
+              {language.label}
+            </option>
+          ))}
+        </select>
 
 
         {/* Main navigation button.
@@ -685,16 +727,16 @@ function App() {
         <button
           type="button"
           className="nav-button cart-nav-button"
-          aria-label={`Przejdź do koszyka, ${cartQuantity} produktów`}
+          aria-label={t.nav.cartAria(cartQuantity)}
           onClick={() => setCartOpen(true)}
         >
-          Koszyk (<span key={cartQuantity} className="cart-count-pop">{cartQuantity}</span>)
+          {t.nav.cart} (<span key={cartQuantity} className="cart-count-pop">{cartQuantity}</span>)
         </button>
 
         <button
           type="button"
           className="mobile-menu-toggle"
-          aria-label={mobileMenuOpen ? "Zamknij menu" : "Otwórz menu"}
+          aria-label={mobileMenuOpen ? t.nav.closeMenu : t.nav.openMenu}
           aria-expanded={mobileMenuOpen}
           aria-controls="main-navigation"
           onClick={() => setMobileMenuOpen((isOpen) => !isOpen)}
@@ -712,15 +754,13 @@ function App() {
         <div className="order-notice" role="status" aria-live="polite">
           <span className="order-notice-icon" aria-hidden="true">✓</span>
           <p>
-            <strong>Dziękujemy za zainteresowanie!</strong>
+            <strong>{t.notice.title}</strong>
             <br />
-            Wiadomość jest gotowa w wybranej aplikacji. Naciśnij „Wyślij”, aby
-            do nas napisać. Wkrótce odpowiemy i potwierdzimy szczegóły zamówienia.
-            Koszyk został wyczyszczony.
+            {t.notice.body}
           </p>
           <button
             type="button"
-            aria-label="Zamknij komunikat"
+            aria-label={t.notice.close}
             onClick={() => setOrderNotice(false)}
           >
             ×
@@ -746,23 +786,22 @@ function App() {
             {/* Location label.
 // Etykieta lokalizacji. */}
             <p className="eyebrow">
-              RODZINNA PASIEKA · ZŁOTKOWO K. POZNANIA
+              {t.hero.eyebrow}
             </p>
 
 
             {/* Main website heading.
 // Główny nagłówek strony. */}
             <h1>
-              Naturalny miód
-              <span>z rodzinnej pasieki.</span>
+              {t.hero.titleA}
+              <span>{t.hero.titleB}</span>
             </h1>
 
 
             {/* Hero description.
 // Opis sekcji hero. */}
             <p className="hero-description">
-              Rodzina, pszczoły i praca blisko natury. Nasz miód powstaje
-              w małej pasiece w Złotkowie.
+              {t.hero.description}
             </p>
 
 
@@ -773,14 +812,14 @@ function App() {
               {/* Main products button.
 // Główny przycisk produktów. */}
               <Link to="/miody" className="button button-dark">
-                Zobacz nasze miody
+                {t.hero.products}
               </Link>
 
 
               {/* Story button.
 // Przycisk historii. */}
               <Link to="/pasieka" className="button button-light">
-                Poznaj naszą historię
+                {t.hero.story}
               </Link>
 
             </div>
@@ -790,7 +829,7 @@ function App() {
 // Małe hasło marki. */}
             <div className="hero-note">
               <span>✦</span>
-              Naturalnie · Lokalnie · Z pasją
+              {t.hero.note}
             </div>
 
           </div>
@@ -806,26 +845,25 @@ function App() {
 
         <section className="home-family-section">
           <div className="home-family-copy">
-            <p className="eyebrow">RODZINNA TRADYCJA</p>
-            <h2>Blisko pszczół. Blisko natury.</h2>
+            <p className="eyebrow">{t.family.eyebrow}</p>
+            <h2>{t.family.title}</h2>
             <p>
-              Każdy słoik zaczyna się od pracy pszczół i rodzinnego zaangażowania.
-              Dbamy o małą skalę, naturalny smak i uczciwe pochodzenie miodu.
+              {t.family.text}
             </p>
             <Link className="text-link" to="/pasieka">
-              Poznaj naszą pasiekę
+              {t.family.link}
               <span>→</span>
             </Link>
           </div>
           <div className="home-family-photos">
             <img
               src={HoneyJarsOnTable}
-              alt="Słoiki miodu przygotowane w pasiece"
+              alt={t.family.altJars}
               loading="lazy"
             />
             <img
               src={HoneyVarieties}
-              alt="Różne odmiany miodu z rodzinnej pasieki"
+              alt={t.family.altVarieties}
               loading="lazy"
             />
           </div>
@@ -838,19 +876,18 @@ function App() {
           <div className="section-heading">
 
             <p className="eyebrow">
-              NASZE MIODY
+              {t.productsSection.eyebrow}
             </p>
 
 
             <h2>
-              Prosto z ula.
-              <span>Bez zbędnych dodatków.</span>
+              {t.productsSection.titleA}
+              <span>{t.productsSection.titleB}</span>
             </h2>
 
 
             <p>
-              Tworzymy miód w małej, lokalnej pasiece.
-              Każdy słoik powstaje z dbałością o naturalny charakter produktu.
+              {t.productsSection.text}
             </p>
 
           </div>
@@ -860,11 +897,15 @@ function App() {
 // Karty produktów. */}
           <div className="product-grid">
 
-            {products.map((product) => (
+            {productGroups.map(({ key, variants }) => {
+              const product = variants.find((variant) => variant.id === selectedVariants[key]) ?? variants[0];
+              const text = t.products[product.textKey];
+
+              return (
 
               <article
                 className="product-card"
-                key={product.id}
+                key={key}
               >
 
                 {/* Product image.
@@ -873,12 +914,12 @@ function App() {
                   <div className="product-image-wrapper">
                     <img
                       src={product.image}
-                      alt={`${product.name}, ${product.weight}`}
+                      alt={`${text.name}, ${product.weight}`}
                       className="product-image"
                       loading="lazy"
                     />
                     <span className="product-badge">
-                      {product.badge}
+                      {t.badges[product.badgeKey]}
                     </span>
                   </div>
                 )}
@@ -891,64 +932,80 @@ function App() {
                   <div className="product-title-row">
 
                     <h3>
-                      {product.name}
+                      {text.name}
                     </h3>
-
-                    <span>
-                      {product.weight}
-                    </span>
 
                   </div>
 
 
                   <p>
-                    {product.description}
+                    {text.description}
                   </p>
 
 
-                  <div className="product-footer">
+                  <ul className="variant-rows">
+                    {variants.map((variant) => {
+                      const quantity = cart[variant.id] ?? 0;
+                      const selectThis = () => setSelectedVariants((current) => ({ ...current, [key]: variant.id }));
 
-                    <strong>
-                      {product.price} zł
-                    </strong>
+                      return (
+                        <li key={variant.id} className="variant-row">
+                          <div className="variant-main">
+                            {variants.length > 1 ? (
+                              <button
+                                type="button"
+                                className="variant-button"
+                                aria-pressed={variant.id === product.id}
+                                aria-label={`${t.product.showPhoto}: ${text.name}, ${variant.weight}`}
+                                onClick={selectThis}
+                              >
+                                {variant.weight}
+                              </button>
+                            ) : (
+                              <span className="variant-button">{variant.weight}</span>
+                            )}
+                            <strong>{variant.price} zł</strong>
+                            <Stepper
+                              label={`${t.product.quantity}: ${text.name}, ${variant.weight}`}
+                              value={quantity}
+                              onChange={(value) => {
+                                selectThis();
+                                updateCart(variant.id, value);
+                              }}
+                              t={t}
+                            />
+                          </div>
 
-                    <div className="product-quantity">
-                      <span>Ilość</span>
-                      <div
-                        className="quantity-control"
-                        role="group"
-                        aria-label={`Liczba sztuk: ${product.name}, ${product.weight}`}
-                      >
-                        <button
-                          type="button"
-                          className="quantity-button"
-                          aria-label={`Zmniejsz ilość: ${product.name}, ${product.weight}`}
-                          disabled={!cart[product.id]}
-                          onClick={() => updateCart(product.id, (cart[product.id] ?? 0) - 1)}
-                        >
-                          −
-                        </button>
-                        <output className="quantity-value" aria-live="polite">
-                          {cart[product.id] ?? 0}
-                        </output>
-                        <button
-                          type="button"
-                          className="quantity-button"
-                          aria-label={`Zwiększ ilość: ${product.name}, ${product.weight}`}
-                          onClick={() => updateCart(product.id, (cart[product.id] ?? 0) + 1)}
-                        >
-                          +
-                        </button>
-                      </div>
-                    </div>
+                          {variant.giftBox && quantity > 0 && (
+                            <div className="gift-box-row">
+                              <span>{t.product.giftBoxRow(GIFT_BOX_PRICE)}</span>
+                              <Stepper
+                                label={`${t.product.giftBoxes}: ${text.name}, ${variant.weight}`}
+                                value={Math.min(giftBoxes[variant.id] ?? 0, quantity)}
+                                max={quantity}
+                                onChange={(value) => updateGiftBoxes(variant.id, value)}
+                                className="small-quantity-control"
+                                t={t}
+                              />
+                            </div>
+                          )}
+                        </li>
+                      );
+                    })}
+                  </ul>
 
-                  </div>
+                  {product.giftBox && variants.every((variant) => !cart[variant.id]) && (
+                    <p className="gift-box-hint">
+                      {t.product.giftBoxHint(GIFT_BOX_PRICE)}
+                    </p>
+                  )}
 
                 </div>
 
               </article>
 
-            ))}
+              );
+            })}
 
           </div>
 
@@ -965,20 +1022,18 @@ function App() {
           <div className="contact-copy">
 
             <p className="eyebrow">
-              ZAMÓWIENIA
+              {t.contact.eyebrow}
             </p>
 
 
             <h2>
-              Masz ochotę na
-              <span>prawdziwy miód?</span>
+              {t.contact.titleA}
+              <span>{t.contact.titleB}</span>
             </h2>
 
 
             <p>
-              Po kliknięciu otworzy się WhatsApp z gotową treścią zamówienia.
-              Wyślij wiadomość, a wkrótce potwierdzimy szczegóły i przekażemy
-              informacje o płatności.
+              {t.contact.text}
             </p>
 
             <a
@@ -987,12 +1042,12 @@ function App() {
               target="_blank"
               rel="noreferrer"
             >
-              Jak do nas trafić? Otwórz Google Maps
+              {t.contact.directions}
               <span>↗</span>
             </a>
 
             <a className="contact-phone-link" href="tel:+48604117492">
-              Szybka informacja? Zadzwoń: +48 604 117 492
+              {t.contact.phone}
             </a>
 
             <button
@@ -1001,7 +1056,7 @@ function App() {
               aria-haspopup="dialog"
               onClick={() => setCartOpen(true)}
             >
-              Otwórz koszyk i zamów ({cartQuantity})
+              {t.contact.openCart(cartQuantity)}
             </button>
 
           </div>
@@ -1022,7 +1077,7 @@ function App() {
 
             <img
               src={MiodPiwnica}
-              alt="Miód przechowywany w Złotkowskiej Pasiece"
+              alt={t.story.alt}
             />
 
           </div>
@@ -1033,40 +1088,33 @@ function App() {
           <div className="story-content">
 
             <p className="eyebrow">
-              NASZA PASIEKA
+              {t.story.eyebrow}
             </p>
 
 
             <h2>
-              Miód, który zaczyna się
-              <span>w Złotkowie.</span>
+              {t.story.titleA}
+              <span>{t.story.titleB}</span>
             </h2>
 
 
             <p>
-              Złotkowska Pasieka powstała z miłości do pszczół,
-              natury i prostych, prawdziwych produktów.
+              {t.story.p1}
             </p>
 
 
             <p>
-              Nasz miód powstaje w małej, lokalnej pasiece.
-              Pszczoły pracują wśród naturalnych kwiatów,
-              a my dbamy o to, aby każda partia zachowała
-              swój naturalny smak i charakter.
+              {t.story.p2}
             </p>
 
 
             <p>
-              Nie jesteśmy przemysłową produkcją.
-              Pracujemy w ograniczonych ilościach, bez chemicznych
-              dodatków i bez masowej produkcji. Każdy słoik
-              powstaje z troską i szacunkiem dla natury.
+              {t.story.p3}
             </p>
 
 
             <Link to="/miody" className="text-link">
-              Zobacz nasze miody
+              {t.story.link}
               <span>→</span>
             </Link>
 
@@ -1088,7 +1136,7 @@ function App() {
 
             <img
               src={HoneyVarieties}
-              alt="Kilka odmian miodu z rodzinnej pasieki"
+              alt={t.natural.alt}
             />
 
           </div>
@@ -1099,26 +1147,23 @@ function App() {
           <div className="story-content">
 
             <p className="eyebrow">
-              MAŁA PRODUKCJA
+              {t.natural.eyebrow}
             </p>
 
 
             <h2>
-              Prawdziwy miód.
-              <span>Bez przemysłowego charakteru.</span>
+              {t.natural.titleA}
+              <span>{t.natural.titleB}</span>
             </h2>
 
 
             <p>
-              Produkujemy miód ręcznie i w ograniczonych ilościach.
-              Dzięki temu możemy poświęcić uwagę każdej partii
-              i zachować jej naturalny charakter.
+              {t.natural.p1}
             </p>
 
 
             <p>
-              Bez masowej produkcji, bez niepotrzebnych dodatków
-              i z szacunkiem dla pracy pszczół.
+              {t.natural.p2}
             </p>
 
           </div>
@@ -1130,9 +1175,9 @@ function App() {
         {/* Pokazujemy dostępne etapy od pasieki do gotowych słoików. */}
         <section className="process-section" aria-labelledby="process-heading">
           <div className="process-heading">
-            <p className="eyebrow">OD PASIEKI DO SŁOIKA</p>
-            <h2 id="process-heading">Jak powstaje nasz miód?</h2>
-            <p>Od pracy pszczół po przygotowanie słoików do odbioru.</p>
+            <p className="eyebrow">{t.process.eyebrow}</p>
+            <h2 id="process-heading">{t.process.title}</h2>
+            <p>{t.process.text}</p>
           </div>
 
           <ol className="process-grid">
@@ -1141,12 +1186,12 @@ function App() {
                 <img
                   className="process-image"
                   src={step.image}
-                  alt={step.title}
+                  alt={t.process.steps[step.textKey].title}
                   loading="lazy"
                 />
                 <p className="process-number">{step.number}</p>
-                <h3>{step.title}</h3>
-                <p>{step.description}</p>
+                <h3>{t.process.steps[step.textKey].title}</h3>
+                <p>{t.process.steps[step.textKey].description}</p>
               </li>
             ))}
           </ol>
@@ -1155,11 +1200,11 @@ function App() {
 
         <section className="map-section" aria-labelledby="map-heading">
           <div className="map-copy">
-            <p className="eyebrow">ODBIÓR OSOBISTY</p>
-            <h2 id="map-heading">Jak do nas trafić?</h2>
+            <p className="eyebrow">{t.map.eyebrow}</p>
+            <h2 id="map-heading">{t.map.title}</h2>
             <p>Złotkowo k. Poznania, ul. Lipowa 20</p>
             <a className="map-phone-link" href="tel:+48604117492">
-              Szybki kontakt: +48 604 117 492
+              {t.map.phone}
             </a>
             <a
               className="button button-dark map-link"
@@ -1167,14 +1212,14 @@ function App() {
               target="_blank"
               rel="noreferrer"
             >
-              Otwórz trasę w Google Maps
+              {t.map.route}
               <span>↗</span>
             </a>
           </div>
           <div className="map-preview">
             <iframe
               src="https://maps.google.com/maps?q=Z%C5%82otkowo%2C%20ul.%20Lipowa%2020%2C%20Polska&output=embed"
-              title="Mapa dojazdu do Złotkowskiej Pasieki w Złotkowie"
+              title={t.map.iframeTitle}
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
               allowFullScreen
@@ -1202,13 +1247,13 @@ function App() {
         <div className="checkout-dialog-content">
           <header className="checkout-dialog-header">
             <div>
-              <p className="eyebrow">ZAMÓWIENIE</p>
-              <h2 id="checkout-heading">Złóż zamówienie</h2>
+              <p className="eyebrow">{t.checkout.eyebrow}</p>
+              <h2 id="checkout-heading">{t.checkout.title}</h2>
             </div>
             <button
               type="button"
               className="checkout-close-button"
-              aria-label="Zamknij koszyk"
+              aria-label={t.checkout.close}
               onClick={() => setCartOpen(false)}
             >
               ×
@@ -1219,7 +1264,9 @@ function App() {
             cartQuantity={cartQuantity}
             cartTotal={cartTotal}
             updateCart={updateCart}
+            updateGiftBoxes={updateGiftBoxes}
             onSubmitOrder={submitOrder}
+            t={t}
           />
         </div>
       </dialog>
@@ -1228,14 +1275,14 @@ function App() {
       {/* Keep a direct checkout action near the thumb on mobile. */}
       {/* Zapewniamy szybki dostęp do zamówienia na urządzeniach mobilnych. */}
       {cartQuantity > 0 && (
-        <div className="mobile-checkout-bar" role="region" aria-label="Szybkie zamówienie">
-          <span>{cartQuantity} szt. · {cartTotal} zł</span>
+        <div className="mobile-checkout-bar" role="region" aria-label={t.mobileBar.label}>
+          <span>{cartQuantity} {t.checkout.pcs} · {cartTotal} zł</span>
           <button
             type="button"
             className="button button-dark"
             onClick={() => setCartOpen(true)}
           >
-            Otwórz koszyk
+            {t.mobileBar.open}
           </button>
         </div>
       )}
@@ -1254,7 +1301,7 @@ function App() {
 
 
         <span>
-          © 2026 · Złotkowo, Polska
+          {t.footer}
         </span>
 
       </footer>

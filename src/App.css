@@ -207,6 +207,36 @@ img {
 }
 
 
+.language-select {
+  padding: 9px 30px 9px 14px;
+
+  border: 1px solid var(--border);
+
+  border-radius: 999px;
+
+  background: var(--white) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%232c241b' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat right 12px center;
+
+  color: var(--brown);
+
+  font: inherit;
+
+  font-size: 13px;
+
+  font-weight: 700;
+
+  appearance: none;
+
+  cursor: pointer;
+}
+
+
+.language-select:focus-visible {
+  outline: 2px solid var(--brown);
+
+  outline-offset: 2px;
+}
+
+
 .mobile-menu-toggle {
   width: 40px;
 
@@ -764,7 +794,7 @@ img {
 .product-image {
   width: 100%;
 
-  height: 320px;
+  aspect-ratio: 4 / 3;
 
   object-fit: cover;
 
@@ -837,6 +867,87 @@ img {
   color: var(--brown-light);
 
   font-size: 12px;
+}
+
+
+.variant-rows {
+  margin-top: 22px;
+
+  list-style: none;
+
+  border-top: 1px solid var(--border);
+}
+
+
+.variant-row {
+  padding: 14px 0;
+
+  border-bottom: 1px solid var(--border);
+}
+
+
+.variant-main {
+  display: grid;
+
+  grid-template-columns: auto 1fr auto;
+
+  align-items: center;
+
+  gap: 14px;
+}
+
+
+.variant-main strong {
+  font-family: "Playfair Display", serif;
+
+  font-size: 22px;
+}
+
+
+.variant-button {
+  padding: 6px 14px;
+
+  border: 1px solid var(--border);
+
+  border-radius: 999px;
+
+  background: var(--white);
+
+  color: var(--brown);
+
+  font: inherit;
+
+  font-size: 13px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+
+.variant-button:hover {
+  border-color: var(--brown);
+}
+
+
+span.variant-button {
+  cursor: default;
+}
+
+
+span.variant-button:hover {
+  border-color: var(--border);
+}
+
+
+.variant-button[aria-pressed="true"] {
+  background: var(--brown);
+
+  border-color: var(--brown);
+
+  color: var(--white);
 }
 
 
@@ -1643,6 +1754,56 @@ main > section[id] {
 }
 
 
+.address-fields {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 14px;
+
+  padding: 16px;
+
+  border: 1px solid var(--border);
+
+  border-radius: 8px;
+}
+
+
+.address-fields legend {
+  padding: 0 6px;
+
+  font-size: 13px;
+
+  font-weight: 700;
+}
+
+
+.address-note,
+.address-street {
+  grid-column: 1 / -1;
+}
+
+
+.address-note,
+.polish-note {
+  color: var(--brown-light);
+
+  font-size: 12px;
+}
+
+
+.form-field input:invalid:not(:placeholder-shown) {
+  border-color: #b5562f;
+}
+
+
+@media (max-width: 480px) {
+  .address-fields {
+    grid-template-columns: 1fr;
+  }
+}
+
+
 .delivery-options legend {
   padding: 0 6px;
 
@@ -1667,6 +1828,53 @@ main > section[id] {
   margin-top: 4px;
 
   accent-color: var(--brown);
+}
+
+
+.gift-box-row {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 12px;
+
+  margin-top: 10px;
+
+  color: var(--brown-light);
+
+  font-size: 12px;
+}
+
+
+.gift-box-hint {
+  margin-top: 12px;
+
+  color: var(--brown-light);
+
+  font-size: 12px;
+}
+
+
+.small-quantity-control {
+  gap: 4px;
+}
+
+
+.small-quantity-control .quantity-button {
+  width: 28px;
+
+  height: 28px;
+
+  font-size: 16px;
+}
+
+
+.cart-item-info .gift-box-row {
+  justify-content: flex-start;
+
+  margin-top: 4px;
 }
 
 
@@ -1907,9 +2115,9 @@ main > section[id] {
   .navbar {
     display: grid;
 
-    grid-template-columns: minmax(0, 1fr) auto auto;
+    grid-template-columns: minmax(0, 1fr) auto auto auto;
 
-    gap: 12px;
+    gap: 10px;
 
     padding: 12px 0;
   }
@@ -1970,7 +2178,7 @@ main > section[id] {
   /* Reduce navigation button size. */
   /* Zmniejszamy przycisk nawigacyjny. */
   .nav-button {
-    grid-column: 2;
+    grid-column: 3;
 
     grid-row: 1;
 
@@ -1982,10 +2190,23 @@ main > section[id] {
   }
 
 
+  .language-select {
+    grid-column: 2;
+
+    grid-row: 1;
+
+    padding: 8px 26px 8px 10px;
+
+    font-size: 12px;
+
+    background-position: right 9px center;
+  }
+
+
   .mobile-menu-toggle {
     display: grid;
 
-    grid-column: 3;
+    grid-column: 4;
 
     grid-row: 1;
 
@@ -2058,7 +2279,7 @@ main > section[id] {
   /* Reduce product image height. */
   /* Zmniejszamy wysokość zdjęcia produktu. */
   .product-image {
-    height: 270px;
+    aspect-ratio: 4 / 3;
   }
 
 
