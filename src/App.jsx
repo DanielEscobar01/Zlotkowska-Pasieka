@@ -511,10 +511,14 @@ function App() {
   const [giftBoxes, setGiftBoxes] = useState({});
   const [selectedVariants, setSelectedVariants] = useState({});
 
-  // Polish by default; only a language the visitor explicitly picked is remembered.
+  // A manual choice wins; otherwise map the phone's language (Russian -> Ukrainian), falling back to Polish.
   const [lang, setLang] = useState(() => {
     const saved = localStorage.getItem("chosenLang");
-    return LANGUAGES.some((language) => language.code === saved) ? saved : "pl";
+    if (LANGUAGES.some((language) => language.code === saved)) {
+      return saved;
+    }
+    const deviceLanguage = (navigator.language || "").slice(0, 2).toLowerCase();
+    return { pl: "pl", uk: "uk", ru: "uk", es: "es", en: "en" }[deviceLanguage] ?? "pl";
   });
   const t = translations[lang];
 
