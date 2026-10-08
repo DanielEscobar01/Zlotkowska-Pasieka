@@ -33,6 +33,8 @@ function HoneyScene({ product, text, t }) {
   const backgroundColor = useTransform(progress, [0, 0.3, 0.6, 1], ["#f8f9fb", "#f0f3f7", "#f0f3f7", "#f8f9fb"]);
   const opacity = useTransform(progress, [0.1, 0.3, 0.75, 0.95], [0.8, 1, 1, 0.8]);
   const productScale = useTransform(progress, [0.15, 0.6, 0.95], [0.78, 1.06, 1.06]);
+  const warmGlowOpacity = useTransform(progress, [0.1, 0.4, 0.7, 0.95], [0.12, 0.3, 0.3, 0.12]);
+  const coolGlowOpacity = useTransform(progress, [0.1, 0.4, 0.7, 0.95], [0.08, 0.2, 0.2, 0.08]);
   const productLight = useTransform(progress, [0.1, 0.4, 0.7, 0.95], [
     "drop-shadow(0px 22px 24px rgba(32,38,48,0.13)) drop-shadow(0px 0px 8px rgba(237,170,84,0.04))",
     "drop-shadow(0px 22px 24px rgba(32,38,48,0.13)) drop-shadow(0px 0px 38px rgba(237,170,84,0.34))",
@@ -40,12 +42,8 @@ function HoneyScene({ product, text, t }) {
     "drop-shadow(0px 22px 24px rgba(32,38,48,0.13)) drop-shadow(0px 0px 8px rgba(237,170,84,0.04))",
   ]);
   const lightX = useTransform(progress, [0, 1], ["-25%", "25%"]);
-  const lightRotate = useTransform(progress, [0, 1], [-18, 18]);
   const lightY = useTransform(progress, [0, 1], ["20%", "-20%"]);
   const reverseX = useTransform(progress, [0, 1], ["30%", "-30%"]);
-  const reverseRotate = useTransform(progress, [0, 1], [16, -16]);
-  const beamX = useTransform(progress, [0, 1], ["-140%", "320%"]);
-  const beamOpacity = useTransform(progress, [0.1, 0.4, 0.7, 0.95], [0.15, 0.85, 0.85, 0.15]);
 
   return (
     <section ref={sceneRef} className={`honey-scene product-card--${product.textKey}`}>
@@ -54,13 +52,8 @@ function HoneyScene({ product, text, t }) {
           <div className="honey-scene-visual">
             <div className="honey-scene-product">
               <div className="honey-scene-lights" aria-hidden="true">
-                <motion.div className="honey-scene-beam" style={reduced ? undefined : { x: beamX, skewX: -24, opacity: beamOpacity }} />
-                <motion.div className="honey-scene-light honey-scene-light--first" style={reduced ? undefined : { x: lightX, rotate: lightRotate }} />
-                <motion.div className="honey-scene-light honey-scene-light--second" style={reduced ? undefined : { y: lightY, rotate: lightRotate }} />
-                <motion.div className="honey-scene-light honey-scene-light--third" style={reduced ? undefined : { x: lightX, y: lightY }} />
-                <motion.div className="honey-scene-light honey-scene-light--fourth" style={reduced ? undefined : { x: reverseX, rotate: reverseRotate }} />
-                <motion.div className="honey-scene-light honey-scene-light--fifth" style={reduced ? undefined : { x: reverseX, y: lightY }} />
-                <motion.div className="honey-scene-light honey-scene-light--sixth" style={reduced ? undefined : { x: lightX, rotate: reverseRotate }} />
+                <motion.div className="honey-scene-glow honey-scene-glow--warm" style={reduced ? undefined : { x: lightX, y: lightY, opacity: warmGlowOpacity }} />
+                <motion.div className="honey-scene-glow honey-scene-glow--cool" style={reduced ? undefined : { x: reverseX, opacity: coolGlowOpacity }} />
               </div>
               <motion.img
                 src={sceneImages[product.textKey]}
@@ -74,8 +67,8 @@ function HoneyScene({ product, text, t }) {
             <h2>{text.name}</h2>
             <p>{text.description}</p>
             <div className="honey-scene-detail">
-              <h3>{t.varietiesSection.detailTitle}</h3>
-              <p>{t.varietiesSection.details[product.textKey]}</p>
+              <h3>{t.product.servingTitle}</h3>
+              <p>{text.servingSuggestion}</p>
             </div>
             <Link to="/catalogo" className="text-link">{t.varietiesSection.browseCatalog} <span aria-hidden="true">→</span></Link>
           </motion.div>
