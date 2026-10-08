@@ -16,8 +16,8 @@ export const translations = {
   pl: {
     nav: {
       start: "Start",
-      honeys: "Miody",
-      catalog: "Katalog",
+      honeys: "Odmiany miodu",
+      catalog: "Zamów miód",
       apiary: "Nasza pasieka",
       home: "Strona główna Złotkowskiej Pasieki",
       cart: "Koszyk",
@@ -37,7 +37,7 @@ export const translations = {
       titleA: "Naturalny miód",
       titleB: "z rodzinnej pasieki.",
       description: "Rodzina, pszczoły i praca blisko natury. Nasz miód powstaje w małej pasiece w Złotkowie.",
-      products: "Zobacz nasze miody",
+      products: "Zamów miód",
       story: "Poznaj naszą historię",
       note: "Naturalnie · Lokalnie · Z pasją",
     },
@@ -106,7 +106,7 @@ export const translations = {
       },
       honeycombAlt: "Słoiki miodu w naszej pasiece przy oknie",
       honeycombCaption: "Miody przygotowane w pasiece",
-      browseCatalog: "Przejdź do katalogu",
+      browseCatalog: "Zamów ten miód",
     },
     productsSection: {
       eyebrow: "KATALOG",
@@ -221,8 +221,8 @@ export const translations = {
   en: {
     nav: {
       start: "Home",
-      honeys: "Our honey",
-      catalog: "Catalog",
+      honeys: "Honey varieties",
+      catalog: "Order honey",
       apiary: "Our apiary",
       home: "Złotkowska Pasieka – home",
       cart: "Cart",
@@ -242,7 +242,7 @@ export const translations = {
       titleA: "Real honey",
       titleB: "from our family's bees.",
       description: "Our family, our bees and a lot of love for nature. We make our honey in a small apiary in Złotkowo.",
-      products: "Browse our honey",
+      products: "Order honey",
       story: "Meet our family",
       note: "Natural · Local · Made with love",
     },
@@ -311,7 +311,7 @@ export const translations = {
       },
       honeycombAlt: "Jars of honey at our apiary window",
       honeycombCaption: "Honey prepared at our apiary",
-      browseCatalog: "Browse the catalog",
+      browseCatalog: "Order this honey",
     },
     productsSection: {
       eyebrow: "CATALOG",
@@ -426,8 +426,8 @@ export const translations = {
   uk: {
     nav: {
       start: "Головна",
-      honeys: "Наш мед",
-      catalog: "Каталог",
+      honeys: "Види меду",
+      catalog: "Замовити мед",
       apiary: "Наша пасіка",
       home: "Złotkowska Pasieka – головна",
       cart: "Кошик",
@@ -447,7 +447,7 @@ export const translations = {
       titleA: "Справжній мед",
       titleB: "від наших бджіл.",
       description: "Наша родина, наші бджоли й багато любові до природи. Ми робимо мед на невеликій пасіці у Злоткові.",
-      products: "Переглянути мед",
+      products: "Замовити мед",
       story: "Познайомитися з нами",
       note: "Натурально · Місцево · З любов'ю",
     },
@@ -516,7 +516,7 @@ export const translations = {
       },
       honeycombAlt: "Баночки меду в нашій пасіці біля вікна",
       honeycombCaption: "Мед, підготовлений на пасіці",
-      browseCatalog: "Перейти до каталогу",
+      browseCatalog: "Замовити цей мед",
     },
     productsSection: {
       eyebrow: "КАТАЛОГ",
@@ -631,8 +631,8 @@ export const translations = {
   es: {
     nav: {
       start: "Inicio",
-      honeys: "Nuestra miel",
-      catalog: "Catálogo",
+      honeys: "Variedades",
+      catalog: "Pedir miel",
       apiary: "Nuestro colmenar",
       home: "Złotkowska Pasieka – inicio",
       cart: "Carrito",
@@ -652,7 +652,7 @@ export const translations = {
       titleA: "Miel de verdad",
       titleB: "de nuestras abejas.",
       description: "Nuestra familia, nuestras abejas y mucho cariño por la naturaleza. Hacemos nuestra miel en un pequeño colmenar en Złotkowo.",
-      products: "Ver nuestra miel",
+      products: "Pedir miel",
       story: "Conoce a la familia",
       note: "Natural · Local · Hecha con cariño",
     },
@@ -721,7 +721,7 @@ export const translations = {
       },
       honeycombAlt: "Frascos de miel en nuestro colmenar junto a la ventana",
       honeycombCaption: "Miel preparada en el colmenar",
-      browseCatalog: "Ir al catálogo",
+      browseCatalog: "Pedir esta miel",
     },
     productsSection: {
       eyebrow: "CATÁLOGO",
