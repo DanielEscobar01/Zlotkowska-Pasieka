@@ -996,8 +996,12 @@ function App() {
 
                   {product.badgeKey === "natural" && (
                     <div className="product-health">
-                      <strong>{t.product.servingTitle}</strong>
-                      <p>{text.servingSuggestion}</p>
+                      <strong>{t.varietiesSection.profiles[product.textKey].benefitsTitle}</strong>
+                      <ul>
+                        {t.varietiesSection.profiles[product.textKey].benefits.map((benefit) => (
+                          <li key={benefit}>{benefit}</li>
+                        ))}
+                      </ul>
                     </div>
                   )}
 
