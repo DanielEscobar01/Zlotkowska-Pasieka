@@ -18,6 +18,7 @@ const sceneImages = {
 };
 
 function HoneyScene({ product, text, t }) {
+  const profile = t.varietiesSection.profiles?.[product.textKey];
   const sceneRef = useRef(null);
   const reduced = useReducedMotion();
   const { scrollYProgress } = useScroll({
@@ -64,12 +65,30 @@ function HoneyScene({ product, text, t }) {
             </div>
           </div>
           <motion.div className="honey-scene-copy" style={reduced ? undefined : { opacity }}>
-            <h2>{text.name}</h2>
-            <p>{text.description}</p>
-            <div className="honey-scene-detail">
-              <h3>{t.product.servingTitle}</h3>
-              <p>{text.servingSuggestion}</p>
-            </div>
+            {profile ? (
+              <>
+                <h2>{profile.label}</h2>
+                <h3 className="honey-scene-profile-heading">{profile.heading}</h3>
+                <blockquote className="honey-scene-tagline">{profile.tagline}</blockquote>
+                <p>{profile.description}</p>
+                <div className="honey-scene-detail">
+                  <h3>{profile.benefitsTitle}</h3>
+                  <ul>
+                    {profile.benefits.map((benefit) => <li key={benefit}>{benefit}</li>)}
+                  </ul>
+                </div>
+                {profile.featureNote && <p className="honey-scene-feature-note">{profile.featureNote}</p>}
+              </>
+            ) : (
+              <>
+                <h2>{text.name}</h2>
+                <p>{text.description}</p>
+                <div className="honey-scene-detail">
+                  <h3>{t.product.servingTitle}</h3>
+                  <p>{text.servingSuggestion}</p>
+                </div>
+              </>
+            )}
             <Link to="/catalogo" className="text-link">{t.varietiesSection.browseCatalog} <span aria-hidden="true">→</span></Link>
           </motion.div>
         </div>

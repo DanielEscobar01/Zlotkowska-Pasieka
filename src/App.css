@@ -1290,6 +1290,10 @@ img {
   overflow-wrap: anywhere;
 }
 
+.honey-scene-copy h2.honey-scene-profile-name {
+  font-size: 36px;
+}
+
 .honey-journey-heading h1,
 .honey-scene-copy h2 {
   background: linear-gradient(115deg, var(--scene-amber), var(--scene-coral));
@@ -1298,11 +1302,26 @@ img {
 }
 
 .honey-scene-copy > p {
-  margin-top: 22px;
+  margin-top: 14px;
   font-size: 20px;
   max-width: 480px;
   line-height: 1.7;
   color: var(--scene-muted);
+}
+
+.honey-scene-profile-heading {
+  margin-top: 14px;
+  color: var(--scene-amber);
+  font-size: 19px;
+  line-height: 1.4;
+}
+
+.honey-scene-tagline {
+  margin-top: 10px;
+  color: var(--scene-text);
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.5;
 }
 
 .honey-scene-detail {
@@ -1322,6 +1341,21 @@ img {
   font-size: 17px;
   line-height: 1.6;
   color: var(--scene-muted);
+}
+
+.honey-scene-detail ul {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+  padding-left: 22px;
+  color: var(--scene-muted);
+  font-size: 17px;
+  line-height: 1.5;
+}
+
+.honey-scene-feature-note {
+  font-size: 15px !important;
+  font-style: italic;
 }
 
 .honey-scene-lights {
@@ -1360,6 +1394,7 @@ img {
 @media (max-width: 900px) {
   .honey-scene-inner { gap: 28px; }
   .honey-scene-copy h2 { font-size: 40px; }
+  .honey-scene-copy h2.honey-scene-profile-name { font-size: 30px; }
 }
 
 @media (max-width: 650px) {
@@ -1373,6 +1408,7 @@ img {
   .honey-scene-lights { inset: -20px -20px; mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 88%, transparent); }
   .honey-scene-copy { grid-column: 1; }
   .honey-scene-copy h2 { font-size: 32px; }
+  .honey-scene-copy h2.honey-scene-profile-name { font-size: 28px; }
   .honey-scene-copy > p { font-size: 17px; margin-top: 14px; }
   .honey-scene-detail p { font-size: 16px; }
   .honey-journey-heading > p:last-child { font-size: 17px; }
