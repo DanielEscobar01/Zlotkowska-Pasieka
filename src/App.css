@@ -1,19 +1,27 @@
 /* Import the main serif and sans-serif fonts. */
 /* Importujemy główne czcionki szeryfowe i bezszeryfowe. */
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;1,500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap");
 
 
 /* Define the main design colors. */
 /* Definiujemy główne kolory projektu. */
 :root {
-  --cream: #f7f3ea;
-  --cream-dark: #eee7d8;
+  color-scheme: light;
+  --cream: #f8f9fb;
+  --cream-dark: #eef0f4;
   --honey: #d89b35;
-  --honey-light: #e9bd68;
-  --brown: #2c241b;
-  --brown-light: #655a4d;
-  --white: #fffdf8;
-  --border: rgba(44, 36, 27, 0.12);
+  --honey-light: #f1bd69;
+  --brown: #252529;
+  --brown-light: #5c5d65;
+  --white: #ffffff;
+  --border: rgba(37, 37, 41, 0.14);
+  --font-family: "Manrope", sans-serif;
+  --scene-dark: #252529;
+  --scene-background: #f8f9fb;
+  --scene-text: #252529;
+  --scene-muted: #5c5d65;
+  --scene-amber: var(--honey);
+  --scene-coral: #b34c3c;
 }
 
 
@@ -36,10 +44,23 @@ html {
 /* Define the global page appearance. */
 /* Definiujemy globalny wygląd strony. */
 body {
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
+  font-size: 17px;
   background: var(--cream);
   color: var(--brown);
   line-height: 1.6;
+}
+
+
+::selection {
+  background: #e9c98f;
+  color: var(--scene-dark);
+}
+
+
+:focus-visible {
+  outline: 3px solid var(--scene-amber);
+  outline-offset: 3px;
 }
 
 
@@ -70,17 +91,27 @@ img {
 /* Show only the sections belonging to the current hash route. */
 /* Pokazujemy tylko sekcje przypisane do bieżącej trasy. */
 .site.page-home .products-section,
+.site.page-home .honey-comparison-section,
 .site.page-home .contact-section,
 .site.page-home .story-section,
 .site.page-home .map-section,
 .site.page-products .hero,
 .site.page-products .home-family-section,
+.site.page-products .honey-comparison-section,
 .site.page-products .story-section,
 .site.page-products .process-section,
 .site.page-products .map-section,
+.site.page-honeys .hero,
+.site.page-honeys .home-family-section,
+.site.page-honeys .products-section,
+.site.page-honeys .contact-section,
+.site.page-honeys .story-section,
+.site.page-honeys .process-section,
+.site.page-honeys .map-section,
 .site.page-apiary .hero,
 .site.page-apiary .home-family-section,
 .site.page-apiary .products-section,
+.site.page-apiary .honey-comparison-section,
 .site.page-apiary .contact-section,
 .site.page-apiary .process-section {
   display: none;
@@ -89,6 +120,7 @@ img {
 
 /* Match the home hero's gap below the navbar on the other pages. */
 .site.page-products .page-main,
+.site.page-honeys .page-main,
 .site.page-apiary .page-main {
   padding-top: 56px;
 }
@@ -96,6 +128,7 @@ img {
 
 @media (max-width: 900px) {
   .site.page-products .page-main,
+  .site.page-honeys .page-main,
   .site.page-apiary .page-main {
     padding-top: 48px;
   }
@@ -145,7 +178,7 @@ img {
 
   color: var(--brown-light);
 
-  font-family: "Playfair Display", serif;
+  font-family: "Manrope", sans-serif;
 
   font-size: 16px;
 
@@ -162,6 +195,7 @@ img {
   height: 96px;
 
   object-fit: contain;
+  mix-blend-mode: multiply;
 }
 
 
@@ -208,7 +242,7 @@ img {
 /* Style the main navigation button. */
 /* Stylizujemy główny przycisk nawigacji. */
 .nav-button {
-  background: var(--brown);
+  background: var(--honey);
   color: var(--white);
 
   border: 0;
@@ -235,7 +269,7 @@ img {
 /* Dodajemy małą animację po najechaniu. */
 .nav-button:hover {
   transform: translateY(-2px);
-  background: #40352a;
+  background: var(--scene-coral);
 }
 
 
@@ -321,11 +355,11 @@ img {
 
   border: 1px solid var(--border);
 
-  border-radius: 12px;
+  border-radius: 8px;
 
   background: var(--white);
 
-  box-shadow: 0 12px 30px rgba(44, 36, 27, 0.15);
+  box-shadow: 0 12px 30px rgba(32, 38, 48, 0.12);
 }
 
 
@@ -441,7 +475,7 @@ img {
 
   color: var(--brown);
 
-  font-family: "DM Sans", sans-serif;
+  font-family: "Manrope", sans-serif;
 
   font-size: 15px;
 
@@ -515,7 +549,7 @@ img {
 
   font-weight: 700;
 
-  letter-spacing: 0.18em;
+  letter-spacing: 0;
 
   margin-bottom: 20px;
 }
@@ -526,15 +560,15 @@ img {
 .hero h1 {
   max-width: 650px;
 
-  font-family: "Playfair Display", serif;
+  font-family: "Manrope", sans-serif;
 
-  font-size: clamp(54px, 6vw, 86px);
+  font-size: 76px;
 
-  font-weight: 500;
+  font-weight: 800;
 
-  line-height: 0.98;
+  line-height: 1.1;
 
-  letter-spacing: -0.04em;
+  letter-spacing: 0;
 }
 
 
@@ -545,7 +579,7 @@ img {
 
   color: var(--honey);
 
-  font-style: italic;
+  font-style: normal;
 }
 
 
@@ -605,7 +639,7 @@ img {
 /* Dark button style. */
 /* Ciemny styl przycisku. */
 .button-dark {
-  background: var(--brown);
+  background: var(--honey);
 
   color: var(--white);
 }
@@ -616,7 +650,7 @@ img {
 .button-light {
   border: 1px solid var(--border);
 
-  background: rgba(255, 255, 255, 0.35);
+  background: var(--white);
 }
 
 
@@ -675,7 +709,7 @@ img {
 
   border-radius: 8px;
 
-  background: #f0f8f1;
+  background: var(--white);
 
   box-shadow: 0 12px 32px rgba(44, 36, 27, 0.14);
 
@@ -696,9 +730,9 @@ img {
 
   border-radius: 50%;
 
-  background: #d9efdd;
+  background: #1d3428;
 
-  color: #287344;
+  color: #9cdeb2;
 
   font-size: 18px;
 
@@ -720,7 +754,7 @@ img {
 
   margin-bottom: 3px;
 
-  color: #286b40;
+  color: #9cdeb2;
 }
 
 
@@ -783,7 +817,7 @@ img {
 .home-family-copy h2 {
   margin-top: 12px;
 
-  font-family: "Playfair Display", serif;
+  font-family: "Manrope", sans-serif;
 
   font-size: 42px;
 
@@ -841,15 +875,15 @@ img {
 .section-heading h2,
 .story-content h2,
 .contact-section h2 {
-  font-family: "Playfair Display", serif;
+  font-family: "Manrope", sans-serif;
 
-  font-size: clamp(40px, 5vw, 62px);
+  font-size: 52px;
 
-  font-weight: 500;
+  font-weight: 800;
 
   line-height: 1.05;
 
-  letter-spacing: -0.035em;
+  letter-spacing: 0;
 }
 
 
@@ -862,7 +896,7 @@ img {
 
   color: var(--honey);
 
-  font-style: italic;
+  font-style: normal;
 }
 
 
@@ -875,7 +909,512 @@ img {
 }
 
 
+.section-heading > .section-health-note {
+  margin-top: 14px;
+
+  padding-left: 12px;
+
+  border-left: 2px solid var(--honey);
+
+  color: var(--brown-light);
+
+  font-size: 13px;
+}
+
+
+.honey-comparison-section {
+  width: 100%;
+
+  margin: 0 auto 72px;
+
+  scroll-margin-top: 128px;
+
+  padding: 64px 24px 60px;
+
+  background: linear-gradient(125deg, #e6ede2 0%, #f2f4e9 56%, #f6ead5 100%);
+}
+
+
+.honey-comparison-inner {
+  width: min(1240px, 100%);
+
+  margin: 0 auto;
+}
+
+
+.honey-comparison-heading {
+  max-width: 720px;
+}
+
+
+.honey-comparison-layout {
+  display: grid;
+
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+
+  align-items: start;
+
+  gap: clamp(32px, 6vw, 88px);
+
+  margin-bottom: 30px;
+}
+
+
+.honey-comparison-heading h2 {
+  margin-top: 8px;
+
+  font-family: "Manrope", sans-serif;
+
+  font-size: clamp(36px, 5vw, 54px);
+
+  font-weight: 500;
+
+  line-height: 1.08;
+
+  color: var(--brown);
+}
+
+
+.honey-comparison-heading > p:last-child {
+  max-width: 620px;
+
+  margin-top: 14px;
+
+  color: var(--brown-light);
+
+  font-size: 14px;
+}
+
+
+.honey-comparison-visual {
+  position: relative;
+
+  position: sticky;
+
+  top: 136px;
+
+  height: min(620px, calc(100vh - 180px));
+
+  min-height: 380px;
+
+  overflow: hidden;
+
+  border-radius: 8px 72px 8px 8px;
+
+  background: var(--cream-dark);
+}
+
+
+.honey-comparison-visual img {
+  width: 100%;
+
+  height: 100%;
+
+  object-fit: cover;
+
+  object-position: center 74%;
+}
+
+
+.honey-comparison-visual figcaption {
+  position: absolute;
+
+  right: 12px;
+
+  bottom: 12px;
+
+  padding: 6px 9px;
+
+  border-radius: 4px;
+
+  background: rgba(255, 254, 249, 0.92);
+
+  color: var(--brown);
+
+  font-size: 11px;
+}
+
+
+.honey-comparison-progress-track {
+  position: absolute;
+
+  top: 16px;
+
+  bottom: 16px;
+
+  left: 16px;
+
+  width: 3px;
+
+  overflow: hidden;
+
+  border-radius: 99px;
+
+  background: rgba(255, 254, 249, 0.62);
+}
+
+
+.honey-comparison-progress-fill {
+  display: block;
+
+  width: 100%;
+
+  height: 100%;
+
+  border-radius: inherit;
+
+  background: var(--honey);
+}
+
+
+.honey-comparison-grid {
+  display: grid;
+
+  grid-template-columns: 1fr;
+
+  gap: 0;
+}
+
+
+.honey-comparison-card {
+  min-width: 0;
+
+  min-height: 150px;
+
+  padding: 24px 0;
+
+  border: 0;
+
+  border-bottom: 1px solid var(--border);
+
+  border-left: 3px solid var(--product-accent);
+
+  border-radius: 0;
+
+  background: transparent;
+
+  display: block;
+
+  transition:
+    background 240ms ease;
+}
+
+
+#catalogo {
+  scroll-margin-top: 128px;
+}
+
+
+.honey-comparison-card:hover {
+  translate: 6px 0;
+
+  background: color-mix(in srgb, var(--product-accent) 5%, transparent);
+}
+
+
+.honey-comparison-card h3 {
+  margin-top: 0;
+
+  color: var(--product-accent);
+
+  font-family: "Manrope", sans-serif;
+
+  font-size: 22px;
+
+  font-weight: 500;
+
+  line-height: 1.2;
+}
+
+
+.honey-comparison-finding {
+  margin-top: 14px;
+
+  color: var(--brown);
+
+  font-size: 13px;
+
+  line-height: 1.5;
+}
+
+
+.honey-catalog-jump {
+  margin-top: 24px;
+
+  border: 0;
+
+  cursor: pointer;
+}
+
+
 /* Create the product grid. */
+.honey-comparison-section.honey-journey {
+  padding: 0;
+  margin-bottom: 0;
+  background: var(--scene-background);
+  color: var(--scene-text);
+  font-family: "Manrope", sans-serif;
+}
+
+.honey-journey-heading {
+  width: min(1240px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: 40px 0 56px;
+}
+
+.honey-journey-heading h1 {
+  font: 800 72px/1.1 "Manrope", sans-serif;
+  letter-spacing: 0;
+}
+
+.honey-journey-heading > p:last-child {
+  margin-top: 20px;
+  max-width: 560px;
+  color: var(--scene-muted);
+  font-size: 20px;
+}
+
+.site.page-honeys {
+  background: var(--scene-background);
+}
+
+.navbar {
+  background: var(--scene-background);
+  border-bottom: 1px solid var(--border);
+}
+
+.navbar::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 100vw;
+  transform: translateX(-50%);
+  z-index: -1;
+  background: var(--scene-background);
+  border-bottom: 1px solid var(--border);
+}
+
+.page-honeys .brand-logo {
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+}
+
+.page-honeys .brand-since,
+.page-honeys .nav-links a {
+  color: var(--brown-light);
+}
+
+.page-honeys .nav-links a.active,
+.page-honeys .nav-links a:hover {
+  color: var(--honey);
+}
+
+.honey-journey .eyebrow { color: var(--scene-amber); }
+
+.page-honeys .nav-links.is-open {
+  background: var(--white);
+}
+
+.page-honeys .footer {
+  color: var(--scene-muted);
+  border-color: var(--border);
+}
+
+.honey-scene {
+  position: relative;
+  height: 155vh;
+}
+
+.honey-scene-stage {
+  position: sticky;
+  top: 120px;
+  min-height: calc(100svh - 120px);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  isolation: isolate;
+}
+
+.honey-scene-inner {
+  position: relative;
+  z-index: 1;
+  width: min(1240px, calc(100% - 64px));
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 72px;
+  padding: 48px 0;
+}
+
+.honey-scene-visual {
+  display: contents;
+}
+
+.honey-scene-product {
+  height: min(52svh, 480px);
+  min-width: 0;
+  min-height: 0;
+  grid-column: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.honey-scene-product img {
+  position: relative;
+  z-index: 1;
+  width: auto;
+  height: 90%;
+  max-width: 90%;
+  max-height: 90%;
+  min-height: 0;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+  filter: drop-shadow(0 22px 24px rgba(32, 38, 48, 0.13));
+}
+
+.honey-scene-copy {
+  min-width: 0;
+  grid-column: 2;
+}
+
+.honey-scene-copy h2 {
+  font: 800 56px/1.12 "Manrope", sans-serif;
+  letter-spacing: 0;
+  overflow-wrap: anywhere;
+}
+
+.honey-journey-heading h1,
+.honey-scene-copy h2 {
+  background: linear-gradient(115deg, var(--scene-amber), var(--scene-coral));
+  background-clip: text;
+  color: transparent;
+}
+
+.honey-scene-copy > p {
+  margin-top: 22px;
+  font-size: 20px;
+  max-width: 480px;
+  line-height: 1.7;
+  color: var(--scene-muted);
+}
+
+.honey-scene-detail {
+  margin: 28px 0;
+  padding-top: 22px;
+  border-top: 1px solid var(--border);
+}
+
+.honey-scene-detail h3 {
+  font-size: 17px;
+  margin-bottom: 8px;
+  font-weight: 800;
+  color: var(--scene-amber);
+}
+
+.honey-scene-detail p {
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--scene-muted);
+}
+
+.honey-scene-lights {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  mask-image: linear-gradient(90deg, #000 0%, #000 38%, rgba(0, 0, 0, 0.4) 55%, transparent 78%);
+}
+
+.honey-scene-beam {
+  position: absolute;
+  top: -30%;
+  left: 8%;
+  width: 32%;
+  height: 160%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.95) 48%, rgba(241, 189, 105, 0.16) 60%, transparent);
+  transform: skewX(-24deg);
+  opacity: 0.5;
+}
+
+.honey-scene-light {
+  position: absolute;
+  width: 130%;
+  height: 1px;
+  left: -15%;
+  background: linear-gradient(90deg, transparent 0%, var(--scene-amber) 45%, #fff2d4 50%, var(--scene-amber) 55%, transparent 100%);
+  box-shadow: 0 0 20px 3px rgba(237, 189, 103, 0.26);
+  opacity: 0.5;
+  transform-origin: center;
+}
+
+.honey-scene-light--first { top: 22%; }
+.honey-scene-light--second {
+  top: 74%;
+  background: linear-gradient(90deg, transparent 0%, var(--scene-coral) 45%, #ffe0d6 50%, var(--scene-coral) 55%, transparent 100%);
+  box-shadow: 0 0 16px 2px rgba(238, 152, 127, 0.2);
+}
+.honey-scene-light--third {
+  top: 38%;
+  height: 1px;
+  opacity: 0.3;
+  box-shadow: none;
+}
+
+.honey-scene-light--fourth {
+  top: 58%;
+  background: linear-gradient(90deg, transparent, #a8b9d2 42%, #fff 50%, #a8b9d2 58%, transparent);
+  box-shadow: 0 0 20px 3px rgba(168, 185, 210, 0.22);
+}
+
+.honey-scene-light--fifth {
+  top: 88%;
+  opacity: 0.25;
+  box-shadow: none;
+}
+
+.honey-scene-light--sixth {
+  top: 10%;
+  opacity: 0.35;
+}
+
+.honey-scene-copy .text-link {
+  font: 700 17px/1.5 "Manrope", sans-serif;
+  color: var(--scene-amber);
+}
+
+@media (max-width: 900px) {
+  .honey-scene-inner { gap: 28px; }
+  .honey-scene-copy h2 { font-size: 40px; }
+}
+
+@media (max-width: 650px) {
+  .honey-journey-heading { width: calc(100% - 30px); padding: 24px 0 32px; }
+  .honey-journey-heading h1 { font-size: 42px; }
+  .honey-scene { height: auto; }
+  .honey-scene-stage { position: relative; top: 0; min-height: 0; overflow: clip; }
+  .honey-scene-inner { width: calc(100% - 40px); grid-template-columns: 1fr; gap: 18px; padding: 36px 0; }
+  .honey-scene-visual { display: block; position: relative; height: 320px; grid-column: 1; }
+  .honey-scene-product { position: sticky; top: 110px; height: min(40svh, 320px); min-height: 250px; }
+  .honey-scene-lights { inset: -20px -20px; mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 88%, transparent); }
+  .honey-scene-copy { grid-column: 1; }
+  .honey-scene-copy h2 { font-size: 32px; }
+  .honey-scene-copy > p { font-size: 17px; margin-top: 14px; }
+  .honey-scene-detail p { font-size: 16px; }
+  .honey-journey-heading > p:last-child { font-size: 17px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .honey-scene { height: auto; }
+  .honey-scene-stage { position: relative; top: 0; }
+  .honey-scene-visual { height: auto; min-height: 0; }
+  .honey-scene-product { position: static; }
+}
+
 /* Tworzymy siatkę produktów. */
 .product-grid {
   display: grid;
@@ -889,9 +1428,11 @@ img {
 /* Style each product card. */
 /* Stylizujemy każdą kartę produktu. */
 .product-card {
+  --product-accent: var(--scene-amber);
+
   background: var(--white);
 
-  border-radius: 25px;
+  border-radius: 8px;
 
   overflow: hidden;
 
@@ -900,6 +1441,31 @@ img {
   transition:
     transform 0.3s ease,
     box-shadow 0.3s ease;
+}
+
+
+.product-card--rapeseed {
+  --product-accent: var(--honey);
+}
+
+.product-card--facelia {
+  --product-accent: var(--scene-coral);
+}
+
+.product-card--acaciaFacelia {
+  --product-accent: #87631d;
+}
+
+.product-card--multifloral {
+  --product-accent: var(--honey);
+}
+
+.product-card--linden {
+  --product-accent: #87631d;
+}
+
+.product-card--herbal {
+  --product-accent: var(--scene-coral);
 }
 
 
@@ -951,7 +1517,9 @@ img {
 
   top: 20px;
 
-  background: rgba(255, 253, 248, 0.9);
+  background: var(--white);
+
+  color: var(--product-accent);
 
   padding: 8px 12px;
 
@@ -986,11 +1554,105 @@ img {
 /* Style product names. */
 /* Stylizujemy nazwy produktów. */
 .product-title-row h3 {
-  font-family: "Playfair Display", serif;
+  font-family: "Manrope", sans-serif;
 
   font-size: 28px;
 
-  font-weight: 500;
+  font-weight: 700;
+
+  color: var(--product-accent);
+}
+
+
+.product-health {
+  margin-top: 18px;
+
+  padding: 14px 15px;
+
+  border-left: 3px solid var(--product-accent);
+
+  background: transparent;
+}
+
+
+.product-health strong {
+  display: block;
+
+  color: var(--product-accent);
+
+  font-size: 13px;
+}
+
+
+.product-health p {
+  margin-top: 3px;
+
+  color: var(--brown-light);
+
+  font-size: 13px;
+}
+
+
+.product-health small {
+  display: block;
+
+  margin-top: 8px;
+
+  color: var(--brown-light);
+
+  font-size: 11px;
+
+  line-height: 1.45;
+}
+
+
+.reveal-on-scroll {
+  opacity: 0;
+
+  transform: translateY(22px);
+}
+
+
+.reveal-on-scroll.is-visible {
+  animation: reveal-rise 720ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+
+@keyframes reveal-rise {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+.product-card:nth-child(2) {
+  animation-delay: 80ms;
+}
+
+
+.product-card:nth-child(3) {
+  animation-delay: 160ms;
+}
+
+
+.product-card:nth-child(4) {
+  animation-delay: 240ms;
+}
+
+
+.product-card:nth-child(5) {
+  animation-delay: 320ms;
+}
+
+
+.product-card:nth-child(6) {
+  animation-delay: 400ms;
 }
 
 
@@ -1031,7 +1693,7 @@ img {
 
 
 .variant-main strong {
-  font-family: "Playfair Display", serif;
+  font-family: "Manrope", sans-serif;
 
   font-size: 22px;
 }
@@ -1115,7 +1777,7 @@ span.variant-button:hover {
 /* Style product price. */
 /* Stylizujemy cenę produktu. */
 .product-footer strong {
-  font-family: "Playfair Display", serif;
+  font-family: "Manrope", sans-serif;
 
   font-size: 25px;
 }
@@ -1169,6 +1831,25 @@ span.variant-button:hover {
   line-height: 1;
 
   cursor: pointer;
+
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    background 180ms ease;
+}
+
+
+.quantity-button:hover:not(:disabled) {
+  transform: scale(1.08);
+
+  border-color: var(--honey);
+
+  background: color-mix(in srgb, var(--honey) 14%, var(--white));
+}
+
+
+.quantity-button:active:not(:disabled) {
+  transform: scale(0.9);
 }
 
 
@@ -1197,6 +1878,28 @@ span.variant-button:hover {
 }
 
 
+.quantity-value--pop {
+  animation: quantity-value-pop 280ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+
+@keyframes quantity-value-pop {
+  0% {
+    opacity: 0.55;
+    transform: scale(0.7);
+  }
+
+  70% {
+    transform: scale(1.22);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+
 .cart-summary {
   padding-bottom: 20px;
 
@@ -1214,7 +1917,7 @@ span.variant-button:hover {
 
 
 .cart-summary-heading h3 {
-  font-family: "Playfair Display", serif;
+  font-family: "Manrope", sans-serif;
 
   font-size: 22px;
 
@@ -1308,7 +2011,7 @@ span.variant-button:hover {
 
 
 .cart-item-info > strong {
-  font-family: "Playfair Display", serif;
+  font-family: "Manrope", sans-serif;
 
   font-size: 18px;
 
@@ -1488,7 +2191,7 @@ span.variant-button:hover {
 .story-feature strong {
   color: var(--honey);
 
-  font-family: "Playfair Display", serif;
+  font-family: "Manrope", sans-serif;
 
   font-size: 20px;
 }
@@ -1526,7 +2229,7 @@ span.variant-button:hover {
 .process-heading h2 {
   margin-top: 8px;
 
-  font-family: "Playfair Display", serif;
+  font-family: "Manrope", sans-serif;
 
   font-size: 38px;
 
@@ -1587,7 +2290,7 @@ span.variant-button:hover {
 .process-card h3 {
   margin-top: 4px;
 
-  font-family: "Playfair Display", serif;
+  font-family: "Manrope", sans-serif;
 
   font-size: 21px;
 
@@ -1621,11 +2324,11 @@ span.variant-button:hover {
 
   scroll-margin-top: 110px;
 
-  padding: 52px;
+  padding: 52px 0;
 
-  border-radius: 30px;
+  border-top: 1px solid var(--border);
 
-  background: var(--honey-light);
+  background: transparent;
 
   display: grid;
 
@@ -1659,7 +2362,7 @@ main > section[id] {
 
   max-width: 500px;
 
-  color: rgba(44, 36, 27, 0.75);
+  color: var(--brown-light);
 }
 
 
@@ -1713,20 +2416,21 @@ main > section[id] {
 
   border: 0;
 
-  background: var(--white);
+  background: var(--cream-dark);
 
   color: var(--brown);
 
   overflow-y: auto;
 
-  box-shadow: -20px 0 60px rgba(44, 36, 27, 0.18);
+  box-shadow: -20px 0 60px rgba(32, 38, 48, 0.15);
+  border-left: 1px solid var(--border);
 }
 
 
 .checkout-dialog::backdrop {
-  background: rgba(25, 20, 15, 0.48);
+  background: rgba(32, 38, 48, 0.28);
 
-  backdrop-filter: blur(2px);
+  backdrop-filter: blur(6px);
 }
 
 
@@ -1755,11 +2459,11 @@ main > section[id] {
 .checkout-dialog-header h2 {
   margin-top: 6px;
 
-  font-family: "Playfair Display", serif;
+  font-family: "Manrope", sans-serif;
 
   font-size: 30px;
 
-  font-weight: 500;
+  font-weight: 800;
 }
 
 
@@ -1960,7 +2664,7 @@ main > section[id] {
 .delivery-options input {
   margin-top: 4px;
 
-  accent-color: var(--brown);
+  accent-color: var(--honey);
 }
 
 
@@ -2106,7 +2810,7 @@ main > section[id] {
 
 
 .map-copy h2 {
-  font-family: "Playfair Display", serif;
+  font-family: "Manrope", sans-serif;
 
   font-size: 32px;
 
@@ -2162,6 +2866,20 @@ main > section[id] {
 /* Adjust the layout for tablets and smaller laptops. */
 /* Dostosowujemy układ do tabletów i mniejszych laptopów. */
 @media (max-width: 900px) {
+  .honey-comparison-layout {
+    grid-template-columns: 1fr;
+  }
+
+
+  .honey-comparison-visual {
+    position: relative;
+
+    top: auto;
+
+    height: 280px;
+
+    min-height: 0;
+  }
 
   /* Reduce the hero to one column. */
   /* Zmieniamy hero na jedną kolumnę. */
@@ -2213,6 +2931,35 @@ main > section[id] {
 /* Adjust the layout for mobile devices. */
 /* Dostosowujemy układ do urządzeń mobilnych. */
 @media (max-width: 650px) {
+  .honey-comparison-section {
+    padding: 44px 15px;
+
+    scroll-margin-top: 104px;
+  }
+
+
+  #catalogo {
+    scroll-margin-top: 104px;
+  }
+
+
+  .honey-comparison-grid {
+    grid-template-columns: 1fr;
+  }
+
+
+  .honey-comparison-visual {
+    height: 220px;
+
+    border-top-right-radius: 48px;
+  }
+
+
+  .honey-comparison-card {
+    min-height: 128px;
+
+    padding: 19px 0;
+  }
 
   /* Reduce horizontal margins. */
   /* Zmniejszamy boczne marginesy. */
@@ -2299,7 +3046,7 @@ main > section[id] {
 
     color: var(--brown);
 
-    font-family: "DM Sans", sans-serif;
+    font-family: "Manrope", sans-serif;
 
     font-size: 18px;
 
@@ -2394,7 +3141,7 @@ main > section[id] {
   /* Reduce hero heading size. */
   /* Zmniejszamy rozmiar nagłówka hero. */
   .hero h1 {
-    font-size: clamp(48px, 14vw, 68px);
+    font-size: 44px;
   }
 
 
@@ -2586,6 +3333,59 @@ main > section[id] {
 }
 
 
+.hero h1 span,
+.section-heading h2 span,
+.story-content h2 span,
+.contact-section h2 span {
+  background: linear-gradient(115deg, var(--scene-amber), var(--scene-coral));
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.home-family-copy h2,
+.process-heading h2,
+.map-copy h2,
+.cart-summary-heading h3 {
+  font-weight: 700;
+}
+
+.nav-links.is-open {
+  background: var(--white);
+  animation: menu-enter 220ms ease-out both;
+}
+
+.navbar.is-scrolled .nav-links.is-open {
+  background: var(--white);
+  box-shadow: 0 16px 48px rgba(32, 38, 48, 0.12);
+}
+
+.navbar.is-scrolled .nav-links.is-open a.active,
+.navbar.is-scrolled .nav-links.is-open a:hover,
+.nav-links.is-open a.active {
+  color: var(--scene-amber);
+}
+
+.mobile-menu-toggle:hover,
+.checkout-close-button:hover {
+  color: var(--scene-amber);
+  border-color: var(--scene-amber);
+}
+
+.checkout-dialog[open] {
+  animation: checkout-enter 320ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@keyframes menu-enter {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes checkout-enter {
+  from { opacity: 0; transform: translateX(32px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
 /* Respect reduced-motion preferences. */
 /* Szanujemy ustawienia użytkownika dotyczące ograniczenia animacji. */
 @media (prefers-reduced-motion: reduce) {
@@ -2607,7 +3407,22 @@ main > section[id] {
 
 
   .cart-count-pop,
-  .cart-items li {
+  .cart-items li,
+  .quantity-value--pop,
+  .nav-links.is-open,
+  .checkout-dialog[open] {
+    animation: none;
+  }
+
+
+  .reveal-on-scroll {
+    opacity: 1;
+
+    transform: none;
+  }
+
+
+  .reveal-on-scroll.is-visible {
     animation: none;
   }
 }

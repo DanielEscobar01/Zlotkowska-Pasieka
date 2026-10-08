@@ -7,6 +7,7 @@ import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import "./App.css";
 import { LANGUAGES, LANGUAGE_NAMES_PL, translations } from "./i18n";
 import LanguagePicker from "./LanguagePicker";
+import HoneyJourney from "./HoneyJourney";
 
 // Import the local images from the src/assets folder.
 // Importujemy lokalne obrazy z folderu src/assets.
@@ -63,6 +64,8 @@ const productGroups = Object.values(
   return { key: sorted[0].id, variants: sorted };
 });
 
+
+const honeyVarietyKeys = ["rapeseed", "facelia", "acaciaFacelia", "multifloral", "linden", "herbal"];
 
 // Show the available photos in the order honey moves from the apiary to finished jars.
 // Pokazujemy dostępne zdjęcia w kolejności od pasieki do gotowych słoików.
@@ -240,6 +243,8 @@ function handleOrderSubmit(event, cartItems, cartTotal, lang) {
 
 
 function Stepper({ label, value, max = Infinity, onChange, className = "", t }) {
+  const [changeCount, setChangeCount] = useState(0);
+
   return (
     <div className={`quantity-control ${className}`} role="group" aria-label={label}>
       <button
@@ -247,11 +252,18 @@ function Stepper({ label, value, max = Infinity, onChange, className = "", t }) 
         className="quantity-button"
         aria-label={`${t.product.decrease}: ${label}`}
         disabled={value <= 0}
-        onClick={() => onChange(value - 1)}
+        onClick={() => {
+          onChange(value - 1);
+          setChangeCount((count) => count + 1);
+        }}
       >
         −
       </button>
-      <output className="quantity-value" aria-live="polite">
+      <output
+        key={changeCount}
+        className={`quantity-value${changeCount ? " quantity-value--pop" : ""}`}
+        aria-live="polite"
+      >
         {value}
       </output>
       <button
@@ -259,7 +271,10 @@ function Stepper({ label, value, max = Infinity, onChange, className = "", t }) 
         className="quantity-button"
         aria-label={`${t.product.increase}: ${label}`}
         disabled={value >= max}
-        onClick={() => onChange(value + 1)}
+        onClick={() => {
+          onChange(value + 1);
+          setChangeCount((count) => count + 1);
+        }}
       >
         +
       </button>
@@ -500,8 +515,10 @@ function App() {
 
   // Map each supported route to its page-specific CSS visibility class.
   // Przypisujemy każdej trasie klasę określającą widoczną zawartość strony.
-  const pageClass = location.pathname === "/miody"
+  const pageClass = location.pathname === "/catalogo"
     ? "page-products"
+    : location.pathname === "/miody"
+      ? "page-honeys"
     : location.pathname === "/pasieka"
       ? "page-apiary"
       : "page-home";
@@ -651,7 +668,40 @@ function App() {
   // Start each destination page at the top and close the mobile menu.
   // Otwieramy każdą stronę od góry i zamykamy menu mobilne.
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "instant" });
+    const behavior = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      ? "instant"
+      : "smooth";
+    window.scrollTo({ top: 0, behavior });
+  }, [location.pathname]);
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return;
+    }
+
+    const elements = document.querySelectorAll(
+      ".hero-content, .home-family-section, .section-heading, .product-card, .process-section, .story-section, .contact-section, .map-section",
+    );
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: "0px 0px -36px 0px" });
+
+    elements.forEach((element) => {
+      element.classList.add("reveal-on-scroll");
+      observer.observe(element);
+    });
+
+    return () => {
+      observer.disconnect();
+      elements.forEach((element) => {
+        element.classList.remove("reveal-on-scroll", "is-visible");
+      });
+    };
   }, [location.pathname]);
 
   // Open the native modal when checkout is requested and close it when dismissed.
@@ -706,6 +756,7 @@ function App() {
           {/* Link to honey products.
 // Link do produktów z miodem. */}
           <NavLink to="/miody" onClick={() => setMobileMenuOpen(false)}>{t.nav.honeys}</NavLink>
+          <NavLink to="/catalogo" onClick={() => setMobileMenuOpen(false)}>{t.nav.catalog}</NavLink>
 
           {/* Link to the apiary story.
 // Link do historii pasieki. */}
@@ -806,7 +857,7 @@ function App() {
 
               {/* Main products button.
 // Główny przycisk produktów. */}
-              <Link to="/miody" className="button button-dark">
+              <Link to="/catalogo" className="button button-dark">
                 {t.hero.products}
               </Link>
 
@@ -829,7 +880,6 @@ function App() {
 
           </div>
 
-
         </section>
 
 
@@ -837,6 +887,13 @@ function App() {
             PRODUCTS
             PRODUKTY
         ========================== */}
+
+        {location.pathname === "/miody" && (
+          <HoneyJourney
+            products={honeyVarietyKeys.map((textKey) => products.find((product) => product.textKey === textKey))}
+            t={t}
+          />
+        )}
 
         <section className="home-family-section">
           <div className="home-family-copy">
@@ -864,7 +921,7 @@ function App() {
           </div>
         </section>
 
-        <section className="products-section" id="miody">
+        <section className="products-section" id="catalogo">
 
           {/* Products section heading.
 // Nagłówek sekcji produktów. */}
@@ -899,7 +956,7 @@ function App() {
               return (
 
               <article
-                className="product-card"
+                className={`product-card product-card--${product.textKey}`}
                 key={key}
               >
 
@@ -936,6 +993,13 @@ function App() {
                   <p>
                     {text.description}
                   </p>
+
+                  {product.badgeKey === "natural" && (
+                    <div className="product-health">
+                      <strong>{t.product.servingTitle}</strong>
+                      <p>{text.servingSuggestion}</p>
+                    </div>
+                  )}
 
 
                   <ul className="variant-rows">
