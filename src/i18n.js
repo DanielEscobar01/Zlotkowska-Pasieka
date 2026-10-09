@@ -26,6 +26,12 @@ export const translations = {
       closeMenu: "Zamknij menu",
       language: "Język strony",
       since: "Od 1977",
+      owner: "Właściciel pasieki",
+    },
+    ownerPage: {
+      eyebrow: "GOŚĆ SPECJALNY",
+      title: "Właściciel pasieki",
+      description: "Witold próbuje pozować, a pszczoły ani myślą robić przerwy w pracy.",
     },
     notice: {
       title: "Dziękujemy za zainteresowanie!",
@@ -33,7 +39,7 @@ export const translations = {
       close: "Zamknij komunikat",
     },
     hero: {
-      eyebrow: "RODZINNA PASIEKA OD 1977 · ZŁOTKOWO K. POZNANIA",
+      eyebrow: "ZŁOTKOWO · BLISKO POZNANIA",
       titleA: "Naturalny miód",
       titleB: "z rodzinnej pasieki.",
       description: "Rodzina, pszczoły i praca blisko natury. Nasz miód powstaje w małej pasiece w Złotkowie.",
@@ -231,6 +237,12 @@ export const translations = {
       closeMenu: "Close menu",
       language: "Choose language",
       since: "Since 1977",
+      owner: "The owner",
+    },
+    ownerPage: {
+      eyebrow: "SPECIAL GUEST",
+      title: "The owner of the apiary",
+      description: "Witold is trying to pose. The bees are much too busy making honey.",
     },
     notice: {
       title: "Thanks so much!",
@@ -238,7 +250,7 @@ export const translations = {
       close: "Close",
     },
     hero: {
-      eyebrow: "FAMILY APIARY SINCE 1977 · ZŁOTKOWO, NEAR POZNAŃ",
+      eyebrow: "ZŁOTKOWO · NEAR POZNAŃ",
       titleA: "Real honey",
       titleB: "from our family's bees.",
       description: "Our family, our bees and a lot of love for nature. We make our honey in a small apiary in Złotkowo.",
@@ -436,6 +448,12 @@ export const translations = {
       closeMenu: "Закрити меню",
       language: "Вибрати мову",
       since: "З 1977 року",
+      owner: "Власник пасіки",
+    },
+    ownerPage: {
+      eyebrow: "ОСОБЛИВИЙ ГОСТЬ",
+      title: "Власник пасіки",
+      description: "Вітольд намагається позувати, а бджоли тим часом невтомно працюють.",
     },
     notice: {
       title: "Щиро дякуємо!",
@@ -443,7 +461,7 @@ export const translations = {
       close: "Закрити",
     },
     hero: {
-      eyebrow: "СІМЕЙНА ПАСІКА З 1977 РОКУ · ЗЛОТКОВО, БІЛЯ ПОЗНАНІ",
+      eyebrow: "ЗЛОТКОВО · БІЛЯ ПОЗНАНІ",
       titleA: "Справжній мед",
       titleB: "від наших бджіл.",
       description: "Наша родина, наші бджоли й багато любові до природи. Ми робимо мед на невеликій пасіці у Злоткові.",
@@ -641,6 +659,12 @@ export const translations = {
       closeMenu: "Cerrar menú",
       language: "Elegir idioma",
       since: "Desde 1977",
+      owner: "El dueño",
+    },
+    ownerPage: {
+      eyebrow: "INVITADO ESPECIAL",
+      title: "El dueño del colmenar",
+      description: "Witold intenta posar, pero las abejitas están demasiado ocupadas haciendo miel.",
     },
     notice: {
       title: "¡Muchas gracias!",
@@ -648,7 +672,7 @@ export const translations = {
       close: "Cerrar",
     },
     hero: {
-      eyebrow: "COLMENAR FAMILIAR DESDE 1977 · ZŁOTKOWO, CERCA DE POZNAŃ",
+      eyebrow: "ZŁOTKOWO · CERCA DE POZNAŃ",
       titleA: "Miel de verdad",
       titleB: "de nuestras abejas.",
       description: "Nuestra familia, nuestras abejas y mucho cariño por la naturaleza. Hacemos nuestra miel en un pequeño colmenar en Złotkowo.",

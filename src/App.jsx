@@ -8,6 +8,11 @@ import "./App.css";
 import { LANGUAGES, LANGUAGE_NAMES_PL, translations } from "./i18n";
 import LanguagePicker from "./LanguagePicker";
 import HoneyJourney from "./HoneyJourney";
+import WitoldOwner from "./assets/witoldowner.jpg";
+import WitoldRewers from "./assets/Witold-Rewers.jpg";
+import HoneyBeeFlight from "./assets/HoneyBeeFlight.webp";
+import FireTruckCC0 from "./assets/FireTruckCC0.webp";
+import FireplaceFlames from "./assets/FireplaceFlamesCC0.webp";
 
 // Import the local images from the src/assets folder.
 // Importujemy lokalne obrazy z folderu src/assets.
@@ -521,6 +526,8 @@ function App() {
       ? "page-honeys"
     : location.pathname === "/pasieka"
       ? "page-apiary"
+      : location.pathname === "/dueno"
+        ? "page-owner"
       : "page-home";
 
   // Store the quantity of each product selected by its id.
@@ -1290,6 +1297,45 @@ function App() {
           </div>
         </section>
 
+        {location.pathname === "/dueno" && (
+          <section className="owner-prank-page" aria-labelledby="owner-prank-title">
+            <img className="owner-fire-background" src={FireplaceFlames} alt="" />
+            <header className="owner-prank-intro">
+              <p className="eyebrow">{t.ownerPage.eyebrow}</p>
+              <h1 id="owner-prank-title">{t.ownerPage.title}</h1>
+              <p>{t.ownerPage.description}</p>
+            </header>
+            <div className="owner-prank-canvas" aria-hidden="true">
+              {Array.from({ length: 2 }, (_, index) => (
+                <div
+                  key={`truck-${index}`}
+                  className={`owner-firetruck owner-firetruck--${index + 1}`}
+                >
+                  <img src={FireTruckCC0} alt="" />
+                  <span className="owner-siren-beacon owner-siren-beacon--red" />
+                  <span className="owner-siren-beacon owner-siren-beacon--blue" />
+                </div>
+              ))}
+              {Array.from({ length: 12 }, (_, index) => (
+                <img
+                  key={index}
+                  className={`owner-prank-photo owner-prank-photo--${index + 1}`}
+                  src={index % 2 === 0 ? WitoldOwner : WitoldRewers}
+                  alt=""
+                />
+              ))}
+              {Array.from({ length: 16 }, (_, index) => (
+                <span
+                  key={`bee-${index}`}
+                  className={`owner-prank-bee owner-prank-bee--${index + 1}`}
+                >
+                  <img src={HoneyBeeFlight} alt="" />
+                </span>
+              ))}
+            </div>
+          </section>
+        )}
+
 
       </main>
 
@@ -1366,6 +1412,8 @@ function App() {
         <span>
           {t.footer}
         </span>
+
+        <Link to="/dueno" className="footer-owner-link">{t.nav.owner}</Link>
 
       </footer>
 
