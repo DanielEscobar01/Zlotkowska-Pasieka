@@ -152,8 +152,8 @@ img {
   display: grid;
   place-items: center;
   isolation: isolate;
-  background: #46150c;
-  animation: owner-fire-boil 2.4s ease-in-out infinite alternate;
+  background: #3b130c;
+  animation: owner-fire-boil 1.8s steps(3, end) infinite;
 }
 
 .owner-fire-background {
@@ -164,8 +164,8 @@ img {
   height: 100%;
   object-fit: cover;
   object-position: center 62%;
-  opacity: 0.76;
-  animation: owner-fire-flicker 1.6s ease-in-out infinite alternate;
+  opacity: 0.94;
+  animation: owner-fire-flicker 1.35s ease-in-out infinite alternate;
 }
 
 .owner-prank-page::before {
@@ -173,12 +173,13 @@ img {
   position: absolute;
   z-index: 1;
   inset: 0;
-  background: rgba(22, 8, 6, 0.4);
+  background: rgba(22, 8, 6, 0.2);
+  animation: owner-firewash 1.15s steps(3, end) infinite;
 }
 
 .owner-prank-intro {
   position: relative;
-  z-index: 2;
+  z-index: 3;
   width: min(720px, calc(100% - 48px));
   padding: 56px 0;
   text-align: center;
@@ -207,7 +208,7 @@ img {
 
 .owner-prank-canvas {
   position: absolute;
-  z-index: 3;
+  z-index: 2;
   inset: 0;
   overflow: hidden;
   pointer-events: none;
@@ -341,14 +342,22 @@ img {
 }
 
 @keyframes owner-fire-boil {
-  0% { background-color: #3b130c; }
-  55% { background-color: #9d2c10; }
-  100% { background-color: #58180d; }
+  0% { background-color: #591306; }
+  35% { background-color: #ff5717; }
+  68% { background-color: #ae2008; }
+  100% { background-color: #e9460d; }
 }
 
 @keyframes owner-fire-flicker {
-  from { opacity: 0.78; filter: saturate(1.05) hue-rotate(-4deg); }
-  to { opacity: 1; filter: saturate(1.42) hue-rotate(7deg); }
+  from { opacity: 0.86; filter: saturate(1.2) hue-rotate(-10deg) brightness(0.92); }
+  to { opacity: 1; filter: saturate(1.8) hue-rotate(12deg) brightness(1.18); }
+}
+
+@keyframes owner-firewash {
+  0% { background-color: rgba(74, 8, 0, 0.2); }
+  33% { background-color: rgba(255, 74, 0, 0.08); }
+  66% { background-color: rgba(255, 155, 0, 0.23); }
+  100% { background-color: rgba(160, 18, 0, 0.12); }
 }
 
 .footer-owner-link {

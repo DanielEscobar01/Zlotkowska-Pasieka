@@ -768,6 +768,7 @@ function App() {
           {/* Link to the apiary story.
 // Link do historii pasieki. */}
           <NavLink to="/pasieka" onClick={() => setMobileMenuOpen(false)}>{t.nav.apiary}</NavLink>
+          <NavLink to="/dueno" onClick={() => setMobileMenuOpen(false)}>{t.nav.owner}</NavLink>
 
         </nav>
 
