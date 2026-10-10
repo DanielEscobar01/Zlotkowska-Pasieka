@@ -2,11 +2,11 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
 export default defineConfig({
-  // English: Set the base path used when the application is deployed on GitHub Pages.
-  // Polski: Ustawia ścieżkę bazową używaną podczas wdrażania aplikacji na GitHub Pages.
+  // Ruta base para que assets y rutas funcionen bajo el subdirectorio de GitHub Pages.
+  // Ścieżka bazowa zapewnia działanie zasobów i tras w podkatalogu GitHub Pages.
   base: '/Zlotkowska-Pasieka/',
 
-  // English: Enable the React plugin so Vite can process React files.
-  // Polski: Włącza wtyczkę React, aby Vite mógł przetwarzać pliki React.
+  // El plugin procesa JSX y conecta React con el servidor y la compilación de Vite.
+  // Wtyczka przetwarza JSX i łączy React z serwerem oraz kompilacją Vite.
   plugins: [react()],
 })

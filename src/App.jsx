@@ -8,11 +8,7 @@ import "./App.css";
 import { LANGUAGES, LANGUAGE_NAMES_PL, translations } from "./i18n";
 import LanguagePicker from "./LanguagePicker";
 import HoneyJourney from "./HoneyJourney";
-import WitoldOwner from "./assets/witoldowner.jpg";
-import WitoldRewers from "./assets/Witold-Rewers.jpg";
-import HoneyBeeFlight from "./assets/HoneyBeeFlight.webp";
-import FireTruckCC0 from "./assets/FireTruckCC0.webp";
-import FireplaceFlames from "./assets/FireplaceFlamesCC0.webp";
+import { supabase, supabaseAdminEmail } from "./supabase";
 
 // Import the local images from the src/assets folder.
 // Importujemy lokalne obrazy z folderu src/assets.
@@ -40,9 +36,49 @@ import ProcessPreparedComb from "./assets/Proces3DojrzalyPlaster.webp";
 
 
 const GIFT_BOX_PRICE = 5;
+const LOCAL_INVENTORY_KEY = "zlotkowska-local-inventory";
+const LOCAL_PRICES_KEY = "zlotkowska-local-prices";
+const LOCAL_PROMO_PRICES_KEY = "zlotkowska-local-promo-prices";
+const LOCAL_PROMO_ACTIVE_KEY = "zlotkowska-local-promo-active";
+
+function loadLocalInventory() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(LOCAL_INVENTORY_KEY) ?? "{}");
+    return saved && typeof saved === "object" && !Array.isArray(saved) ? saved : {};
+  } catch {
+    return {};
+  }
+}
+
+function loadLocalPrices(key = LOCAL_PRICES_KEY) {
+  try {
+    const saved = JSON.parse(localStorage.getItem(key) ?? "{}");
+    return saved && typeof saved === "object" && !Array.isArray(saved) ? saved : {};
+  } catch {
+    return {};
+  }
+}
+
+function loadLocalPromotionFlags() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(LOCAL_PROMO_ACTIVE_KEY) ?? "{}");
+    return saved && typeof saved === "object" && !Array.isArray(saved) ? saved : {};
+  } catch {
+    return {};
+  }
+}
+
+function isValidPriceDraft(value) {
+  const price = Number(value);
+  return value !== ""
+    && Number.isFinite(price)
+    && price >= 0
+    && Math.abs(price * 100 - Math.round(price * 100)) < 0.000001;
+}
 
 
-// Names and descriptions live in i18n.js under products[textKey].
+// Cada id identifica una variante también en product_inventory de schema.sql; textKey enlaza sus textos en i18n.js.
+// Każde id wskazuje wariant również w product_inventory z schema.sql; textKey łączy teksty w i18n.js.
 const products = [
   { id: 1, textKey: "rapeseed", weight: "1,2 kg", price: 40, image: HoneyRapeseed12, badgeKey: "natural", giftBox: true },
   { id: 2, textKey: "facelia", weight: "1,2 kg", price: 45, image: HoneyFacelia12, badgeKey: "natural", giftBox: true },
@@ -56,18 +92,7 @@ const products = [
   { id: 11, textKey: "giftSet3", weight: "3 × 0,38 kg", price: 50, image: GiftSetThreeHoneys, badgeKey: "gift" },
   { id: 12, textKey: "giftSet2", weight: "2 × 0,38 kg + 200 g", price: 50, image: GiftSetTwoHoneysAndPollen, badgeKey: "gift" },
 ];
-
-
-// One card per product; sizes of the same honey become selectable variants (smallest first).
-const productGroups = Object.values(
-  products.reduce((groups, product) => {
-    (groups[product.textKey] ??= []).push(product);
-    return groups;
-  }, {}),
-).map((variants) => {
-  const sorted = [...variants].sort((a, b) => a.price - b.price);
-  return { key: sorted[0].id, variants: sorted };
-});
+const defaultPricesById = Object.fromEntries(products.map(({ id, price }) => [id, price]));
 
 
 const honeyVarietyKeys = ["rapeseed", "facelia", "acaciaFacelia", "multifloral", "linden", "herbal"];
@@ -508,33 +533,62 @@ function CheckoutPanel({ cartItems, cartQuantity, cartTotal, updateCart, updateG
     </form>
   );
 }
-
-
-// Main application component.
-// Główny komponent aplikacji.
+// Componente raíz: conecta rutas, catálogo, carrito, traducciones, Auth e inventario.
+// Główny komponent łączy trasy, katalog, koszyk, tłumaczenia, Auth i zapasy.
 function App() {
   // Read the current hash route so the shared shell can show the right page.
   // Odczytujemy bieżącą trasę z hash, aby wspólny układ pokazał właściwą stronę.
   const location = useLocation();
   const navigate = useNavigate();
+  const isAdminPage = location.pathname === "/admin";
+  // El modo local solo existe durante desarrollo; en producción el panel requiere configuración Supabase.
+  // Tryb lokalny działa tylko podczas programowania; na produkcji panel wymaga konfiguracji Supabase.
+  const isLocalAdmin = import.meta.env.DEV && isAdminPage;
+  const supabaseConfigured = Boolean(supabase && supabaseAdminEmail);
+  const showAdminPage = location.pathname === "/admin" && (isLocalAdmin || supabaseConfigured);
 
   // Map each supported route to its page-specific CSS visibility class.
   // Przypisujemy każdej trasie klasę określającą widoczną zawartość strony.
-  const pageClass = location.pathname === "/catalogo"
-    ? "page-products"
-    : location.pathname === "/miody"
-      ? "page-honeys"
-    : location.pathname === "/pasieka"
-      ? "page-apiary"
-      : location.pathname === "/dueno"
-        ? "page-owner"
-      : "page-home";
+  const pageClass = showAdminPage
+    ? "page-admin"
+    : location.pathname === "/catalogo"
+      ? "page-products"
+      : location.pathname === "/miody"
+        ? "page-honeys"
+        : location.pathname === "/pasieka"
+          ? "page-apiary"
+          : "page-home";
 
   // Store the quantity of each product selected by its id.
   // Przechowujemy ilość każdego produktu pod jego identyfikatorem.
   const [cart, setCart] = useState({});
   const [giftBoxes, setGiftBoxes] = useState({});
   const [selectedVariants, setSelectedVariants] = useState({});
+  // inventory contiene stock confirmado; inventoryDrafts guarda ajustes locales aún no enviados.
+  // inventory przechowuje potwierdzony stan; inventoryDrafts zawiera lokalne zmiany jeszcze niewysłane.
+  const [inventory, setInventory] = useState(() => (supabaseConfigured ? {} : loadLocalInventory()));
+  const [inventoryPrices, setInventoryPrices] = useState(() => (supabaseConfigured ? {} : loadLocalPrices()));
+  const [inventoryPromoPrices, setInventoryPromoPrices] = useState(() => (
+    supabaseConfigured ? {} : loadLocalPrices(LOCAL_PROMO_PRICES_KEY)
+  ));
+  const [inventoryPromoActive, setInventoryPromoActive] = useState(() => (
+    supabaseConfigured ? {} : loadLocalPromotionFlags()
+  ));
+  const [inventoryDrafts, setInventoryDrafts] = useState({});
+  const [priceDrafts, setPriceDrafts] = useState({});
+  const [promoPriceDrafts, setPromoPriceDrafts] = useState({});
+  const [promoActiveDrafts, setPromoActiveDrafts] = useState({});
+  const [authSession, setAuthSession] = useState(null);
+  const [adminPassword, setAdminPassword] = useState("");
+  const [adminError, setAdminError] = useState("");
+  const [adminSaving, setAdminSaving] = useState(false);
+  const [inventoryLoading, setInventoryLoading] = useState(supabaseConfigured);
+  // Esta comprobación solo controla lo que muestra React; las políticas RLS son la autoridad de seguridad.
+  // To sprawdzenie steruje tylko interfejsem React; polityki RLS są właściwym zabezpieczeniem.
+  const isAdminAuthenticated = Boolean(
+    authSession?.user?.email
+      && authSession.user.email.toLowerCase() === supabaseAdminEmail.toLowerCase(),
+  );
 
   // A manual choice wins; otherwise map the phone's language (Russian -> Ukrainian), falling back to Polish.
   const [lang, setLang] = useState(() => {
@@ -546,10 +600,145 @@ function App() {
     return { pl: "pl", uk: "uk", ru: "uk", es: "es", en: "en" }[deviceLanguage] ?? "pl";
   });
   const t = translations[lang];
+  // Separa precio normal y precio efectivo; la promoción solo se usa si está activa y es menor.
+  // Rozdziela cenę regularną i zastosowaną; promocja działa tylko wtedy, gdy jest aktywna i niższa.
+  const catalogProducts = products.map((product) => {
+    const regularPrice = Number(inventoryPrices[product.id] ?? product.price);
+    const promoPrice = inventoryPromoPrices[product.id] == null
+      ? null
+      : Number(inventoryPromoPrices[product.id]);
+    const promoActive = Boolean(inventoryPromoActive[product.id])
+      && promoPrice !== null
+      && promoPrice < regularPrice;
+
+    return {
+      ...product,
+      regularPrice,
+      promoPrice,
+      promoActive,
+      price: promoActive ? promoPrice : regularPrice,
+    };
+  });
+  const productGroups = Object.values(
+    catalogProducts.reduce((groups, product) => {
+      (groups[product.textKey] ??= []).push(product);
+      return groups;
+    }, {}),
+  ).map((variants) => ({
+    key: variants[0].id,
+    variants: [...variants].sort((first, second) => first.price - second.price),
+  }));
 
   useEffect(() => {
     document.documentElement.lang = lang;
   }, [lang]);
+
+  useEffect(() => {
+    if (!supabase) return undefined;
+
+    // Auth restaura la sesión al abrir la app y actualiza este estado al iniciar o cerrar sesión.
+    // Auth przywraca sesję po otwarciu aplikacji i aktualizuje ten stan przy logowaniu oraz wylogowaniu.
+    let active = true;
+    supabase.auth.getSession().then(({ data, error }) => {
+      if (!active) return;
+      if (error) setAdminError(error.message);
+      setAuthSession(data?.session ?? null);
+    });
+
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setAuthSession(session);
+    });
+
+    return () => {
+      active = false;
+      authListener.subscription.unsubscribe();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!supabaseConfigured) return undefined;
+
+    // La consulta inicial carga PostgreSQL; Postgres Changes actualiza en vivo las pestañas suscritas.
+    // Początkowe zapytanie ładuje PostgreSQL; Postgres Changes aktualizuje subskrybowane karty na żywo.
+    let active = true;
+    const loadInventory = async () => {
+      const { data, error } = await supabase
+        .from("product_inventory")
+        .select("product_id, stock, price, promo_price, promo_active");
+      if (!active) return;
+      if (error) setAdminError(error.message);
+      else {
+        setInventory(Object.fromEntries((data ?? []).map(({ product_id, stock }) => [product_id, stock])));
+        setInventoryPrices(Object.fromEntries((data ?? []).map(({ product_id, price }) => [product_id, Number(price)])));
+        setInventoryPromoPrices(Object.fromEntries((data ?? []).map(({ product_id, promo_price }) => [product_id, promo_price == null ? null : Number(promo_price)])));
+        setInventoryPromoActive(Object.fromEntries((data ?? []).map(({ product_id, promo_active }) => [product_id, Boolean(promo_active)])));
+      }
+      setInventoryLoading(false);
+    };
+
+    loadInventory();
+    const channel = supabase
+      .channel("public-product-inventory")
+      .on("postgres_changes", { event: "*", schema: "public", table: "product_inventory" }, (payload) => {
+        setInventory((current) => {
+          const next = { ...current };
+          const record = payload.eventType === "DELETE" ? payload.old : payload.new;
+          if (payload.eventType === "DELETE") delete next[record.product_id];
+          else next[record.product_id] = record.stock;
+          return next;
+        });
+        setInventoryPrices((current) => {
+          const next = { ...current };
+          const record = payload.eventType === "DELETE" ? payload.old : payload.new;
+          if (payload.eventType === "DELETE") delete next[record.product_id];
+          else next[record.product_id] = Number(record.price);
+          return next;
+        });
+        setInventoryPromoPrices((current) => {
+          const next = { ...current };
+          const record = payload.eventType === "DELETE" ? payload.old : payload.new;
+          if (payload.eventType === "DELETE") delete next[record.product_id];
+          else next[record.product_id] = record.promo_price == null ? null : Number(record.promo_price);
+          return next;
+        });
+        setInventoryPromoActive((current) => {
+          const next = { ...current };
+          const record = payload.eventType === "DELETE" ? payload.old : payload.new;
+          if (payload.eventType === "DELETE") delete next[record.product_id];
+          else next[record.product_id] = Boolean(record.promo_active);
+          return next;
+        });
+      })
+      .subscribe((status) => {
+        if (status === "CHANNEL_ERROR" && active) setAdminError(t.adminPage.realtimeError);
+      });
+
+    return () => {
+      active = false;
+      supabase.removeChannel(channel);
+    };
+  }, [supabaseConfigured, t.adminPage.realtimeError]);
+
+  useEffect(() => {
+    if (!supabaseConfigured) {
+      // Sin configuración Supabase se conserva el stock solo en este navegador, como alternativa local.
+      // Bez konfiguracji Supabase stan jest przechowywany tylko w tej przeglądarce jako tryb lokalny.
+      localStorage.setItem(LOCAL_INVENTORY_KEY, JSON.stringify(inventory));
+    }
+  }, [inventory, supabaseConfigured]);
+
+  useEffect(() => {
+    if (!supabaseConfigured) {
+      localStorage.setItem(LOCAL_PRICES_KEY, JSON.stringify(inventoryPrices));
+    }
+  }, [inventoryPrices, supabaseConfigured]);
+
+  useEffect(() => {
+    if (!supabaseConfigured) {
+      localStorage.setItem(LOCAL_PROMO_PRICES_KEY, JSON.stringify(inventoryPromoPrices));
+      localStorage.setItem(LOCAL_PROMO_ACTIVE_KEY, JSON.stringify(inventoryPromoActive));
+    }
+  }, [inventoryPromoPrices, inventoryPromoActive, supabaseConfigured]);
 
   function changeLanguage(code) {
     setLang(code);
@@ -569,7 +758,7 @@ function App() {
 
   // Keep only products with a positive quantity and attach that quantity.
   // Zostawiamy produkty z ilością większą od zera i przypisujemy im ilość.
-  const cartItems = products
+  const cartItems = catalogProducts
     .filter((product) => cart[product.id] > 0)
     .map((product) => {
       const quantity = cart[product.id];
@@ -585,16 +774,211 @@ function App() {
   // Calculate the total product cost, excluding shipping.
   // Obliczamy koszt produktów bez kosztu wysyłki.
   const cartTotal = cartItems.reduce((total, item) => total + item.lineTotal, 0);
+  const pendingStockChanges = Object.entries(inventoryDrafts)
+    .filter(([productId, stock]) => (
+      stock !== ""
+      && Number.isInteger(Number(stock))
+      && Number(stock) >= 0
+      && Number(stock) !== (inventory[productId] ?? 0)
+    ))
+    .map(([productId, stock]) => ({ productId: Number(productId), stock: Number(stock) }));
+  const pendingPriceChanges = Object.entries(priceDrafts)
+    .filter(([productId, price]) => (
+      isValidPriceDraft(price)
+      && Number(price) !== Number(inventoryPrices[productId] ?? defaultPricesById[productId])
+    ))
+    .map(([productId, price]) => ({ productId: Number(productId), price: Number(price) }));
+  const pendingPromoPriceChanges = Object.entries(promoPriceDrafts)
+    .filter(([productId, price]) => (
+      (price === "" || isValidPriceDraft(price))
+      && (price === "" ? null : Number(price)) !== (inventoryPromoPrices[productId] ?? null)
+    ))
+    .map(([productId, price]) => ({
+      productId: Number(productId),
+      promoPrice: price === "" ? null : Number(price),
+    }));
+  const pendingPromoActiveChanges = Object.entries(promoActiveDrafts)
+    .filter(([productId, active]) => Boolean(active) !== Boolean(inventoryPromoActive[productId]))
+    .map(([productId, active]) => ({ productId: Number(productId), active: Boolean(active) }));
+  const hasInvalidDrafts = Object.values(inventoryDrafts).some((stock) => (
+    stock === "" || !Number.isInteger(Number(stock)) || Number(stock) < 0
+  )) || Object.values(priceDrafts).some((price) => (
+    !isValidPriceDraft(price)
+  )) || Object.values(promoPriceDrafts).some((price) => (
+    price !== "" && !isValidPriceDraft(price)
+  ));
+  const hasInvalidPromotion = products.some(({ id }) => {
+    const promotionIsActive = promoActiveDrafts[id] ?? Boolean(inventoryPromoActive[id]);
+    if (!promotionIsActive) return false;
+
+    const rawPromoPrice = Object.hasOwn(promoPriceDrafts, id)
+      ? promoPriceDrafts[id]
+      : inventoryPromoPrices[id] == null
+        ? ""
+        : String(inventoryPromoPrices[id]);
+    const regularPrice = Number(priceDrafts[id] ?? inventoryPrices[id] ?? defaultPricesById[id]);
+    return !isValidPriceDraft(rawPromoPrice) || Number(rawPromoPrice) >= regularPrice;
+  });
+  const pendingChangeCount = pendingStockChanges.length
+    + pendingPriceChanges.length
+    + pendingPromoPriceChanges.length
+    + pendingPromoActiveChanges.length;
 
   function updateGiftBoxes(productId, value) {
     const count = Math.max(0, Math.min(Math.floor(Number(value) || 0), cart[productId] ?? 0));
     setGiftBoxes((current) => ({ ...current, [productId]: count }));
   }
 
+  function adjustStockDraft(productId, change) {
+    const currentStock = Math.floor(Number(inventoryDrafts[productId] ?? inventory[productId] ?? 0) || 0);
+    const stock = Math.max(0, currentStock + change);
+    setInventoryDrafts((current) => {
+      const next = { ...current };
+      if (stock === (inventory[productId] ?? 0)) delete next[productId];
+      else next[productId] = stock;
+      return next;
+    });
+  }
+
+  function togglePromotionDraft(productId) {
+    const currentActive = promoActiveDrafts[productId] ?? Boolean(inventoryPromoActive[productId]);
+    const nextActive = !currentActive;
+    setPromoActiveDrafts((current) => {
+      const next = { ...current };
+      if (nextActive === Boolean(inventoryPromoActive[productId])) delete next[productId];
+      else next[productId] = nextActive;
+      return next;
+    });
+  }
+
+  async function saveInventoryChanges() {
+    if (pendingChangeCount === 0 || hasInvalidDrafts || hasInvalidPromotion || adminSaving) return;
+
+    setAdminError("");
+    setAdminSaving(true);
+
+    try {
+      const stockById = Object.fromEntries(pendingStockChanges.map(({ productId, stock }) => [productId, stock]));
+      const priceById = Object.fromEntries(pendingPriceChanges.map(({ productId, price }) => [productId, price]));
+      const promoPriceById = Object.fromEntries(
+        pendingPromoPriceChanges.map(({ productId, promoPrice }) => [productId, promoPrice]),
+      );
+      const promoActiveById = Object.fromEntries(
+        pendingPromoActiveChanges.map(({ productId, active }) => [productId, active]),
+      );
+      const changedProductIds = new Set([
+        ...pendingStockChanges,
+        ...pendingPriceChanges,
+        ...pendingPromoPriceChanges,
+        ...pendingPromoActiveChanges,
+      ].map(({ productId }) => productId));
+      const rowsToSave = [...changedProductIds].map((productId) => ({
+        product_id: productId,
+        stock: stockById[productId] ?? inventory[productId] ?? 0,
+        price: priceById[productId] ?? Number(inventoryPrices[productId] ?? defaultPricesById[productId]),
+        promo_price: Object.hasOwn(promoPriceById, productId)
+          ? promoPriceById[productId]
+          : inventoryPromoPrices[productId] ?? null,
+        promo_active: promoActiveById[productId] ?? Boolean(inventoryPromoActive[productId]),
+        updated_at: new Date().toISOString(),
+      }));
+
+      if (supabaseConfigured && isAdminAuthenticated) {
+        // Un upsert envía juntos precios y existencias; RLS valida permisos en PostgreSQL.
+        // Jeden upsert wysyła razem ceny i zapasy; RLS sprawdza uprawnienia w PostgreSQL.
+        const { error } = await supabase.from("product_inventory").upsert(rowsToSave);
+        if (error) throw error;
+      }
+
+      setInventory((current) => ({ ...current, ...stockById }));
+      setInventoryPrices((current) => ({ ...current, ...priceById }));
+      setInventoryPromoPrices((current) => ({ ...current, ...promoPriceById }));
+      setInventoryPromoActive((current) => ({ ...current, ...promoActiveById }));
+      // Al reducir stock, el carrito abierto tampoco puede conservar más unidades que las disponibles.
+      // Po zmniejszeniu zapasu otwarty koszyk nie może zawierać więcej sztuk niż jest dostępnych.
+      setCart((current) => {
+        const next = { ...current };
+        pendingStockChanges.forEach(({ productId, stock }) => {
+          if ((next[productId] ?? 0) > stock) {
+            if (stock === 0) delete next[productId];
+            else next[productId] = stock;
+          }
+        });
+        return next;
+      });
+      setGiftBoxes((current) => {
+        const next = { ...current };
+        pendingStockChanges.forEach(({ productId, stock }) => {
+          next[productId] = Math.min(next[productId] ?? 0, stock);
+        });
+        return next;
+      });
+      setInventoryDrafts((current) => {
+        const next = { ...current };
+        pendingStockChanges.forEach(({ productId, stock }) => {
+          if (Number(next[productId]) === stock) delete next[productId];
+        });
+        return next;
+      });
+      setPriceDrafts((current) => {
+        const next = { ...current };
+        pendingPriceChanges.forEach(({ productId, price }) => {
+          if (Number(next[productId]) === price) delete next[productId];
+        });
+        return next;
+      });
+      setPromoPriceDrafts((current) => {
+        const next = { ...current };
+        pendingPromoPriceChanges.forEach(({ productId, promoPrice }) => {
+          if ((next[productId] === "" ? null : Number(next[productId])) === promoPrice) delete next[productId];
+        });
+        return next;
+      });
+      setPromoActiveDrafts((current) => {
+        const next = { ...current };
+        pendingPromoActiveChanges.forEach(({ productId, active }) => {
+          if (next[productId] === active) delete next[productId];
+        });
+        return next;
+      });
+    } catch (error) {
+      setAdminError(error.message || t.adminPage.saveError);
+    } finally {
+      setAdminSaving(false);
+    }
+  }
+
+  async function signInAdmin(event) {
+    event.preventDefault();
+    setAdminError("");
+    setAdminSaving(true);
+
+    // La interfaz muestra el alias witold; Supabase Auth usa el correo configurado y la contraseña.
+    // Interfejs pokazuje alias witold; Supabase Auth używa skonfigurowanego e-maila i hasła.
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: supabaseAdminEmail,
+      password: adminPassword,
+    });
+
+    if (error || data.user?.email?.toLowerCase() !== supabaseAdminEmail.toLowerCase()) {
+      setAdminError(error?.message ?? t.adminPage.loginFailed);
+      await supabase.auth.signOut();
+    }
+
+    setAdminPassword("");
+    setAdminSaving(false);
+  }
+
+  async function signOutAdmin() {
+    await supabase?.auth.signOut();
+    setAuthSession(null);
+    setAdminError("");
+  }
+
   function updateCart(productId, value) {
-    // Convert the requested quantity to a non-negative whole number.
-    // Zamieniamy podaną ilość na nieujemną liczbę całkowitą.
-    const quantity = Math.max(0, Math.floor(Number(value) || 0));
+    const requested = Math.max(0, Math.floor(Number(value) || 0));
+    const stock = inventory[productId];
+    const quantity = stock === undefined ? requested : Math.min(requested, stock);
 
     // Dismiss the previous order notice when a new basket starts.
     // Ukrywamy poprzedni komunikat, gdy zaczyna się nowe zamówienie.
@@ -768,7 +1152,7 @@ function App() {
           {/* Link to the apiary story.
 // Link do historii pasieki. */}
           <NavLink to="/pasieka" onClick={() => setMobileMenuOpen(false)}>{t.nav.apiary}</NavLink>
-          <NavLink to="/dueno" onClick={() => setMobileMenuOpen(false)}>{t.nav.owner}</NavLink>
+          {import.meta.env.DEV && <NavLink to="/admin" onClick={() => setMobileMenuOpen(false)}>{t.adminPage.link}</NavLink>}
 
         </nav>
 
@@ -1017,10 +1401,12 @@ function App() {
                   <ul className="variant-rows">
                     {variants.map((variant) => {
                       const quantity = cart[variant.id] ?? 0;
+                      const stock = inventory[variant.id];
+                      const isUnavailable = stock === 0;
                       const selectThis = () => setSelectedVariants((current) => ({ ...current, [key]: variant.id }));
 
                       return (
-                        <li key={variant.id} className="variant-row">
+                        <li key={variant.id} className={`variant-row${isUnavailable ? " is-out-of-stock" : ""}`}>
                           <div className="variant-main">
                             {variants.length > 1 ? (
                               <button
@@ -1035,10 +1421,15 @@ function App() {
                             ) : (
                               <span className="variant-button">{variant.weight}</span>
                             )}
-                            <strong>{variant.price} zł</strong>
+                            <span className={`variant-price${variant.promoActive ? " is-promotional" : ""}`}>
+                              {variant.promoActive && <del>{variant.regularPrice} zł</del>}
+                              <strong>{variant.price} zł</strong>
+                              {variant.promoActive && <span className="promotion-badge">{t.adminPage.promotionBadge}</span>}
+                            </span>
                             <Stepper
                               label={`${t.product.quantity}: ${text.name}, ${variant.weight}`}
                               value={quantity}
+                              max={stock ?? Infinity}
                               onChange={(value) => {
                                 selectThis();
                                 updateCart(variant.id, value);
@@ -1046,6 +1437,9 @@ function App() {
                               t={t}
                             />
                           </div>
+
+                          {stock > 0 && <span className="stock-availability">{t.product.stockAvailable(stock)}</span>}
+                          {isUnavailable && <span className="stock-unavailable">{t.adminPage.unavailable}</span>}
 
                           {variant.giftBox && quantity > 0 && (
                             <div className="gift-box-row">
@@ -1298,42 +1692,207 @@ function App() {
           </div>
         </section>
 
-        {location.pathname === "/dueno" && (
-          <section className="owner-prank-page" aria-labelledby="owner-prank-title">
-            <img className="owner-fire-background" src={FireplaceFlames} alt="" />
-            <header className="owner-prank-intro">
-              <p className="eyebrow">{t.ownerPage.eyebrow}</p>
-              <h1 id="owner-prank-title">{t.ownerPage.title}</h1>
-              <p>{t.ownerPage.description}</p>
+        {showAdminPage && (
+          <section className="inventory-admin" aria-labelledby="inventory-admin-title">
+            <header className="inventory-admin-header">
+              <p className="eyebrow">
+                {supabaseConfigured ? t.adminPage.supabaseEyebrow : t.adminPage.eyebrow}
+              </p>
+              <h1 id="inventory-admin-title">{t.adminPage.title}</h1>
+              <p>
+                {isAdminAuthenticated
+                  ? t.adminPage.welcomeAdmin
+                  : supabaseConfigured
+                    ? t.adminPage.supabaseNote
+                    : t.adminPage.localNote}
+              </p>
             </header>
-            <div className="owner-prank-canvas" aria-hidden="true">
-              {Array.from({ length: 2 }, (_, index) => (
-                <div
-                  key={`truck-${index}`}
-                  className={`owner-firetruck owner-firetruck--${index + 1}`}
-                >
-                  <img src={FireTruckCC0} alt="" />
-                  <span className="owner-siren-beacon owner-siren-beacon--red" />
-                  <span className="owner-siren-beacon owner-siren-beacon--blue" />
-                </div>
-              ))}
-              {Array.from({ length: 12 }, (_, index) => (
-                <img
-                  key={index}
-                  className={`owner-prank-photo owner-prank-photo--${index + 1}`}
-                  src={index % 2 === 0 ? WitoldOwner : WitoldRewers}
-                  alt=""
-                />
-              ))}
-              {Array.from({ length: 16 }, (_, index) => (
-                <span
-                  key={`bee-${index}`}
-                  className={`owner-prank-bee owner-prank-bee--${index + 1}`}
-                >
-                  <img src={HoneyBeeFlight} alt="" />
-                </span>
-              ))}
+            {supabaseConfigured && !isAdminAuthenticated && (
+              <form className="inventory-admin-login" onSubmit={signInAdmin}>
+                <label>
+                  <span>{t.adminPage.username}</span>
+                  <input type="text" value="witold" readOnly autoComplete="username" />
+                </label>
+                <label>
+                  <span>{t.adminPage.password}</span>
+                  <input
+                    type="password"
+                    value={adminPassword}
+                    onChange={(event) => setAdminPassword(event.currentTarget.value)}
+                    autoComplete="current-password"
+                    required
+                  />
+                </label>
+                {adminError && <p className="inventory-admin-error" role="alert">{adminError}</p>}
+                <button className="button button-dark" type="submit" disabled={adminSaving}>
+                  {adminSaving ? t.adminPage.loading : t.adminPage.signIn}
+                </button>
+              </form>
+            )}
+            {(!supabaseConfigured || isAdminAuthenticated) && (
+              <>
+                {isAdminAuthenticated && (
+                  <button className="inventory-admin-signout" type="button" onClick={signOutAdmin}>
+                    {t.adminPage.signOut}
+                  </button>
+                )}
+                {inventoryLoading && <p role="status">{t.adminPage.loading}</p>}
+                {adminError && <p className="inventory-admin-error" role="alert">{adminError}</p>}
+                {hasInvalidDrafts && <p className="inventory-admin-error" role="alert">{t.adminPage.invalidDrafts}</p>}
+                {hasInvalidPromotion && <p className="inventory-admin-error" role="alert">{t.adminPage.invalidPromotion}</p>}
+            <div className="inventory-admin-list">
+              {products.map((product) => {
+                // La imagen, los precios y el stock pertenecen al mismo id de variante.
+                // Obraz, ceny i stan magazynowy należą do tego samego id wariantu.
+                const productText = t.products[product.textKey];
+                const stock = inventory[product.id];
+                const currentPrice = Number(inventoryPrices[product.id] ?? product.price);
+                const currentPromoPrice = inventoryPromoPrices[product.id] == null
+                  ? ""
+                  : String(inventoryPromoPrices[product.id]);
+                const promotionIsActive = promoActiveDrafts[product.id]
+                  ?? Boolean(inventoryPromoActive[product.id]);
+                const hasDraft = Object.hasOwn(inventoryDrafts, product.id);
+                const rawDraft = hasDraft ? inventoryDrafts[product.id] : stock;
+                const displayedStock = rawDraft === undefined || rawDraft === ""
+                  ? undefined
+                  : Math.max(0, Math.floor(Number(rawDraft) || 0));
+                const hasPriceDraft = Object.hasOwn(priceDrafts, product.id);
+                const hasPromoPriceDraft = Object.hasOwn(promoPriceDrafts, product.id);
+                const stockStatus = displayedStock === undefined
+                  ? t.adminPage.notSet
+                  : displayedStock === 0
+                    ? t.adminPage.unavailable
+                    : t.adminPage.available;
+
+                return (
+                  <div className="inventory-admin-row" key={product.id}>
+                    <span className="inventory-admin-product">
+                      <img
+                        className="inventory-admin-thumb"
+                        src={product.image}
+                        alt={`${productText.name}, ${product.weight}`}
+                        loading="eager"
+                      />
+                      <span className="inventory-admin-product-heading">
+                        <strong>{productText.name}</strong>
+                        {promotionIsActive && (
+                          <span className="inventory-admin-promo-active" role="status">
+                            {t.adminPage.promotionActive}
+                          </span>
+                        )}
+                      </span>
+                      <small>{product.weight}</small>
+                    </span>
+                    <span className={`inventory-admin-status${displayedStock === 0 ? " is-out-of-stock" : ""}`}>
+                      {stockStatus}
+                    </span>
+                    <div className="inventory-admin-stock-control">
+                      <span>{t.adminPage.stock}</span>
+                      <div className="inventory-admin-stepper">
+                        <button
+                          type="button"
+                          aria-label={`${t.adminPage.decreaseStock}: ${productText.name}, ${product.weight}`}
+                          onClick={() => adjustStockDraft(product.id, -1)}
+                          disabled={displayedStock === 0 || adminSaving}
+                        >
+                          −
+                        </button>
+                        <input
+                          aria-label={`${t.adminPage.stock}: ${productText.name}, ${product.weight}`}
+                          type="number"
+                          min="0"
+                          step="1"
+                          inputMode="numeric"
+                          value={hasDraft ? inventoryDrafts[product.id] : stock ?? 0}
+                          onChange={(event) => {
+                            const stockValue = event.currentTarget.value;
+                            setInventoryDrafts((current) => ({ ...current, [product.id]: stockValue }));
+                          }}
+                          disabled={adminSaving}
+                        />
+                        <button
+                          type="button"
+                          aria-label={`${t.adminPage.increaseStock}: ${productText.name}, ${product.weight}`}
+                          onClick={() => adjustStockDraft(product.id, 1)}
+                          disabled={adminSaving}
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+                    <div className="inventory-admin-pricing-control">
+                      <label className="inventory-admin-price-control">
+                        <span>{t.adminPage.regularPrice}</span>
+                        <span className="inventory-admin-price-input">
+                          <input
+                            aria-label={`${t.adminPage.regularPrice}: ${productText.name}, ${product.weight}`}
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            inputMode="decimal"
+                            value={hasPriceDraft ? priceDrafts[product.id] : currentPrice.toFixed(2)}
+                            onChange={(event) => {
+                              const priceValue = event.currentTarget.value;
+                              setPriceDrafts((current) => ({ ...current, [product.id]: priceValue }));
+                            }}
+                            disabled={adminSaving}
+                          />
+                          <span>zł</span>
+                        </span>
+                      </label>
+                      <div className="inventory-admin-promo-row">
+                        <label className="inventory-admin-price-control">
+                          <span>{t.adminPage.promoPrice}</span>
+                          <span className="inventory-admin-price-input">
+                            <input
+                              aria-label={`${t.adminPage.promoPrice}: ${productText.name}, ${product.weight}`}
+                              type="number"
+                              min="0"
+                              step="0.01"
+                              inputMode="decimal"
+                              value={hasPromoPriceDraft ? promoPriceDrafts[product.id] : currentPromoPrice}
+                              onChange={(event) => {
+                                const promoPrice = event.currentTarget.value;
+                                setPromoPriceDrafts((current) => ({ ...current, [product.id]: promoPrice }));
+                              }}
+                              disabled={adminSaving}
+                            />
+                            <span>zł</span>
+                          </span>
+                        </label>
+                        <div className="inventory-admin-promo-action">
+                          <button
+                            className={`inventory-admin-promo-toggle${promotionIsActive ? " is-active" : ""}`}
+                            type="button"
+                            aria-pressed={promotionIsActive}
+                            onClick={() => togglePromotionDraft(product.id)}
+                            disabled={adminSaving}
+                          >
+                            {promotionIsActive ? t.adminPage.deactivatePromotion : t.adminPage.activatePromotion}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
+                <div className="inventory-admin-actions">
+                  <span aria-live="polite">
+                    {t.adminPage.pendingChanges(pendingChangeCount)}
+                  </span>
+                  <button
+                    className="button inventory-admin-confirm"
+                    type="button"
+                    onClick={saveInventoryChanges}
+                    disabled={pendingChangeCount === 0 || hasInvalidDrafts || hasInvalidPromotion || adminSaving || inventoryLoading}
+                  >
+                    {adminSaving ? t.adminPage.savingChanges : t.adminPage.confirmChanges}
+                  </button>
+                </div>
+              </>
+            )}
           </section>
         )}
 
@@ -1414,7 +1973,7 @@ function App() {
           {t.footer}
         </span>
 
-        <Link to="/dueno" className="footer-owner-link">{t.nav.owner}</Link>
+        {import.meta.env.DEV && <Link to="/admin" className="footer-admin-link">{t.adminPage.link}</Link>}
 
       </footer>
 

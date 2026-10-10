@@ -1,5 +1,8 @@
-/* Remove the default Vite stylesheet styles. */
-/* Usuwamy domyślne style arkusza Vite. */
+/* CSS controla la presentación; no contiene la lógica del inventario ni los permisos de la base. */
+/* CSS określa wygląd; nie zawiera logiki zapasów ani uprawnień bazy danych. */
+
+/* Esta hoja establece reglas globales; App.css define estilos de componentes y secciones concretas. */
+/* Ten arkusz ustawia reguły globalne; App.css definiuje style komponentów i konkretnych sekcji. */
 
 html,
 body,

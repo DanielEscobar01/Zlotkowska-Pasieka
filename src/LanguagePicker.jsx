@@ -1,7 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { LANGUAGES } from "./i18n";
 
-// Inline SVG flags render the same everywhere (Windows shows flag emoji as letters).
+// LANGUAGES aporta códigos y nombres desde i18n.js; App recibe la elección mediante onChange.
+// LANGUAGES dostarcza kody i nazwy z i18n.js; App otrzymuje wybór przez onChange.
+// Las banderas SVG propias mantienen el aspecto aunque el sistema no dibuje emojis de bandera.
+// Własne flagi SVG zachowują wygląd, nawet gdy system nie rysuje emoji flag.
 function Flag({ code }) {
   const common = { className: "flag", viewBox: "0 0 30 20", "aria-hidden": true };
 
@@ -69,6 +72,8 @@ export default function LanguagePicker({ lang, onChange, label }) {
       }
     }
 
+    // Los listeners solo se crean mientras el menú está abierto y se limpian al cerrarlo.
+    // Nasłuchiwacze są tworzone tylko przy otwartym menu i usuwane po jego zamknięciu.
     document.addEventListener("pointerdown", closeOnOutsideClick);
     document.addEventListener("keydown", closeOnEscape);
     return () => {

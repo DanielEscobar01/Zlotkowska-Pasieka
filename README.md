@@ -1,16 +1,17 @@
-# React + Vite
+# Złotkowska Pasieka
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Español
 
-Currently, two official plugins are available:
+Tienda web construida con React y Vite. Para entender cómo se conectan sus componentes, Supabase, SQL, Auth, RLS y Realtime, consulta la [guía bilingüe del código](CODE_GUIDE.md).
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Para configurar el backend de inventario, sigue [SUPABASE_SETUP.md](SUPABASE_SETUP.md).
 
-## React Compiler
+Comandos de desarrollo: `npm install`, `npm run dev`, `npm run lint` y `npm run build`.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Polski
 
-## Expanding the ESLint configuration
+Sklep internetowy zbudowany w React i Vite. Aby poznać połączenia między komponentami, Supabase, SQL, Auth, RLS i Realtime, przeczytaj [dwujęzyczny przewodnik po kodzie](CODE_GUIDE.md).
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Konfigurację backendu magazynu opisuje [SUPABASE_SETUP.md](SUPABASE_SETUP.md).
+
+Polecenia: `npm install`, `npm run dev`, `npm run lint` i `npm run build`.

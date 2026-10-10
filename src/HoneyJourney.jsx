@@ -17,6 +17,8 @@ const sceneImages = {
   herbal: HerbalJar,
 };
 
+// Cada clave conecta una variante de producto con la fotografía de su escena narrativa.
+// Każdy klucz łączy wariant produktu ze zdjęciem jego sceny.
 function HoneyScene({ product, text, t }) {
   const profile = t.varietiesSection.profiles?.[product.textKey];
   const sceneRef = useRef(null);
@@ -25,6 +27,8 @@ function HoneyScene({ product, text, t }) {
     target: sceneRef,
     offset: ["start end", "end start"],
   });
+  // El progreso del scroll alimenta luz, escala y opacidad; reduced motion evita esas animaciones.
+  // Postęp przewijania steruje światłem, skalą i kryciem; reduced motion wyłącza te animacje.
   const progress = useSpring(scrollYProgress, {
     stiffness: 110,
     damping: 32,
@@ -98,6 +102,8 @@ function HoneyScene({ product, text, t }) {
 }
 
 export default function HoneyJourney({ products, t }) {
+  // App proporciona productos y traducciones; aquí se presentan como escenas desplazables.
+  // App przekazuje produkty i tłumaczenia; tutaj są prezentowane jako przewijane sceny.
   return (
     <div className="honey-comparison-section honey-journey" id="miody">
       <header className="honey-journey-heading">

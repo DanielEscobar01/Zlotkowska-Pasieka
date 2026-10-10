@@ -1,75 +1,79 @@
-# English: Name of the GitHub Actions workflow.
-# Polski: Nazwa procesu GitHub Actions.
+# Nombre del proceso de publicación en GitHub Actions.
+# Nazwa procesu publikacji w GitHub Actions.
 name: Deploy React app to GitHub Pages
 
-# English: Run this workflow whenever changes are pushed to the main branch.
-# Polski: Uruchamia ten proces za każdym razem, gdy zmiany zostaną wysłane do gałęzi main.
+# Ejecuta el despliegue cada vez que se suben cambios a main.
+# Uruchamia wdrożenie po wysłaniu zmian do gałęzi main.
 on:
   push:
     branches:
       - main
 
-# English: Give the workflow permission to deploy the website to GitHub Pages.
-# Polski: Nadaje procesowi uprawnienia do wdrażania strony internetowej na GitHub Pages.
+# Permisos para leer el repositorio y publicar el sitio en GitHub Pages.
+# Uprawnienia do odczytu repozytorium i publikacji strony w GitHub Pages.
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# English: Prevent multiple deployments from running at the same time.
-# Polski: Zapobiega jednoczesnemu uruchamianiu wielu wdrożeń.
+# Evita dos despliegues simultáneos; el nuevo cancela el anterior si sigue ejecutándose.
+# Zapobiega równoległym wdrożeniom; nowe anuluje poprzednie, jeśli nadal trwa.
 concurrency:
   group: pages
   cancel-in-progress: true
 
-# English: Define the deployment job.
-# Polski: Definiuje zadanie wdrażania.
+# Define el trabajo que compila y publica la aplicación.
+# Definiuje zadanie budujące i publikujące aplikację.
 jobs:
   deploy:
 
-    # English: Use an Ubuntu virtual machine provided by GitHub.
-    # Polski: Używa wirtualnej maszyny Ubuntu udostępnionej przez GitHub.
+    # GitHub crea una máquina Ubuntu temporal para ejecutar estos pasos.
+    # GitHub tworzy tymczasową maszynę Ubuntu do wykonania tych kroków.
     runs-on: ubuntu-latest
 
     steps:
 
-      # English: Download the repository code.
-      # Polski: Pobiera kod repozytorium.
+      # Obtiene el commit que activó el workflow.
+      # Pobiera commit, który uruchomił workflow.
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # English: Install Node.js for building the React application.
-      # Polski: Instaluje Node.js do budowania aplikacji React.
+      # Instala Node y reutiliza la caché npm para acelerar compilaciones futuras.
+      # Instaluje Node i używa pamięci podręcznej npm, aby przyspieszyć kolejne kompilacje.
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 24
           cache: npm
 
-      # English: Install the dependencies listed in package-lock.json.
-      # Polski: Instaluje zależności zapisane w package-lock.json.
+      # Instala las versiones exactas del lockfile para reproducir el entorno local.
+      # Instaluje dokładne wersje z lockfile, aby odtworzyć środowisko lokalne.
       - name: Install dependencies
         run: npm ci
 
-      # English: Build the production version of the application.
-      # Polski: Buduje produkcyjną wersję aplikacji.
+      # Vite incorpora estas variables públicas al bundle; GitHub las lee de las variables del repositorio.
+      # Vite umieszcza te publiczne zmienne w bundle; GitHub pobiera je ze zmiennych repozytorium.
       - name: Build application
+        env:
+          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
+          VITE_SUPABASE_ADMIN_EMAIL: ${{ vars.VITE_SUPABASE_ADMIN_EMAIL }}
         run: npm run build
 
-      # English: Configure GitHub Pages.
-      # Polski: Konfiguruje GitHub Pages.
+      # Prepara metadatos y permisos para publicar el artefacto en Pages.
+      # Przygotowuje metadane i uprawnienia do publikacji artefaktu w Pages.
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
 
-      # English: Upload the generated dist folder.
-      # Polski: Przesyła wygenerowany folder dist.
+      # Guarda dist como artefacto para que el paso de despliegue pueda publicarlo.
+      # Zapisuje dist jako artefakt, który krok wdrożenia może opublikować.
       - name: Upload website
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./dist
 
-      # English: Deploy the website to GitHub Pages.
-      # Polski: Wdraża stronę internetową na GitHub Pages.
+      # Publica la compilación; no ejecuta la app ni modifica la base de datos.
+      # Publikuje kompilację; nie uruchamia aplikacji ani nie zmienia bazy danych.
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
