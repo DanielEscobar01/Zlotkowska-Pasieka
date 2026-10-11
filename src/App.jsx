@@ -2266,31 +2266,64 @@ function App() {
                     >
                       {selectedOrder && (
                         <div className="admin-order-detail">
-                          <header className="admin-order-detail-header">
+                          <header className="admin-order-detail-toolbar">
+                            <span>{t.adminPage.orders.details}</span>
                             <div>
-                              <p className="eyebrow">{t.adminPage.orders.details}</p>
-                              <h2 id="admin-order-detail-title">#{selectedOrder.id.slice(0, 8).toUpperCase()}</h2>
+                              <button className="admin-order-print" type="button" onClick={() => window.print()}>
+                                {t.adminPage.orders.printPdf}
+                              </button>
+                              <button
+                                className="checkout-close-button"
+                                type="button"
+                                aria-label={t.adminPage.orders.close}
+                                onClick={() => setSelectedOrder(null)}
+                              >
+                                ×
+                              </button>
                             </div>
-                            <button
-                              className="checkout-close-button"
-                              type="button"
-                              aria-label={t.adminPage.orders.close}
-                              onClick={() => setSelectedOrder(null)}
-                            >
-                              ×
-                            </button>
                           </header>
-                          <dl className="admin-order-customer">
-                            <div><dt>{t.adminPage.orders.customer}</dt><dd>{selectedOrder.customer_name}</dd></div>
-                            <div><dt>{t.adminPage.orders.phone}</dt><dd><a href={`tel:${selectedOrder.customer_phone.replace(/[^\d+]/g, "")}`}>{selectedOrder.customer_phone}</a></dd></div>
-                            <div><dt>{t.adminPage.orders.date}</dt><dd>{new Intl.DateTimeFormat(lang, { dateStyle: "medium", timeStyle: "short" }).format(new Date(selectedOrder.created_at))}</dd></div>
-                            <div><dt>{t.adminPage.orders.delivery}</dt><dd>{selectedOrder.delivery_method === "shipping" ? t.adminPage.orders.shipping : t.adminPage.orders.pickup}</dd></div>
-                            {selectedOrder.delivery_method === "shipping" && (
-                              <div><dt>{t.adminPage.orders.address}</dt><dd>{[selectedOrder.street, selectedOrder.apartment, `${selectedOrder.postal_code} ${selectedOrder.city}`].filter(Boolean).join(", ")}</dd></div>
-                            )}
-                            {selectedOrder.notes && <div><dt>{t.adminPage.orders.notes}</dt><dd>{selectedOrder.notes}</dd></div>}
-                          </dl>
-                          <div className="admin-order-items-wrap">
+                          <article className="admin-order-document" aria-labelledby="admin-order-detail-title">
+                            <header className="admin-order-document-header">
+                              <div className="admin-order-document-brand">
+                                <img src={ZlotkowskaPasiekaLogo} alt="Złotkowska Pasieka" />
+                                <div>
+                                  <strong>Złotkowska Pasieka</strong>
+                                  <span>{t.footer}</span>
+                                  <span>Złotkowo, ul. Lipowa 20 · +48 604 117 492</span>
+                                </div>
+                              </div>
+                              <div className="admin-order-document-reference">
+                                <p className="eyebrow">{t.adminPage.orders.documentLabel}</p>
+                                <h2 id="admin-order-detail-title">#{selectedOrder.id.slice(0, 8).toUpperCase()}</h2>
+                                <time dateTime={selectedOrder.created_at}>
+                                  {new Intl.DateTimeFormat(lang, { dateStyle: "long", timeStyle: "short" }).format(new Date(selectedOrder.created_at))}
+                                </time>
+                              </div>
+                            </header>
+                            <div className="admin-order-document-rule" />
+                            <div className="admin-order-document-parties">
+                              <section>
+                                <h3>{t.adminPage.orders.customerSection}</h3>
+                                <dl className="admin-order-customer">
+                                  <div><dt>{t.adminPage.orders.customer}</dt><dd>{selectedOrder.customer_name}</dd></div>
+                                  <div><dt>{t.adminPage.orders.phone}</dt><dd><a href={`tel:${selectedOrder.customer_phone.replace(/[^\d+]/g, "")}`}>{selectedOrder.customer_phone}</a></dd></div>
+                                </dl>
+                              </section>
+                              <section>
+                                <h3>{t.adminPage.orders.fulfilmentSection}</h3>
+                                <dl className="admin-order-customer">
+                                  <div><dt>{t.adminPage.orders.delivery}</dt><dd>{selectedOrder.delivery_method === "shipping" ? t.adminPage.orders.shipping : t.adminPage.orders.pickup}</dd></div>
+                                  <div><dt>{t.adminPage.orders.status}</dt><dd>{selectedOrder.delivered ? t.adminPage.orders.delivered : t.adminPage.orders.pending}</dd></div>
+                                  {selectedOrder.delivery_method === "shipping" && (
+                                    <div><dt>{t.adminPage.orders.address}</dt><dd>{[selectedOrder.street, selectedOrder.apartment, `${selectedOrder.postal_code} ${selectedOrder.city}`].filter(Boolean).join(", ")}</dd></div>
+                                  )}
+                                  {selectedOrder.notes && <div><dt>{t.adminPage.orders.notes}</dt><dd>{selectedOrder.notes}</dd></div>}
+                                </dl>
+                              </section>
+                            </div>
+                            <section className="admin-order-document-lines" aria-labelledby="admin-order-lines-title">
+                              <h3 id="admin-order-lines-title">{t.adminPage.orders.orderItemsSection}</h3>
+                            <div className="admin-order-items-wrap">
                             <table className="admin-order-items-table">
                               <thead>
                                 <tr>
@@ -2304,7 +2337,7 @@ function App() {
                               <tbody>
                                 {(selectedOrder.order_items ?? []).map((item) => (
                                   <tr key={item.id}>
-                                    <td>
+                                    <td data-label={t.adminPage.orders.product}>
                                       <div className="admin-order-product-cell">
                                         <img
                                           className="admin-order-product-image"
@@ -2319,13 +2352,13 @@ function App() {
                                         </span>
                                       </div>
                                     </td>
-                                    <td>{item.quantity}</td>
-                                    <td>{Number(item.regular_unit_price).toFixed(2)} zł</td>
-                                    <td>
+                                    <td data-label={t.adminPage.orders.quantity}>{item.quantity}</td>
+                                    <td data-label={t.adminPage.orders.regularPrice}>{Number(item.regular_unit_price).toFixed(2)} zł</td>
+                                    <td data-label={t.adminPage.orders.soldPrice}>
                                       {Number(item.sale_unit_price).toFixed(2)} zł
                                       {item.promo_applied && <small className="admin-order-promo-label">{t.adminPage.orders.promotion}</small>}
                                     </td>
-                                    <td>{Number(item.line_total).toFixed(2)} zł</td>
+                                    <td data-label={t.adminPage.orders.lineTotal}>{Number(item.line_total).toFixed(2)} zł</td>
                                   </tr>
                                 ))}
                               </tbody>
@@ -2333,7 +2366,9 @@ function App() {
                                 <tr><th colSpan="4" scope="row">{t.adminPage.orders.total}</th><td>{Number(selectedOrder.items_subtotal).toFixed(2)} zł</td></tr>
                               </tfoot>
                             </table>
-                          </div>
+                            </div>
+                            </section>
+                          </article>
                           <div className="admin-order-detail-actions">
                             <button
                               className={`admin-order-status${selectedOrder.delivered ? " is-delivered" : ""}`}
