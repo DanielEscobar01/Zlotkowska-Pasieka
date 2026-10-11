@@ -2194,7 +2194,10 @@ function App() {
                           <button
                             className={`inventory-admin-promo-toggle${promotionIsActive ? " is-active" : ""}`}
                             type="button"
-                            aria-pressed={promotionIsActive}
+                            role="switch"
+                            aria-checked={promotionIsActive}
+                            aria-label={`${t.adminPage.promotionBadge}: ${productText.name}, ${product.weight}`}
+                            title={promotionIsActive ? t.adminPage.deactivatePromotion : t.adminPage.activatePromotion}
                             onClick={() => togglePromotionDraft(product.id)}
                             disabled={adminSaving}
                           >

@@ -251,10 +251,10 @@ img {
 .inventory-admin-row {
   min-height: 72px;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(110px, 140px) 132px minmax(250px, 280px);
+  grid-template-columns: minmax(0, 1fr) 100px 132px 296px;
   align-items: center;
   gap: 18px;
-  padding: 12px 8px;
+  padding: 18px 16px;
   border-bottom: 1px solid var(--border);
   transition: background 0.16s ease;
 }
@@ -415,7 +415,7 @@ img {
 
 .inventory-admin-price-input {
   width: 120px;
-  height: 34px;
+  height: 42px;
   display: flex;
   align-items: center;
   border: 1px solid var(--border);
@@ -427,7 +427,7 @@ img {
 .inventory-admin-price-input input {
   min-width: 0;
   width: 100%;
-  height: 32px;
+  height: 40px;
   padding: 4px 8px;
   border: 0;
   background: transparent;
@@ -445,17 +445,18 @@ img {
 
 .inventory-admin-pricing-control {
   display: grid;
+  grid-template-columns: 120px minmax(0, 1fr);
   align-content: start;
-  gap: 7px;
+  gap: 12px;
 }
 
 .inventory-admin-price-control {
-  gap: 4px;
+  gap: 5px;
 }
 
 .inventory-admin-promo-row {
   display: grid;
-  grid-template-columns: 120px minmax(132px, 150px);
+  grid-template-columns: 120px 36px;
   align-items: end;
   gap: 8px;
 }
@@ -464,32 +465,48 @@ img {
   min-width: 0;
   display: grid;
   gap: 4px;
+  height: 42px;
+  align-items: center;
 }
 
 .inventory-admin-promo-toggle {
-  min-height: 34px;
-  padding: 7px 8px;
-  border: 1px solid var(--honey);
-  border-radius: 6px;
-  background: transparent;
-  color: var(--brown);
-  font: inherit;
-  font-size: 10px;
-  font-weight: 700;
-  white-space: nowrap;
+  position: relative;
+  width: 36px;
+  height: 22px;
+  min-height: 22px;
+  padding: 0;
+  border: 0;
+  border-radius: 99px;
+  background: #d4d7dc;
+  font-size: 0;
   cursor: pointer;
-  transition: background 0.15s ease, color 0.15s ease;
+  transition: background 0.15s ease;
+}
+
+.inventory-admin-promo-toggle::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--white);
+  box-shadow: 0 1px 3px rgba(37, 37, 41, 0.18);
+  transition: transform 0.15s ease;
 }
 
 .inventory-admin-promo-toggle:hover:not(:disabled) {
-  background: rgba(216, 155, 53, 0.12);
+  background: #bec3ca;
 }
 
-.inventory-admin-promo-toggle.is-active {
-  border-color: var(--scene-coral);
-  background: var(--scene-coral);
-  color: var(--white);
-  box-shadow: 0 3px 10px rgba(179, 76, 60, 0.2);
+.inventory-admin-promo-toggle.is-active,
+.inventory-admin-promo-toggle.is-active:hover:not(:disabled) {
+  background: #356248;
+}
+
+.inventory-admin-promo-toggle.is-active::after {
+  transform: translateX(14px);
 }
 
 .inventory-admin-promo-toggle:disabled {
@@ -1328,6 +1345,13 @@ img {
   text-underline-offset: 3px;
 }
 
+@media (max-width: 900px) {
+  .inventory-admin-row { grid-template-columns: minmax(0, 1fr) 132px; gap: 8px 12px; }
+  .inventory-admin-status { grid-column: 1; grid-row: 2; }
+  .inventory-admin-stock-control { grid-column: 2; grid-row: 1 / span 2; }
+  .inventory-admin-pricing-control { grid-column: 1 / -1; grid-row: 3; margin-top: 6px; }
+}
+
 @media (max-width: 650px) {
   .inventory-admin { width: calc(100% - 32px); }
   .inventory-admin-header h1 { font-size: 32px; }
@@ -1348,7 +1372,10 @@ img {
   .inventory-admin-status { grid-column: 1; grid-row: 2; }
   .inventory-admin-stock-control { grid-column: 2; grid-row: 1 / span 2; }
   .inventory-admin-pricing-control { grid-column: 1 / -1; grid-row: 3; }
-  .inventory-admin-promo-row { grid-template-columns: 120px minmax(132px, 150px); }
+  .inventory-admin-pricing-control { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); padding-right: 44px; position: relative; }
+  .inventory-admin-price-input { width: 100%; }
+  .inventory-admin-promo-row { grid-template-columns: minmax(0, 1fr); }
+  .inventory-admin-promo-action { position: absolute; right: 0; bottom: 0; }
   .admin-order-customer { grid-template-columns: minmax(0, 1fr); }
   .admin-order-detail { gap: 16px; }
   .admin-order-document { gap: 16px; padding: 18px 14px; }
