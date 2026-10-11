@@ -295,6 +295,27 @@ function formatPostalCode(event) {
   event.target.value = digits.length > 2 ? `${digits.slice(0, 2)}-${digits.slice(2)}` : digits;
 }
 
+function formatPolishPhoneNumber(event) {
+  const input = event.currentTarget;
+  const originalValue = input.value;
+  const caretPosition = input.selectionStart ?? originalValue.length;
+  const startsWithPolishPrefix = /^\s*(?:\+48|0048)/.test(originalValue);
+  const digitsBeforeCaret = originalValue.slice(0, caretPosition).replace(/\D/g, "").length;
+  const allDigits = originalValue.replace(/\D/g, "");
+  const nationalDigits = (startsWithPolishPrefix ? allDigits.replace(/^(?:48|0048)/, "") : allDigits).slice(0, 9);
+  const groups = nationalDigits.match(/\d{1,3}/g) ?? [];
+
+  input.value = `+48 ${groups.join(" ")}`;
+
+  // Keep the caret aligned with the same national digit after regrouping.
+  const prefixDigitCount = startsWithPolishPrefix ? 2 : 0;
+  const nationalDigitsBeforeCaret = Math.max(0, Math.min(9, digitsBeforeCaret - prefixDigitCount));
+  let nextCaretPosition = 4 + nationalDigitsBeforeCaret;
+  if (nationalDigitsBeforeCaret > 3) nextCaretPosition += 1;
+  if (nationalDigitsBeforeCaret > 6) nextCaretPosition += 1;
+  input.setSelectionRange(nextCaretPosition, nextCaretPosition);
+}
+
 
 // Render the editable basket and order form inside the checkout drawer.
 // Wyświetlamy edytowalny koszyk i formularz zamówienia w wysuwanym panelu.
@@ -397,12 +418,13 @@ function CheckoutPanel({ cartItems, cartQuantity, cartTotal, updateCart, updateG
           id="phone"
           name="phone"
           type="tel"
-          inputMode="tel"
+          inputMode="numeric"
           autoComplete="tel"
           placeholder={c.phonePlaceholder}
-          pattern="(?=.*[0-9])[+0-9() .-]{6,30}"
+          pattern="\+48 [0-9]{3} [0-9]{3} [0-9]{3}"
           title={c.phoneHint}
-          maxLength={30}
+          maxLength={15}
+          onInput={formatPolishPhoneNumber}
           required
         />
       </label>
