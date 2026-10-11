@@ -263,6 +263,14 @@ img {
   background: #fffaf0;
 }
 
+.inventory-admin-row:nth-child(even) {
+  background: #f8f9fb;
+}
+
+.inventory-admin-row:nth-child(even):hover {
+  background: #fff7e8;
+}
+
 .inventory-admin-row:last-child {
   border-bottom: 0;
 }
@@ -315,12 +323,17 @@ img {
 }
 
 .inventory-admin-status {
+  width: fit-content;
+  padding: 4px 8px;
+  border-radius: 99px;
+  background: rgba(53, 98, 72, 0.1);
   color: #356248;
   font-size: 13px;
   font-weight: 700;
 }
 
 .inventory-admin-status.is-out-of-stock {
+  background: rgba(92, 93, 101, 0.1);
   color: #777b80;
 }
 
@@ -663,6 +676,7 @@ img {
   margin-top: 18px;
   padding: 20px 20px 10px;
   border: 1px solid var(--border);
+  border-top: 3px solid var(--honey);
   border-radius: 6px;
   background: var(--white);
 }
@@ -914,15 +928,20 @@ img {
 
 .admin-orders-table th,
 .admin-order-items-table th {
-  background: var(--cream);
-  color: var(--brown-light);
+  background: var(--brown);
+  color: var(--white);
   font-size: 10px;
   font-weight: 800;
   white-space: nowrap;
 }
 
+.admin-orders-table tbody tr:nth-child(even),
+.admin-order-items-table tbody tr:nth-child(even) {
+  background: #f8f9fb;
+}
+
 .admin-orders-table tbody tr:hover {
-  background: rgba(37, 37, 41, 0.035);
+  background: #fff4dc;
 }
 
 .admin-orders-table td:nth-last-child(-n + 2) {

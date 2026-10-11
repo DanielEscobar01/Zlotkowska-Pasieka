@@ -73,7 +73,7 @@ export default function SalesTrendChart({ data, series, range, onRangeChange, la
                   name={item.label}
                   stroke={item.color}
                   strokeWidth={2.5}
-                  dot={false}
+                  dot={{ r: 4, strokeWidth: 2, fill: "#ffffff" }}
                   activeDot={{ r: 4, strokeWidth: 0 }}
                   connectNulls
                 />
