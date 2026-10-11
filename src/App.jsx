@@ -159,7 +159,7 @@ const processSteps = [
 
 // Open a prepared WhatsApp order after the customer submits the form.
 // Otwieramy przygotowane zamówienie w WhatsApp po wysłaniu formularza.
-function handleOrderSubmit(event, cartItems, cartTotal, lang) {
+function prepareOrderSubmission(event, cartItems, lang) {
   // Prevent the browser from reloading the page when the form is submitted.
   // Zapobiegamy ponownemu załadowaniu strony po wysłaniu formularza.
   event.preventDefault();
@@ -171,18 +171,11 @@ function handleOrderSubmit(event, cartItems, cartTotal, lang) {
   // Get the customer's name for the WhatsApp message.
   // Pobieramy imię klienta do wiadomości WhatsApp.
   const name = formData.get("name").trim();
+  const phone = formData.get("phone").trim();
 
   // Get the selected pickup or shipping option.
   // Pobieramy wybraną opcję odbioru lub wysyłki.
   const delivery = formData.get("delivery");
-
-  // Build a Polish-format address block only for shipping orders.
-  const address = delivery === "shipping"
-    ? [
-      `${formData.get("street").trim()}${formData.get("apartment").trim() ? ` m. ${formData.get("apartment").trim()}` : ""}`,
-      `${formData.get("postalCode").trim()} ${formData.get("city").trim()}`,
-    ]
-    : [];
 
   // Read extra instructions, such as which jars need gift boxes.
   // Odczytujemy dodatkowe uwagi, na przykład które słoiki zapakować na prezent.
@@ -192,83 +185,63 @@ function handleOrderSubmit(event, cartItems, cartTotal, lang) {
   // Odczytujemy aplikację wybraną przez klienta przyciskiem wysyłania.
   const channel = event.nativeEvent.submitter?.value ?? "whatsapp";
 
-  // Convert each cart row into a product line with its quantity and cost.
-  // Zamieniamy każdy produkt z koszyka na wiersz z ilością i kosztem.
-  // The beekeeper only reads Polish, so the order always uses Polish product names.
-  const pl = translations.pl;
-  const order = cartItems.map(({ product, quantity, giftBoxCount, lineTotal }) =>
-    `${quantity} × ${pl.products[product.textKey].name} (${product.weight})${giftBoxCount ? `, w tym ${giftBoxCount} w kartoniku prezentowym` : ""} - ${lineTotal} zł`
-  ).join("\n");
+  return {
+    channel,
+    orderData: {
+      customer_name: name,
+      customer_phone: phone,
+      delivery_method: delivery,
+      street: delivery === "shipping" ? formData.get("street").trim() : null,
+      apartment: delivery === "shipping" ? formData.get("apartment").trim() || null : null,
+      postal_code: delivery === "shipping" ? formData.get("postalCode").trim() : null,
+      city: delivery === "shipping" ? formData.get("city").trim() : null,
+      notes,
+      customer_language: lang,
+      items: cartItems.map(({ product, quantity, giftBoxCount }) => ({
+        product_id: product.id,
+        product_name: translations.pl.products[product.textKey].name,
+        product_weight: product.weight,
+        quantity,
+        gift_box_count: giftBoxCount,
+      })),
+    },
+  };
+}
 
-  const customerLanguage = LANGUAGE_NAMES_PL[lang];
-
-  // Build the order text that the selected messaging app will open.
-  // Tworzymy treść zamówienia, którą otworzy wybrana aplikacja.
+function buildOrderMessage(preparedOrder, savedOrder) {
+  const { orderData, channel } = preparedOrder;
+  const customerLanguage = LANGUAGE_NAMES_PL[orderData.customer_language];
+  const orderLines = savedOrder.items.map((item) => (
+    `${item.quantity} × ${item.product_name} (${item.product_weight})${item.gift_box_count ? `, w tym ${item.gift_box_count} w kartoniku prezentowym` : ""} - ${item.line_total} zł`
+  )).join("\n");
+  const address = orderData.delivery_method === "shipping"
+    ? [`${orderData.street}${orderData.apartment ? ` m. ${orderData.apartment}` : ""}`, `${orderData.postal_code} ${orderData.city}`]
+    : [];
   const message = [
-    // Start with a short greeting and order confirmation.
-    // Zaczynamy od krótkiego powitania i informacji o zamówieniu.
     "Dzień dobry, składam zamówienie:",
-
     customerLanguage
       ? `⚠️ Uwaga: klient korzysta ze strony w języku: ${customerLanguage.name}. Imię i uwagi mogą być w tym języku. Odpowiedz ${customerLanguage.reply}, np. z pomocą Tłumacza Google.`
       : "",
-
-    // Include the customer's name so the apiary knows who is ordering.
-    // Dodajemy imię klienta, aby pasieka wiedziała, kto składa zamówienie.
-    `Imię: ${name}`,
-
-    // Separate customer details from the product list.
-    // Oddzielamy dane klienta od listy produktów.
+    `Numer zamówienia: ${savedOrder.id.slice(0, 8).toUpperCase()}`,
+    `Imię: ${orderData.customer_name}`,
+    `Telefon: ${orderData.customer_phone}`,
     "",
-
-    // Add all selected products and their line-item costs.
-    // Dodajemy wybrane produkty i koszt każdej pozycji.
-    order,
-
-    // Show the total cost of products before any shipping charge is calculated.
-    // Pokazujemy koszt produktów przed obliczeniem kosztu wysyłki.
-    `Koszt produktów: ${cartTotal} zł`,
-
-    // Separate the product cost from delivery details.
-    // Oddzielamy koszt produktów od informacji o dostawie.
+    orderLines,
+    `Koszt produktów: ${savedOrder.total} zł`,
     "",
-
-    // Include the chosen pickup or shipping method.
-    // Dodajemy wybrany sposób odbioru lub wysyłki.
-    `Sposób odbioru: ${delivery === "shipping" ? "Wysyłka InPost" : "Odbiór osobisty: Złotkowo, ul. Lipowa 20"}`,
-
+    `Sposób odbioru: ${orderData.delivery_method === "shipping" ? "Wysyłka InPost" : "Odbiór osobisty: Złotkowo, ul. Lipowa 20"}`,
     address.length ? `Adres dostawy:\n${address.join("\n")}` : "",
-
-    // Include notes only when the customer entered them.
-    // Dodajemy uwagi tylko wtedy, gdy klient je wpisał.
-    notes ? `Uwagi do zamówienia: ${notes}` : "",
-
-    // Remove empty lines from optional fields and join everything into one message.
-    // Usuwamy puste pola opcjonalne i łączymy treść w jedną wiadomość.
+    orderData.notes ? `Uwagi do zamówienia: ${orderData.notes}` : "",
   ].filter(Boolean).join("\n");
-
-  // Encode Polish text and line breaks for either messaging URL.
-  // Kodujemy polskie znaki i podziały wierszy dla obu adresów.
   const encodedMessage = encodeURIComponent(message);
-
-  // Build the SMS URL using Apple's body separator on iOS devices.
-  // Tworzymy adres SMS z separatorem body wymaganym przez urządzenia Apple.
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
     || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
   const smsSeparator = isIOS ? "&" : "?";
   const smsUrl = `sms:+48604117492${smsSeparator}body=${encodedMessage}`;
 
-  // Prepare the URL for the selected messaging channel.
-  // Przygotowujemy adres wybranego kanału wiadomości.
-  const messageUrl = channel === "sms"
+  return channel === "sms"
     ? smsUrl
     : `https://wa.me/48604117492?text=${encodedMessage}`;
-
-  // Clear the form and return the channel URL to the submit handler.
-  // Czyścimy formularz i przekazujemy adres do obsługi wysyłania.
-  event.currentTarget.reset();
-
-  return { channel, messageUrl };
 }
 
 
@@ -322,7 +295,7 @@ function formatPostalCode(event) {
 
 // Render the editable basket and order form inside the checkout drawer.
 // Wyświetlamy edytowalny koszyk i formularz zamówienia w wysuwanym panelu.
-function CheckoutPanel({ cartItems, cartQuantity, cartTotal, updateCart, updateGiftBoxes, onSubmitOrder, t }) {
+function CheckoutPanel({ cartItems, cartQuantity, cartTotal, updateCart, updateGiftBoxes, onSubmitOrder, isSubmitting, submitError, t }) {
   const [delivery, setDelivery] = useState("");
   const c = t.checkout;
 
@@ -415,6 +388,22 @@ function CheckoutPanel({ cartItems, cartQuantity, cartTotal, updateCart, updateG
         />
       </label>
 
+      <label className="form-field" htmlFor="phone">
+        {c.phone}
+        <input
+          id="phone"
+          name="phone"
+          type="tel"
+          inputMode="tel"
+          autoComplete="tel"
+          placeholder={c.phonePlaceholder}
+          pattern="(?=.*[0-9])[+0-9() .-]{6,30}"
+          title={c.phoneHint}
+          maxLength={30}
+          required
+        />
+      </label>
+
       <fieldset className="delivery-options">
         <legend>{c.delivery} *</legend>
         <label>
@@ -503,13 +492,15 @@ function CheckoutPanel({ cartItems, cartQuantity, cartTotal, updateCart, updateG
 
       {c.polishNote && <p className="polish-note">{c.polishNote}</p>}
 
+      {submitError && <p className="checkout-error" role="alert">{submitError}</p>}
+
       <div className="order-actions">
         <button
           className="button button-dark form-submit"
           type="submit"
           name="channel"
           value="whatsapp"
-          disabled={cartItems.length === 0}
+          disabled={cartItems.length === 0 || isSubmitting}
         >
           <svg
             className="whatsapp-icon"
@@ -518,16 +509,16 @@ function CheckoutPanel({ cartItems, cartQuantity, cartTotal, updateCart, updateG
           >
             <path fill="currentColor" d={siWhatsapp.path} />
           </svg>
-          {c.whatsapp}
+          {isSubmitting ? c.savingOrder : c.whatsapp}
         </button>
         <button
           className="button button-light form-submit sms-submit"
           type="submit"
           name="channel"
           value="sms"
-          disabled={cartItems.length === 0}
+          disabled={cartItems.length === 0 || isSubmitting}
         >
-          {c.sms}
+          {isSubmitting ? c.savingOrder : c.sms}
         </button>
       </div>
     </form>
@@ -583,6 +574,12 @@ function App() {
   const [adminError, setAdminError] = useState("");
   const [adminSaving, setAdminSaving] = useState(false);
   const [inventoryLoading, setInventoryLoading] = useState(supabaseConfigured);
+  const [adminOrders, setAdminOrders] = useState([]);
+  const [ordersLoading, setOrdersLoading] = useState(true);
+  const [ordersError, setOrdersError] = useState("");
+  const [updatingOrderId, setUpdatingOrderId] = useState(null);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const orderDetailsDialogRef = useRef(null);
   // Esta comprobación solo controla lo que muestra React; las políticas RLS son la autoridad de seguridad.
   // To sprawdzenie steruje tylko interfejsem React; polityki RLS są właściwym zabezpieczeniem.
   const isAdminAuthenticated = Boolean(
@@ -740,6 +737,41 @@ function App() {
     }
   }, [inventoryPromoPrices, inventoryPromoActive, supabaseConfigured]);
 
+  useEffect(() => {
+    if (!supabaseConfigured || !isAdminAuthenticated) return undefined;
+
+    let active = true;
+    supabase
+      .from("orders")
+      .select("*, order_items(*)")
+      .order("created_at", { ascending: false })
+      .then(({ data, error }) => {
+        if (!active) return;
+        if (error) setOrdersError(t.adminPage.orders.ordersLoadFailed);
+        else {
+          setOrdersError("");
+          setAdminOrders(data ?? []);
+        }
+        setOrdersLoading(false);
+      })
+      .catch(() => {
+        if (!active) return;
+        setOrdersError(t.adminPage.orders.ordersLoadFailed);
+        setOrdersLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [isAdminAuthenticated, supabaseConfigured, t.adminPage.orders.ordersLoadFailed]);
+
+  useEffect(() => {
+    const dialog = orderDetailsDialogRef.current;
+    if (!dialog) return;
+    if (selectedOrder && !dialog.open) dialog.showModal();
+    else if (!selectedOrder && dialog.open) dialog.close();
+  }, [selectedOrder]);
+
   function changeLanguage(code) {
     setLang(code);
     localStorage.setItem("chosenLang", code);
@@ -754,6 +786,8 @@ function App() {
   const [pageScrolled, setPageScrolled] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
   const [orderNotice, setOrderNotice] = useState(false);
+  const [isSubmittingOrder, setIsSubmittingOrder] = useState(false);
+  const [orderSubmitError, setOrderSubmitError] = useState("");
   const cartDialogRef = useRef(null);
 
   // Keep only products with a positive quantity and attach that quantity.
@@ -1013,24 +1047,71 @@ function App() {
     ));
   }
 
-  // Open WhatsApp, reset the completed order, and return to the home route.
-  // Otwieramy WhatsApp, czyścimy zakończone zamówienie i wracamy na stronę główną.
-  function submitOrder(event) {
-    const preparedMessage = handleOrderSubmit(event, cartItems, cartTotal, lang);
-    setCart({});
-    setGiftBoxes({});
-    setCartOpen(false);
-    setOrderNotice(true);
-    navigate("/");
+  async function submitOrder(event) {
+    const form = event.currentTarget;
+    const preparedOrder = prepareOrderSubmission(event, cartItems, lang);
+    const whatsappWindow = preparedOrder.channel === "whatsapp"
+      ? window.open("about:blank", "_blank")
+      : null;
+    setOrderSubmitError("");
+    setIsSubmittingOrder(true);
 
-    if (preparedMessage.channel === "sms") {
-      // Hand off directly to iOS Messages or the Android SMS composer.
-      // Przekazujemy wiadomość do iOS Messages lub aplikacji SMS na Androidzie.
-      window.location.assign(preparedMessage.messageUrl);
-    } else {
-      // Open WhatsApp in a new tab with the same prepared order.
-      // Otwieramy WhatsApp w nowej karcie z tym samym zamówieniem.
-      window.open(preparedMessage.messageUrl, "_blank", "noopener,noreferrer");
+    try {
+      if (!supabaseConfigured) throw new Error("Supabase is not configured.");
+      const { data, error } = await supabase.rpc("create_customer_order", {
+        order_data: preparedOrder.orderData,
+      });
+      if (error) throw error;
+      if (!data?.id || !Array.isArray(data.items)) throw new Error("Invalid order response.");
+
+      const messageUrl = buildOrderMessage(preparedOrder, data);
+      if (preparedOrder.channel === "sms") {
+        window.location.assign(messageUrl);
+      } else if (whatsappWindow) {
+        whatsappWindow.opener = null;
+        whatsappWindow.location.href = messageUrl;
+      } else {
+        window.location.assign(messageUrl);
+      }
+
+      form.reset();
+      setCart({});
+      setGiftBoxes({});
+      setCartOpen(false);
+      setOrderNotice(true);
+      navigate("/");
+    } catch {
+      whatsappWindow?.close();
+      setOrderSubmitError(t.checkout.saveOrderFailed);
+    } finally {
+      setIsSubmittingOrder(false);
+    }
+  }
+
+  async function toggleOrderDelivered(order) {
+    const delivered = !order.delivered;
+    setUpdatingOrderId(order.id);
+    setOrdersError("");
+
+    try {
+      const { data, error } = await supabase
+        .from("orders")
+        .update({ delivered, delivered_at: delivered ? new Date().toISOString() : null })
+        .eq("id", order.id)
+        .select("id, delivered, delivered_at")
+        .single();
+      if (error) throw error;
+
+      setAdminOrders((current) => current.map((item) => (
+        item.id === data.id ? { ...item, delivered: data.delivered, delivered_at: data.delivered_at } : item
+      )));
+      setSelectedOrder((current) => (
+        current?.id === data.id ? { ...current, delivered: data.delivered, delivered_at: data.delivered_at } : current
+      ));
+    } catch {
+      setOrdersError(t.adminPage.orders.orderUpdateFailed);
+    } finally {
+      setUpdatingOrderId(null);
     }
   }
 
@@ -1891,6 +1972,148 @@ function App() {
                     {adminSaving ? t.adminPage.savingChanges : t.adminPage.confirmChanges}
                   </button>
                 </div>
+                {isAdminAuthenticated && (
+                  <div className="admin-orders" aria-labelledby="admin-orders-title">
+                    <div className="admin-orders-heading">
+                      <h2 id="admin-orders-title">{t.adminPage.orders.title}</h2>
+                      <span>{adminOrders.length}</span>
+                    </div>
+                    {ordersError && <p className="inventory-admin-error" role="alert">{ordersError}</p>}
+                    {ordersLoading && <p role="status">{t.adminPage.orders.loading}</p>}
+                    {!ordersLoading && adminOrders.length === 0 && (
+                      <p className="admin-orders-empty">{t.adminPage.orders.empty}</p>
+                    )}
+                    {adminOrders.length > 0 && (
+                      <div className="admin-orders-table-wrap">
+                        <table className="admin-orders-table">
+                          <thead>
+                            <tr>
+                              <th scope="col">{t.adminPage.orders.number}</th>
+                              <th scope="col">{t.adminPage.orders.date}</th>
+                              <th scope="col">{t.adminPage.orders.customer}</th>
+                              <th scope="col">{t.adminPage.orders.phone}</th>
+                              <th scope="col">{t.adminPage.orders.total}</th>
+                              <th scope="col">{t.adminPage.orders.delivery}</th>
+                              <th scope="col">{t.adminPage.orders.status}</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {adminOrders.map((order) => (
+                              <tr key={order.id}>
+                                <td>
+                                  <button
+                                    className="admin-order-open"
+                                    type="button"
+                                    onClick={() => setSelectedOrder(order)}
+                                  >
+                                    #{order.id.slice(0, 8).toUpperCase()}
+                                  </button>
+                                </td>
+                                <td>{new Intl.DateTimeFormat(lang, { dateStyle: "short", timeStyle: "short" }).format(new Date(order.created_at))}</td>
+                                <td>{order.customer_name}</td>
+                                <td><a href={`tel:${order.customer_phone.replace(/[^\d+]/g, "")}`}>{order.customer_phone}</a></td>
+                                <td>{Number(order.items_subtotal).toFixed(2)} zł</td>
+                                <td>{order.delivery_method === "shipping" ? t.adminPage.orders.shipping : t.adminPage.orders.pickup}</td>
+                                <td>
+                                  <button
+                                    className={`admin-order-status${order.delivered ? " is-delivered" : ""}`}
+                                    type="button"
+                                    aria-pressed={order.delivered}
+                                    disabled={updatingOrderId === order.id}
+                                    onClick={() => toggleOrderDelivered(order)}
+                                  >
+                                    {order.delivered ? t.adminPage.orders.delivered : t.adminPage.orders.pending}
+                                  </button>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+                    <dialog
+                      ref={orderDetailsDialogRef}
+                      className="admin-order-dialog"
+                      aria-labelledby="admin-order-detail-title"
+                      onClose={() => setSelectedOrder(null)}
+                      onClick={(event) => {
+                        if (event.target === event.currentTarget) setSelectedOrder(null);
+                      }}
+                    >
+                      {selectedOrder && (
+                        <div className="admin-order-detail">
+                          <header className="admin-order-detail-header">
+                            <div>
+                              <p className="eyebrow">{t.adminPage.orders.details}</p>
+                              <h2 id="admin-order-detail-title">#{selectedOrder.id.slice(0, 8).toUpperCase()}</h2>
+                            </div>
+                            <button
+                              className="checkout-close-button"
+                              type="button"
+                              aria-label={t.adminPage.orders.close}
+                              onClick={() => setSelectedOrder(null)}
+                            >
+                              ×
+                            </button>
+                          </header>
+                          <dl className="admin-order-customer">
+                            <div><dt>{t.adminPage.orders.customer}</dt><dd>{selectedOrder.customer_name}</dd></div>
+                            <div><dt>{t.adminPage.orders.phone}</dt><dd><a href={`tel:${selectedOrder.customer_phone.replace(/[^\d+]/g, "")}`}>{selectedOrder.customer_phone}</a></dd></div>
+                            <div><dt>{t.adminPage.orders.date}</dt><dd>{new Intl.DateTimeFormat(lang, { dateStyle: "medium", timeStyle: "short" }).format(new Date(selectedOrder.created_at))}</dd></div>
+                            <div><dt>{t.adminPage.orders.delivery}</dt><dd>{selectedOrder.delivery_method === "shipping" ? t.adminPage.orders.shipping : t.adminPage.orders.pickup}</dd></div>
+                            {selectedOrder.delivery_method === "shipping" && (
+                              <div><dt>{t.adminPage.orders.address}</dt><dd>{[selectedOrder.street, selectedOrder.apartment, `${selectedOrder.postal_code} ${selectedOrder.city}`].filter(Boolean).join(", ")}</dd></div>
+                            )}
+                            {selectedOrder.notes && <div><dt>{t.adminPage.orders.notes}</dt><dd>{selectedOrder.notes}</dd></div>}
+                          </dl>
+                          <div className="admin-order-items-wrap">
+                            <table className="admin-order-items-table">
+                              <thead>
+                                <tr>
+                                  <th scope="col">{t.adminPage.orders.product}</th>
+                                  <th scope="col">{t.adminPage.orders.quantity}</th>
+                                  <th scope="col">{t.adminPage.orders.regularPrice}</th>
+                                  <th scope="col">{t.adminPage.orders.soldPrice}</th>
+                                  <th scope="col">{t.adminPage.orders.lineTotal}</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {(selectedOrder.order_items ?? []).map((item) => (
+                                  <tr key={item.id}>
+                                    <td>
+                                      <strong>{item.product_name}</strong>
+                                      <small>{item.product_weight}</small>
+                                      {item.gift_box_count > 0 && <small>{t.adminPage.orders.giftBoxes}: {item.gift_box_count}</small>}
+                                    </td>
+                                    <td>{item.quantity}</td>
+                                    <td>{Number(item.regular_unit_price).toFixed(2)} zł</td>
+                                    <td>
+                                      {Number(item.sale_unit_price).toFixed(2)} zł
+                                      {item.promo_applied && <small className="admin-order-promo-label">{t.adminPage.orders.promotion}</small>}
+                                    </td>
+                                    <td>{Number(item.line_total).toFixed(2)} zł</td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                              <tfoot>
+                                <tr><th colSpan="4" scope="row">{t.adminPage.orders.total}</th><td>{Number(selectedOrder.items_subtotal).toFixed(2)} zł</td></tr>
+                              </tfoot>
+                            </table>
+                          </div>
+                          <button
+                            className={`admin-order-status${selectedOrder.delivered ? " is-delivered" : ""}`}
+                            type="button"
+                            aria-pressed={selectedOrder.delivered}
+                            disabled={updatingOrderId === selectedOrder.id}
+                            onClick={() => toggleOrderDelivered(selectedOrder)}
+                          >
+                            {selectedOrder.delivered ? t.adminPage.orders.markPending : t.adminPage.orders.markDelivered}
+                          </button>
+                        </div>
+                      )}
+                    </dialog>
+                  </div>
+                )}
               </>
             )}
           </section>
@@ -1935,6 +2158,8 @@ function App() {
             updateCart={updateCart}
             updateGiftBoxes={updateGiftBoxes}
             onSubmitOrder={submitOrder}
+            isSubmitting={isSubmittingOrder}
+            submitError={orderSubmitError}
             t={t}
           />
         </div>
