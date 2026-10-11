@@ -579,6 +579,7 @@ function App() {
   const [ordersError, setOrdersError] = useState("");
   const [updatingOrderId, setUpdatingOrderId] = useState(null);
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [adminActiveView, setAdminActiveView] = useState("products");
   const orderDetailsDialogRef = useRef(null);
   // Esta comprobación solo controla lo que muestra React; las políticas RLS son la autoridad de seguridad.
   // To sprawdzenie steruje tylko interfejsem React; polityki RLS są właściwym zabezpieczeniem.
@@ -1821,6 +1822,29 @@ function App() {
                 {adminError && <p className="inventory-admin-error" role="alert">{adminError}</p>}
                 {hasInvalidDrafts && <p className="inventory-admin-error" role="alert">{t.adminPage.invalidDrafts}</p>}
                 {hasInvalidPromotion && <p className="inventory-admin-error" role="alert">{t.adminPage.invalidPromotion}</p>}
+                {isAdminAuthenticated && (
+                  <div className="admin-view-switch" role="group" aria-label={t.adminPage.title}>
+                    <button
+                      type="button"
+                      aria-pressed={adminActiveView === "products"}
+                      onClick={() => setAdminActiveView("products")}
+                    >
+                      {t.adminPage.productsTab}
+                    </button>
+                    <button
+                      type="button"
+                      aria-pressed={adminActiveView === "orders"}
+                      onClick={() => setAdminActiveView("orders")}
+                    >
+                      {t.adminPage.ordersTab} ({adminOrders.length})
+                    </button>
+                  </div>
+                )}
+                <div
+                  className="admin-products-view"
+                  aria-label={t.adminPage.productsTab}
+                  hidden={isAdminAuthenticated && adminActiveView !== "products"}
+                >
             <div className="inventory-admin-list">
               {products.map((product) => {
                 // La imagen, los precios y el stock pertenecen al mismo id de variante.
@@ -1972,7 +1996,13 @@ function App() {
                     {adminSaving ? t.adminPage.savingChanges : t.adminPage.confirmChanges}
                   </button>
                 </div>
+                </div>
                 {isAdminAuthenticated && (
+                  <div
+                    className="admin-orders-view"
+                    aria-label={t.adminPage.ordersTab}
+                    hidden={adminActiveView !== "orders"}
+                  >
                   <div className="admin-orders" aria-labelledby="admin-orders-title">
                     <div className="admin-orders-heading">
                       <h2 id="admin-orders-title">{t.adminPage.orders.title}</h2>
@@ -1991,6 +2021,7 @@ function App() {
                               <th scope="col">{t.adminPage.orders.number}</th>
                               <th scope="col">{t.adminPage.orders.date}</th>
                               <th scope="col">{t.adminPage.orders.customer}</th>
+                              <th scope="col">{t.adminPage.orders.productsColumn}</th>
                               <th scope="col">{t.adminPage.orders.phone}</th>
                               <th scope="col">{t.adminPage.orders.total}</th>
                               <th scope="col">{t.adminPage.orders.delivery}</th>
@@ -2011,6 +2042,15 @@ function App() {
                                 </td>
                                 <td>{new Intl.DateTimeFormat(lang, { dateStyle: "short", timeStyle: "short" }).format(new Date(order.created_at))}</td>
                                 <td>{order.customer_name}</td>
+                                <td>
+                                  <ul className="admin-order-product-list">
+                                    {(order.order_items ?? []).map((item) => (
+                                      <li key={item.id}>
+                                        {item.quantity} × {item.product_name} ({item.product_weight})
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </td>
                                 <td><a href={`tel:${order.customer_phone.replace(/[^\d+]/g, "")}`}>{order.customer_phone}</a></td>
                                 <td>{Number(order.items_subtotal).toFixed(2)} zł</td>
                                 <td>{order.delivery_method === "shipping" ? t.adminPage.orders.shipping : t.adminPage.orders.pickup}</td>
@@ -2081,9 +2121,19 @@ function App() {
                                 {(selectedOrder.order_items ?? []).map((item) => (
                                   <tr key={item.id}>
                                     <td>
-                                      <strong>{item.product_name}</strong>
-                                      <small>{item.product_weight}</small>
-                                      {item.gift_box_count > 0 && <small>{t.adminPage.orders.giftBoxes}: {item.gift_box_count}</small>}
+                                      <div className="admin-order-product-cell">
+                                        <img
+                                          className="admin-order-product-image"
+                                          src={products.find((product) => product.id === item.product_id)?.image}
+                                          alt=""
+                                          loading="lazy"
+                                        />
+                                        <span className="admin-order-product-copy">
+                                          <strong>{item.product_name}</strong>
+                                          <small>{item.product_weight}</small>
+                                          {item.gift_box_count > 0 && <small>{t.adminPage.orders.giftBoxes}: {item.gift_box_count}</small>}
+                                        </span>
+                                      </div>
                                     </td>
                                     <td>{item.quantity}</td>
                                     <td>{Number(item.regular_unit_price).toFixed(2)} zł</td>
@@ -2112,6 +2162,7 @@ function App() {
                         </div>
                       )}
                     </dialog>
+                  </div>
                   </div>
                 )}
               </>

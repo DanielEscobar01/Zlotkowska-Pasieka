@@ -540,6 +540,47 @@ img {
   border-top: 1px solid var(--border);
 }
 
+.admin-view-switch {
+  width: fit-content;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(120px, 1fr));
+  gap: 3px;
+  margin: 20px 0;
+  padding: 3px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--cream-dark);
+}
+
+.admin-view-switch button {
+  min-height: 40px;
+  padding: 8px 14px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--brown-light);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.admin-view-switch button[aria-pressed="true"] {
+  background: var(--white);
+  color: var(--brown);
+  box-shadow: 0 1px 4px rgba(37, 37, 41, 0.12);
+}
+
+.admin-view-switch button:focus-visible {
+  outline: 2px solid var(--scene-amber);
+  outline-offset: 2px;
+}
+
+.admin-products-view[hidden],
+.admin-orders-view[hidden] {
+  display: none;
+}
+
 .admin-orders-heading {
   display: flex;
   align-items: center;
@@ -587,7 +628,7 @@ img {
 }
 
 .admin-orders-table {
-  min-width: 860px;
+  min-width: 1040px;
 }
 
 .admin-order-items-table {
@@ -613,6 +654,16 @@ img {
 
 .admin-orders-table tbody tr:hover {
   background: rgba(37, 37, 41, 0.035);
+}
+
+.admin-order-product-list {
+  display: grid;
+  gap: 3px;
+  min-width: 180px;
+  color: var(--brown-light);
+  font-size: 11px;
+  line-height: 1.4;
+  list-style: none;
 }
 
 .admin-orders-table td a,
@@ -731,6 +782,26 @@ img {
 .admin-order-items-table td:first-child small,
 .admin-order-promo-label {
   display: block;
+}
+
+.admin-order-product-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 180px;
+}
+
+.admin-order-product-image {
+  width: 56px;
+  height: 56px;
+  flex: 0 0 56px;
+  border-radius: 4px;
+  object-fit: cover;
+  background: var(--cream-dark);
+}
+
+.admin-order-product-copy {
+  min-width: 0;
 }
 
 .admin-order-items-table td:first-child small,
@@ -3262,8 +3333,10 @@ main > section[id] {
 
 
 .form-field textarea,
-.form-field input[type="text"] {
+.form-field input[type="text"],
+.form-field input[type="tel"] {
   width: 100%;
+  min-height: 52px;
 
   padding: 13px 15px;
 
