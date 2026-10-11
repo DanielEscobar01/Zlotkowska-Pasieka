@@ -1144,7 +1144,9 @@ img {
 
 .admin-order-items-table tfoot th,
 .admin-order-items-table tfoot td {
+  border-top: 2px solid var(--honey);
   border-bottom: 0;
+  background: #fff7e8;
   color: var(--brown);
   font-weight: 800;
 }
