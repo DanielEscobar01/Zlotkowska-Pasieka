@@ -26,6 +26,7 @@
 - Checkout pide teléfono y crea la orden con `create_customer_order` antes de abrir WhatsApp/SMS. Supabase guarda cliente, entrega y snapshots de precio normal, precio vendido y promoción aplicada por producto.
 - La tabla de órdenes y sus productos solo pueden leerse por administradores RLS; solo un administrador puede cambiar entrega o eliminar órdenes. El borrado elimina en cascada sus líneas. El alta pública solo se permite a través del RPC, que valida disponibilidad y calcula los precios en la base.
 - La vista Estadísticas suma `items_subtotal` de cada orden; muestra por separado el valor pendiente de entrega, el promedio y las órdenes entregadas. El ranking agrupa `order_items` por variante y suma unidades, `line_total` y cantidades con promoción desde las migajas históricas, no desde precios actuales.
+- El gráfico de ventas muestra una línea por cada uno de los cinco productos líderes: diariamente para 7/30 días y mensualmente para 12 meses/todo el historial. Se carga de forma diferida al abrir Estadísticas para no aumentar el paquete inicial de la tienda.
 - Si no hay configuración Supabase, el modo local usa `localStorage` en ese navegador. Ese modo no comparte inventario con otras personas.
 
 ### Lectura paso a paso de `App.jsx`
@@ -103,6 +104,7 @@
 - Checkout wymaga telefonu i tworzy zamówienie przez `create_customer_order` przed otwarciem WhatsApp/SMS. Supabase zapisuje klienta, sposób dostawy oraz migawki ceny regularnej, sprzedanej i użytej promocji dla każdego produktu.
 - Zamówienia i ich produkty mogą odczytywać tylko administratorzy RLS; tylko administrator może zmieniać status dostawy lub usuwać zamówienia. Usunięcie kaskadowo usuwa ich pozycje. Publiczne tworzenie zamówień jest możliwe wyłącznie przez RPC, które sprawdza dostępność i wylicza ceny w bazie.
 - Widok Sprzedaż sumuje `items_subtotal` zamówień; osobno pokazuje wartość oczekującą na dostawę, średnią i liczbę dostarczonych zamówień. Ranking grupuje `order_items` według wariantu i sumuje sztuki, `line_total` oraz sztuki promocyjne z historycznych zapisów, a nie z aktualnych cen.
+- Wykres sprzedaży pokazuje osobną linię dla pięciu najlepiej sprzedających się produktów: dziennie dla 7/30 dni i miesięcznie dla 12 miesięcy/całej historii. Ładuje się dopiero po otwarciu widoku Sprzedaż, więc nie zwiększa początkowego pakietu sklepu.
 - Bez konfiguracji Supabase tryb lokalny używa `localStorage` w tej przeglądarce. Nie współdzieli zapasów z innymi osobami.
 
 ### Krok po kroku: `App.jsx`

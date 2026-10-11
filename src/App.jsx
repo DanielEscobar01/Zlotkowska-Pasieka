@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { siWhatsapp } from "simple-icons";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 
@@ -9,6 +9,8 @@ import { LANGUAGES, LANGUAGE_NAMES_PL, translations } from "./i18n";
 import LanguagePicker from "./LanguagePicker";
 import HoneyJourney from "./HoneyJourney";
 import { supabase, supabaseAdminEmail } from "./supabase";
+
+const SalesTrendChart = lazy(() => import("./SalesTrendChart"));
 
 // Import the local images from the src/assets folder.
 // Importujemy lokalne obrazy z folderu src/assets.
@@ -36,6 +38,7 @@ import ProcessPreparedComb from "./assets/Proces3DojrzalyPlaster.webp";
 
 
 const GIFT_BOX_PRICE = 5;
+const SALES_CHART_COLORS = ["#a96b13", "#bb4f3d", "#3d7656", "#3c708c", "#74638f"];
 const LOCAL_INVENTORY_KEY = "zlotkowska-local-inventory";
 const LOCAL_PRICES_KEY = "zlotkowska-local-prices";
 const LOCAL_PROMO_PRICES_KEY = "zlotkowska-local-promo-prices";
@@ -581,6 +584,7 @@ function App() {
   const [deletingOrderId, setDeletingOrderId] = useState(null);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [adminActiveView, setAdminActiveView] = useState("products");
+  const [salesRange, setSalesRange] = useState("30d");
   const orderDetailsDialogRef = useRef(null);
   // Esta comprobación solo controla lo que muestra React; las políticas RLS son la autoridad de seguridad.
   // To sprawdzenie steruje tylko interfejsem React; polityki RLS są właściwym zabezpieczeniem.
@@ -850,6 +854,82 @@ function App() {
   const bestSellingProducts = [...salesStatistics.products.values()]
     .sort((first, second) => second.unitsSold - first.unitsSold || second.revenueCents - first.revenueCents)
     .slice(0, 5);
+  const chartUsesMonths = salesRange === "12m" || salesRange === "all";
+  const chartToday = new Date();
+  const chartEndDate = new Date(chartToday.getFullYear(), chartToday.getMonth(), chartToday.getDate());
+  const chartStartDate = new Date(chartEndDate);
+  if (salesRange === "7d") chartStartDate.setDate(chartStartDate.getDate() - 6);
+  else if (salesRange === "30d") chartStartDate.setDate(chartStartDate.getDate() - 29);
+  else if (salesRange === "12m") {
+    chartStartDate.setDate(1);
+    chartStartDate.setMonth(chartStartDate.getMonth() - 11);
+  } else if (adminOrders.length > 0) {
+    const oldestOrderDate = adminOrders.reduce((oldest, order) => {
+      const orderDate = new Date(order.created_at);
+      return orderDate < oldest ? orderDate : oldest;
+    }, new Date(adminOrders[0].created_at));
+    chartStartDate.setFullYear(oldestOrderDate.getFullYear(), oldestOrderDate.getMonth(), 1);
+  } else {
+    chartStartDate.setDate(1);
+  }
+  const chartSeries = bestSellingProducts.map((item, index) => {
+    const catalogProduct = products.find((product) => product.id === item.productId);
+    const localizedName = catalogProduct
+      ? translations.pl.products[catalogProduct.textKey]?.name
+      : item.productName;
+    return {
+      key: `product-${item.productId}`,
+      label: `${localizedName ?? item.productName} (${catalogProduct?.weight ?? item.productWeight})`,
+      color: SALES_CHART_COLORS[index % SALES_CHART_COLORS.length],
+    };
+  });
+  const chartSeriesKeys = new Set(chartSeries.map((series) => series.key));
+  const salesChartPoints = new Map();
+  adminOrders.forEach((order) => {
+    const orderDate = new Date(order.created_at);
+    if (orderDate < chartStartDate || orderDate > chartToday) return;
+
+    const bucketDate = chartUsesMonths
+      ? new Date(orderDate.getFullYear(), orderDate.getMonth(), 1)
+      : new Date(orderDate.getFullYear(), orderDate.getMonth(), orderDate.getDate());
+    const pointKey = chartUsesMonths
+      ? `${bucketDate.getFullYear()}-${bucketDate.getMonth()}`
+      : `${bucketDate.getFullYear()}-${bucketDate.getMonth()}-${bucketDate.getDate()}`;
+    const point = salesChartPoints.get(pointKey) ?? { bucketDate };
+
+    (order.order_items ?? []).forEach((item) => {
+      const seriesKey = `product-${item.product_id}`;
+      if (!chartSeriesKeys.has(seriesKey)) return;
+      point[seriesKey] = (point[seriesKey] ?? 0) + Number(item.line_total);
+    });
+    salesChartPoints.set(pointKey, point);
+  });
+
+  // Add empty date buckets so gaps in sales read as zero rather than missing time.
+  const chartEndBucket = chartUsesMonths
+    ? new Date(chartEndDate.getFullYear(), chartEndDate.getMonth(), 1)
+    : chartEndDate;
+  const chartCursor = new Date(chartStartDate);
+  while (chartCursor <= chartEndBucket) {
+    const pointKey = chartUsesMonths
+      ? `${chartCursor.getFullYear()}-${chartCursor.getMonth()}`
+      : `${chartCursor.getFullYear()}-${chartCursor.getMonth()}-${chartCursor.getDate()}`;
+    if (!salesChartPoints.has(pointKey)) {
+      salesChartPoints.set(pointKey, { bucketDate: new Date(chartCursor) });
+    }
+    if (chartUsesMonths) chartCursor.setMonth(chartCursor.getMonth() + 1);
+    else chartCursor.setDate(chartCursor.getDate() + 1);
+  }
+
+  const chartDateFormatter = new Intl.DateTimeFormat(lang, chartUsesMonths
+    ? { month: "short", year: "2-digit" }
+    : { day: "numeric", month: "short" });
+  const salesChartData = [...salesChartPoints.values()]
+    .sort((first, second) => first.bucketDate - second.bucketDate)
+    .map((point) => ({
+      ...point,
+      label: chartDateFormatter.format(point.bucketDate),
+    }));
   const pendingStockChanges = Object.entries(inventoryDrafts)
     .filter(([productId, stock]) => (
       stock !== ""
@@ -2127,25 +2207,25 @@ function App() {
                                 <td>{Number(order.items_subtotal).toFixed(2)} zł</td>
                                 <td>{order.delivery_method === "shipping" ? t.adminPage.orders.shipping : t.adminPage.orders.pickup}</td>
                                 <td>
-                                  <div className="admin-order-row-actions">
-                                    <button
-                                      className={`admin-order-status${order.delivered ? " is-delivered" : ""}`}
-                                      type="button"
-                                      aria-pressed={order.delivered}
-                                      disabled={updatingOrderId === order.id || deletingOrderId === order.id}
-                                      onClick={() => toggleOrderDelivered(order)}
-                                    >
-                                      {order.delivered ? t.adminPage.orders.delivered : t.adminPage.orders.pending}
-                                    </button>
-                                    <button
-                                      className="admin-order-delete"
-                                      type="button"
-                                      disabled={deletingOrderId === order.id || updatingOrderId === order.id}
-                                      onClick={() => deleteOrder(order)}
-                                    >
-                                      {deletingOrderId === order.id ? t.adminPage.orders.deleting : t.adminPage.orders.delete}
-                                    </button>
-                                  </div>
+                                  <button
+                                    className={`admin-order-status${order.delivered ? " is-delivered" : ""}`}
+                                    type="button"
+                                    aria-pressed={order.delivered}
+                                    disabled={updatingOrderId === order.id || deletingOrderId === order.id}
+                                    onClick={() => toggleOrderDelivered(order)}
+                                  >
+                                    {order.delivered ? t.adminPage.orders.delivered : t.adminPage.orders.pending}
+                                  </button>
+                                </td>
+                                <td>
+                                  <button
+                                    className="admin-order-delete"
+                                    type="button"
+                                    disabled={deletingOrderId === order.id || updatingOrderId === order.id}
+                                    onClick={() => deleteOrder(order)}
+                                  >
+                                    {deletingOrderId === order.id ? t.adminPage.orders.deleting : t.adminPage.orders.delete}
+                                  </button>
                                 </td>
                               </tr>
                             ))}
@@ -2289,6 +2369,17 @@ function App() {
                         <strong>{(salesStatistics.orderCount ? salesStatistics.totalSalesCents / salesStatistics.orderCount / 100 : 0).toFixed(2)} zł</strong>
                       </article>
                     </div>
+                    {adminActiveView === "stats" && (
+                      <Suspense fallback={<p className="admin-chart-loading" role="status">{t.adminPage.orders.chartLoading}</p>}>
+                        <SalesTrendChart
+                          data={salesChartData}
+                          series={chartSeries}
+                          range={salesRange}
+                          onRangeChange={setSalesRange}
+                          labels={t.adminPage.orders}
+                        />
+                      </Suspense>
+                    )}
                     <section className="admin-top-products" aria-labelledby="admin-top-products-title">
                       <div className="admin-top-products-heading">
                         <h3 id="admin-top-products-title">{t.adminPage.orders.topProducts}</h3>
