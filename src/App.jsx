@@ -15,7 +15,7 @@ const SalesTrendChart = lazy(() => import("./SalesTrendChart"));
 // Import the local images from the src/assets folder.
 // Importujemy lokalne obrazy z folderu src/assets.
 import MiodPiwnica from "./assets/MiodPiwnica.webp";
-import ZlotkowskaPasiekaLogo from "./assets/ZlotkowskaPasiekaLogo.webp";
+import ZlotkowskaPasiekaLogo from "./assets/ZlotkowskaPasiekaLogoMark.webp";
 import HoneyAcaciaFacelia12 from "./assets/MiodAkacjowoFaceliowy1200g.webp";
 import HoneyFacelia038 from "./assets/MiodFaceliowy380g.webp";
 import HoneyFacelia12 from "./assets/MiodFaceliowy1200g.webp";
@@ -1302,6 +1302,8 @@ function App() {
       .admin-order-document-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; padding: 10px 0 16px; border-bottom: 1px solid #dedede; }
       .admin-order-document-brand { display: flex; align-items: center; gap: 12px; }
       .admin-order-document-brand img { width: 52px; height: 52px; object-fit: contain; }
+      .logo-lockup { display: grid; justify-items: center; gap: 3px; }
+      .logo-year { color: #666; font-size: 7px; white-space: nowrap; }
       .admin-order-document-brand div, .admin-order-document-reference { display: grid; gap: 3px; }
       .admin-order-document-brand strong { font-size: 13px; }
       .admin-order-document-brand span, .admin-order-document-reference time { color: #666; font-size: 9px; }
@@ -1424,12 +1426,14 @@ function App() {
 
           {/* Real company logo.
 // Prawdziwe logo firmy. */}
-          <img
-            src={ZlotkowskaPasiekaLogo}
-            alt="Złotkowska Pasieka"
-            className="brand-logo"
-          />
-          {/* The logo itself already says "OD 1977" in Polish. */}
+          <span className="logo-lockup">
+            <img
+              src={ZlotkowskaPasiekaLogo}
+              alt="Złotkowska Pasieka"
+              className="brand-logo"
+            />
+            <small className="logo-year" lang="pl">Od 1977 roku</small>
+          </span>
           {lang !== "pl" && <span className="brand-since">{t.nav.since}</span>}
 
         </Link>
@@ -2339,7 +2343,10 @@ function App() {
                           <article className="admin-order-document" aria-labelledby="admin-order-detail-title">
                             <header className="admin-order-document-header">
                               <div className="admin-order-document-brand">
-                                <img src={ZlotkowskaPasiekaLogo} alt="Złotkowska Pasieka" />
+                                <span className="logo-lockup">
+                                  <img src={ZlotkowskaPasiekaLogo} alt="Złotkowska Pasieka" />
+                                  <small className="logo-year" lang="pl">Od 1977 roku</small>
+                                </span>
                                 <div>
                                   <strong>Złotkowska Pasieka</strong>
                                   <span>{t.footer}</span>

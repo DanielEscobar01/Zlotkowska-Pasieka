@@ -1139,7 +1139,7 @@ img {
   gap: 12px;
 }
 
-.admin-order-document-brand > img {
+.admin-order-document-brand .logo-lockup img {
   width: 52px;
   height: 52px;
   flex: 0 0 52px;
@@ -1381,7 +1381,7 @@ img {
   .admin-order-document { gap: 16px; padding: 18px 14px; }
   .admin-order-document-header { grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 8px; }
   .admin-order-document-brand { gap: 7px; }
-  .admin-order-document-brand > img { width: 38px; height: 38px; flex-basis: 38px; }
+  .admin-order-document-brand .logo-lockup img { width: 38px; height: 38px; }
   .admin-order-document-brand strong { font-size: 11px; }
   .admin-order-document-brand span { font-size: 8px; }
   .admin-order-document-reference h2 { font-size: 16px; }
@@ -1552,10 +1552,27 @@ img {
 /* Stylizujemy główny obraz logo. */
 .brand-logo {
   width: auto;
-  height: 96px;
+  height: 80px;
 
   object-fit: contain;
   mix-blend-mode: multiply;
+}
+
+.logo-lockup {
+  display: inline-grid;
+  justify-items: center;
+  flex-shrink: 0;
+  gap: 3px;
+}
+
+.logo-year {
+  color: var(--brown-light);
+  font: 600 9px/1.2 "Manrope", sans-serif;
+  white-space: nowrap;
+}
+
+.admin-order-document-brand .logo-year {
+  font-size: 7px;
 }
 
 
@@ -4399,7 +4416,7 @@ main > section[id] {
   /* Make the logo slightly smaller on phones. */
   /* Zmniejszamy logo na telefonach. */
   .brand-logo {
-    height: 74px;
+    height: 60px;
   }
 
 
