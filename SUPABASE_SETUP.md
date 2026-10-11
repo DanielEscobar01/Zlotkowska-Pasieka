@@ -6,7 +6,7 @@ This app can use Supabase Auth, Postgres, and Realtime from GitHub Pages. The br
 
 1. In Authentication → Users, create the admin Auth user with an email you control and a strong password. Disable public sign-ups. The app displays the login name `witold` and maps it to the configured admin email.
 2. In the Supabase SQL editor, run the current `supabase/schema.sql`. It seeds 10 units and catalog prices per variant, and adds `promo_price` plus `promo_active`. If you ran an older version before prices or promotions were added, run the updated script again: it adds missing columns and fills only missing values without overwriting existing stock or edited prices. Promotions start inactive.
-3. Add order history: open **SQL Editor → New query** in Supabase, copy the complete contents of [`supabase/orders_migration.sql`](supabase/orders_migration.sql), paste them into the editor, and click **Run**. This creates the order and item tables, the transactional order-creation function, and admin-only read/update policies. It is safe to run again. Do this before deploying the matching frontend.
+3. Add order history: open **SQL Editor → New query** in Supabase, copy the complete contents of [`supabase/orders_migration.sql`](supabase/orders_migration.sql), paste them into the editor, and click **Run**. This creates the order and item tables, the transactional order-creation function, and admin-only read/update/delete policies. The migration is safe to run again; rerun it after updates to apply new policies. Do this before deploying the matching frontend.
 4. Authorize only that Auth user by replacing the email below with the Auth email you created:
 
    ```sql

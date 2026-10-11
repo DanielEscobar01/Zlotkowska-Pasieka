@@ -55,6 +55,7 @@ alter table public.order_items enable row level security;
 revoke all on public.orders, public.order_items from anon, authenticated;
 grant select on public.orders, public.order_items to authenticated;
 grant update (delivered, delivered_at) on public.orders to authenticated;
+grant delete on public.orders to authenticated;
 
 drop policy if exists "Admins can read customer orders" on public.orders;
 create policy "Admins can read customer orders"
@@ -66,6 +67,11 @@ create policy "Admins can update order delivery status"
   on public.orders for update to authenticated
   using (public.is_inventory_admin())
   with check (public.is_inventory_admin());
+
+drop policy if exists "Admins can delete customer orders" on public.orders;
+create policy "Admins can delete customer orders"
+  on public.orders for delete to authenticated
+  using (public.is_inventory_admin());
 
 drop policy if exists "Admins can read customer order items" on public.order_items;
 create policy "Admins can read customer order items"

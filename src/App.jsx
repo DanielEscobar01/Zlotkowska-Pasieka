@@ -578,6 +578,7 @@ function App() {
   const [ordersLoading, setOrdersLoading] = useState(true);
   const [ordersError, setOrdersError] = useState("");
   const [updatingOrderId, setUpdatingOrderId] = useState(null);
+  const [deletingOrderId, setDeletingOrderId] = useState(null);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [adminActiveView, setAdminActiveView] = useState("products");
   const orderDetailsDialogRef = useRef(null);
@@ -809,6 +810,46 @@ function App() {
   // Calculate the total product cost, excluding shipping.
   // Obliczamy koszt produktów bez kosztu wysyłki.
   const cartTotal = cartItems.reduce((total, item) => total + item.lineTotal, 0);
+  // Historical order snapshots keep sales figures stable when catalog prices change later.
+  const salesStatistics = adminOrders.reduce((statistics, order) => {
+    const orderTotalCents = Math.round(Number(order.items_subtotal) * 100);
+    statistics.totalSalesCents += orderTotalCents;
+    statistics.orderCount += 1;
+
+    if (order.delivered) {
+      statistics.deliveredOrderCount += 1;
+    } else {
+      statistics.pendingSalesCents += orderTotalCents;
+    }
+
+    (order.order_items ?? []).forEach((item) => {
+      const productId = Number(item.product_id);
+      const quantity = Number(item.quantity);
+      const productStatistics = statistics.products.get(productId) ?? {
+        productId,
+        productName: item.product_name,
+        productWeight: item.product_weight,
+        unitsSold: 0,
+        promotionalUnits: 0,
+        revenueCents: 0,
+      };
+      productStatistics.unitsSold += quantity;
+      productStatistics.promotionalUnits += item.promo_applied ? quantity : 0;
+      productStatistics.revenueCents += Math.round(Number(item.line_total) * 100);
+      statistics.products.set(productId, productStatistics);
+    });
+
+    return statistics;
+  }, {
+    totalSalesCents: 0,
+    pendingSalesCents: 0,
+    orderCount: 0,
+    deliveredOrderCount: 0,
+    products: new Map(),
+  });
+  const bestSellingProducts = [...salesStatistics.products.values()]
+    .sort((first, second) => second.unitsSold - first.unitsSold || second.revenueCents - first.revenueCents)
+    .slice(0, 5);
   const pendingStockChanges = Object.entries(inventoryDrafts)
     .filter(([productId, stock]) => (
       stock !== ""
@@ -1113,6 +1154,29 @@ function App() {
       setOrdersError(t.adminPage.orders.orderUpdateFailed);
     } finally {
       setUpdatingOrderId(null);
+    }
+  }
+
+  async function deleteOrder(order) {
+    const orderNumber = order.id.slice(0, 8).toUpperCase();
+    if (!window.confirm(t.adminPage.orders.deleteConfirm(orderNumber))) return;
+
+    setDeletingOrderId(order.id);
+    setOrdersError("");
+
+    try {
+      const { error } = await supabase
+        .from("orders")
+        .delete()
+        .eq("id", order.id);
+      if (error) throw error;
+
+      setAdminOrders((current) => current.filter((item) => item.id !== order.id));
+      setSelectedOrder((current) => (current?.id === order.id ? null : current));
+    } catch {
+      setOrdersError(t.adminPage.orders.deleteFailed);
+    } finally {
+      setDeletingOrderId(null);
     }
   }
 
@@ -1838,6 +1902,13 @@ function App() {
                     >
                       {t.adminPage.ordersTab} ({adminOrders.length})
                     </button>
+                    <button
+                      type="button"
+                      aria-pressed={adminActiveView === "stats"}
+                      onClick={() => setAdminActiveView("stats")}
+                    >
+                      {t.adminPage.statsTab}
+                    </button>
                   </div>
                 )}
                 <div
@@ -2026,6 +2097,7 @@ function App() {
                               <th scope="col">{t.adminPage.orders.total}</th>
                               <th scope="col">{t.adminPage.orders.delivery}</th>
                               <th scope="col">{t.adminPage.orders.status}</th>
+                              <th scope="col">{t.adminPage.orders.actions}</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -2055,15 +2127,25 @@ function App() {
                                 <td>{Number(order.items_subtotal).toFixed(2)} zł</td>
                                 <td>{order.delivery_method === "shipping" ? t.adminPage.orders.shipping : t.adminPage.orders.pickup}</td>
                                 <td>
-                                  <button
-                                    className={`admin-order-status${order.delivered ? " is-delivered" : ""}`}
-                                    type="button"
-                                    aria-pressed={order.delivered}
-                                    disabled={updatingOrderId === order.id}
-                                    onClick={() => toggleOrderDelivered(order)}
-                                  >
-                                    {order.delivered ? t.adminPage.orders.delivered : t.adminPage.orders.pending}
-                                  </button>
+                                  <div className="admin-order-row-actions">
+                                    <button
+                                      className={`admin-order-status${order.delivered ? " is-delivered" : ""}`}
+                                      type="button"
+                                      aria-pressed={order.delivered}
+                                      disabled={updatingOrderId === order.id || deletingOrderId === order.id}
+                                      onClick={() => toggleOrderDelivered(order)}
+                                    >
+                                      {order.delivered ? t.adminPage.orders.delivered : t.adminPage.orders.pending}
+                                    </button>
+                                    <button
+                                      className="admin-order-delete"
+                                      type="button"
+                                      disabled={deletingOrderId === order.id || updatingOrderId === order.id}
+                                      onClick={() => deleteOrder(order)}
+                                    >
+                                      {deletingOrderId === order.id ? t.adminPage.orders.deleting : t.adminPage.orders.delete}
+                                    </button>
+                                  </div>
                                 </td>
                               </tr>
                             ))}
@@ -2150,20 +2232,101 @@ function App() {
                               </tfoot>
                             </table>
                           </div>
-                          <button
-                            className={`admin-order-status${selectedOrder.delivered ? " is-delivered" : ""}`}
-                            type="button"
-                            aria-pressed={selectedOrder.delivered}
-                            disabled={updatingOrderId === selectedOrder.id}
-                            onClick={() => toggleOrderDelivered(selectedOrder)}
-                          >
-                            {selectedOrder.delivered ? t.adminPage.orders.markPending : t.adminPage.orders.markDelivered}
-                          </button>
+                          <div className="admin-order-detail-actions">
+                            <button
+                              className={`admin-order-status${selectedOrder.delivered ? " is-delivered" : ""}`}
+                              type="button"
+                              aria-pressed={selectedOrder.delivered}
+                              disabled={updatingOrderId === selectedOrder.id || deletingOrderId === selectedOrder.id}
+                              onClick={() => toggleOrderDelivered(selectedOrder)}
+                            >
+                              {selectedOrder.delivered ? t.adminPage.orders.markPending : t.adminPage.orders.markDelivered}
+                            </button>
+                            <button
+                              className="admin-order-delete"
+                              type="button"
+                              disabled={deletingOrderId === selectedOrder.id || updatingOrderId === selectedOrder.id}
+                              onClick={() => deleteOrder(selectedOrder)}
+                            >
+                              {deletingOrderId === selectedOrder.id ? t.adminPage.orders.deleting : t.adminPage.orders.delete}
+                            </button>
+                          </div>
                         </div>
                       )}
                     </dialog>
                   </div>
                   </div>
+                )}
+                {isAdminAuthenticated && (
+                  <section
+                    className="admin-stats-view"
+                    aria-labelledby="admin-stats-title"
+                    hidden={adminActiveView !== "stats"}
+                  >
+                    <header className="admin-stats-heading">
+                      <p className="eyebrow">{t.adminPage.statsTab}</p>
+                      <h2 id="admin-stats-title">{t.adminPage.orders.statsTitle}</h2>
+                    </header>
+                    <div className="admin-stats-grid">
+                      <article className="admin-stat-card is-primary">
+                        <span>{t.adminPage.orders.totalSales}</span>
+                        <strong>{(salesStatistics.totalSalesCents / 100).toFixed(2)} zł</strong>
+                      </article>
+                      <article className="admin-stat-card">
+                        <span>{t.adminPage.orders.totalOrders}</span>
+                        <strong>{salesStatistics.orderCount}</strong>
+                      </article>
+                      <article className="admin-stat-card">
+                        <span>{t.adminPage.orders.deliveredOrders}</span>
+                        <strong>{salesStatistics.deliveredOrderCount} / {salesStatistics.orderCount}</strong>
+                      </article>
+                      <article className="admin-stat-card">
+                        <span>{t.adminPage.orders.pendingSales}</span>
+                        <strong>{(salesStatistics.pendingSalesCents / 100).toFixed(2)} zł</strong>
+                      </article>
+                      <article className="admin-stat-card">
+                        <span>{t.adminPage.orders.averageOrder}</span>
+                        <strong>{(salesStatistics.orderCount ? salesStatistics.totalSalesCents / salesStatistics.orderCount / 100 : 0).toFixed(2)} zł</strong>
+                      </article>
+                    </div>
+                    <section className="admin-top-products" aria-labelledby="admin-top-products-title">
+                      <div className="admin-top-products-heading">
+                        <h3 id="admin-top-products-title">{t.adminPage.orders.topProducts}</h3>
+                        <span>{t.adminPage.orders.unitsSold}</span>
+                      </div>
+                      {bestSellingProducts.length === 0 ? (
+                        <p className="admin-orders-empty">{t.adminPage.orders.noProductSales}</p>
+                      ) : (
+                        <ol className="admin-top-products-list">
+                          {bestSellingProducts.map((item, index) => {
+                            const product = products.find(({ id }) => id === item.productId);
+                            const localizedProductName = product
+                              ? translations.pl.products[product.textKey]?.name
+                              : null;
+                            const share = Math.round(item.unitsSold / bestSellingProducts[0].unitsSold * 100);
+
+                            return (
+                              <li className="admin-top-product" key={item.productId}>
+                                <span className="admin-top-product-rank">{String(index + 1).padStart(2, "0")}</span>
+                                <img src={product?.image} alt="" loading="lazy" />
+                                <div className="admin-top-product-info">
+                                  <strong>{localizedProductName ?? item.productName} ({product?.weight ?? item.productWeight})</strong>
+                                  <div className="admin-product-sales-meter" aria-hidden="true">
+                                    <span style={{ width: `${share}%` }} />
+                                  </div>
+                                  {item.promotionalUnits > 0 && (
+                                    <small>{t.adminPage.orders.promotionalUnits}: {item.promotionalUnits}</small>
+                                  )}
+                                </div>
+                                <span className="admin-top-product-units">{item.unitsSold}</span>
+                                <strong className="admin-top-product-revenue">{(item.revenueCents / 100).toFixed(2)} zł</strong>
+                              </li>
+                            );
+                          })}
+                        </ol>
+                      )}
+                    </section>
+                  </section>
                 )}
               </>
             )}

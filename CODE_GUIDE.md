@@ -24,7 +24,8 @@
 - Una oferta solo afecta al catálogo cuando está activa y es menor que el precio normal. El precio aplicado también alimenta el carrito y el total del pedido.
 - Confirmar envía todas las variantes pendientes juntas con un `upsert`; solo tras una respuesta correcta se actualizan stock, precios, promoción, carrito y total.
 - Checkout pide teléfono y crea la orden con `create_customer_order` antes de abrir WhatsApp/SMS. Supabase guarda cliente, entrega y snapshots de precio normal, precio vendido y promoción aplicada por producto.
-- La tabla de órdenes y sus productos solo pueden leerse por administradores RLS; Witold puede actualizar si ya se entregó. El alta pública solo se permite a través del RPC, que valida disponibilidad y calcula los precios en la base.
+- La tabla de órdenes y sus productos solo pueden leerse por administradores RLS; solo un administrador puede cambiar entrega o eliminar órdenes. El borrado elimina en cascada sus líneas. El alta pública solo se permite a través del RPC, que valida disponibilidad y calcula los precios en la base.
+- La vista Estadísticas suma `items_subtotal` de cada orden; muestra por separado el valor pendiente de entrega, el promedio y las órdenes entregadas. El ranking agrupa `order_items` por variante y suma unidades, `line_total` y cantidades con promoción desde las migajas históricas, no desde precios actuales.
 - Si no hay configuración Supabase, el modo local usa `localStorage` en ese navegador. Ese modo no comparte inventario con otras personas.
 
 ### Lectura paso a paso de `App.jsx`
@@ -64,7 +65,7 @@
 - `GRANT` permite a un rol intentar una operación SQL; RLS todavía decide qué filas puede tocar.
 - El bloque `INSERT ... ON CONFLICT DO NOTHING` crea 10 unidades iniciales sin reiniciar cantidades al volver a ejecutar el script.
 - La publicación `supabase_realtime` habilita los avisos de cambios para `product_inventory`.
-- `create_customer_order(jsonb)` guarda una orden y sus líneas en una sola transacción; obtiene los precios del inventario, no del navegador.
+- `create_customer_order(jsonb)` guarda una orden y sus líneas en una sola transacción; obtiene los precios del inventario, no del navegador. RLS permite borrar órdenes solo a administradores.
 - `orders` contiene teléfono, entrega y estado; `order_items` conserva nombre, cantidad, precio regular y precio vendido, aunque el catálogo cambie después.
 - Las políticas permiten crear órdenes anónimas solo mediante el RPC; solo administradores pueden leer datos personales o cambiar `delivered`.
 
@@ -100,7 +101,8 @@
 - Oferta wpływa na katalog tylko wtedy, gdy jest aktywna i niższa od ceny regularnej. Zastosowana cena trafia również do koszyka i sumy zamówienia.
 - Potwierdzenie wysyła wszystkie oczekujące warianty razem przez `upsert`; po udanej odpowiedzi aktualizowane są zapasy, ceny, promocja, koszyk i suma.
 - Checkout wymaga telefonu i tworzy zamówienie przez `create_customer_order` przed otwarciem WhatsApp/SMS. Supabase zapisuje klienta, sposób dostawy oraz migawki ceny regularnej, sprzedanej i użytej promocji dla każdego produktu.
-- Zamówienia i ich produkty mogą odczytywać tylko administratorzy RLS; Witold może zmieniać status dostarczenia. Publiczne tworzenie zamówień jest możliwe wyłącznie przez RPC, które sprawdza dostępność i wylicza ceny w bazie.
+- Zamówienia i ich produkty mogą odczytywać tylko administratorzy RLS; tylko administrator może zmieniać status dostawy lub usuwać zamówienia. Usunięcie kaskadowo usuwa ich pozycje. Publiczne tworzenie zamówień jest możliwe wyłącznie przez RPC, które sprawdza dostępność i wylicza ceny w bazie.
+- Widok Sprzedaż sumuje `items_subtotal` zamówień; osobno pokazuje wartość oczekującą na dostawę, średnią i liczbę dostarczonych zamówień. Ranking grupuje `order_items` według wariantu i sumuje sztuki, `line_total` oraz sztuki promocyjne z historycznych zapisów, a nie z aktualnych cen.
 - Bez konfiguracji Supabase tryb lokalny używa `localStorage` w tej przeglądarce. Nie współdzieli zapasów z innymi osobami.
 
 ### Krok po kroku: `App.jsx`
@@ -140,7 +142,7 @@
 - `GRANT` pozwala roli próbować wykonać operację SQL; RLS nadal decyduje, które wiersze może zmienić.
 - `INSERT ... ON CONFLICT DO NOTHING` tworzy początkowe 10 sztuk i nie resetuje ich przy ponownym uruchomieniu skryptu.
 - Publikacja `supabase_realtime` włącza powiadomienia o zmianach `product_inventory`.
-- `create_customer_order(jsonb)` zapisuje zamówienie i pozycje w jednej transakcji; pobiera ceny z magazynu, a nie z przeglądarki.
+- `create_customer_order(jsonb)` zapisuje zamówienie i pozycje w jednej transakcji; pobiera ceny z magazynu, a nie z przeglądarki. RLS pozwala usuwać zamówienia wyłącznie administratorom.
 - `orders` przechowuje telefon, dostawę i status; `order_items` zachowuje nazwę, ilość, cenę regularną i sprzedaną także po późniejszej zmianie katalogu.
 - Polityki pozwalają dodawać zamówienia anonimowo wyłącznie przez RPC; tylko administrator może odczytywać dane osobowe i zmieniać `delivered`.
 
