@@ -1282,6 +1282,57 @@ function App() {
     }
   }
 
+  function printOrderDocument() {
+    const source = document.querySelector(".admin-order-document");
+    if (!source) return;
+
+    const printWindow = window.open("", "_blank");
+    if (!printWindow) return;
+
+    const printableDocument = source.cloneNode(true);
+    printableDocument.querySelectorAll("img").forEach((image) => {
+      image.src = new URL(image.getAttribute("src"), window.location.href).href;
+    });
+
+    const printStyles = `
+      @page { size: A4; margin: 14mm; }
+      * { box-sizing: border-box; }
+      body { margin: 0; color: #252529; background: #fff; font: 11px/1.45 Arial, sans-serif; }
+      .admin-order-document { display: grid; gap: 18px; width: 100%; padding: 0; border: 0; border-top: 3px solid #d89b35; }
+      .admin-order-document-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; padding: 10px 0 16px; border-bottom: 1px solid #dedede; }
+      .admin-order-document-brand { display: flex; align-items: center; gap: 12px; }
+      .admin-order-document-brand img { width: 52px; height: 52px; object-fit: contain; }
+      .admin-order-document-brand div, .admin-order-document-reference { display: grid; gap: 3px; }
+      .admin-order-document-brand strong { font-size: 13px; }
+      .admin-order-document-brand span, .admin-order-document-reference time { color: #666; font-size: 9px; }
+      .admin-order-document-reference { justify-items: end; text-align: right; }
+      .admin-order-document-reference .eyebrow { margin: 0; color: #80500d; font-size: 8px; font-weight: 700; }
+      .admin-order-document-reference h2 { margin: 0; font-size: 21px; }
+      .admin-order-document-rule { display: none; }
+      .admin-order-document-parties { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+      .admin-order-document-parties h3, .admin-order-document-lines h3 { margin: 0 0 7px; font-size: 10px; }
+      .admin-order-customer { display: grid; gap: 8px; margin: 0; padding: 11px; border: 1px solid #dedede; background: #faf9f6; }
+      .admin-order-customer dt { margin-bottom: 2px; color: #666; font-size: 8px; font-weight: 700; }
+      .admin-order-customer dd { margin: 0; overflow-wrap: anywhere; }
+      a { color: inherit; text-decoration: none; }
+      .admin-order-items-wrap { overflow: visible; border: 1px solid #dedede; }
+      .admin-order-items-table { width: 100%; border-collapse: collapse; font-size: 9px; }
+      .admin-order-items-table th, .admin-order-items-table td { padding: 8px 7px; border-bottom: 1px solid #dedede; text-align: left; }
+      .admin-order-items-table thead th { background: #f0eee9; color: #252529; }
+      .admin-order-items-table tfoot th, .admin-order-items-table tfoot td { border-top: 2px solid #d89b35; background: #fff7e8; font-weight: 700; }
+      .admin-order-product-cell { display: flex; align-items: center; gap: 8px; min-width: 150px; }
+      .admin-order-product-image { width: 42px; height: 42px; object-fit: cover; }
+      .admin-order-product-copy strong, .admin-order-product-copy small { display: block; }
+      .admin-order-product-copy small, .admin-order-promo-label { margin-top: 2px; color: #666; font-size: 8px; }
+      .admin-order-detail-toolbar, .admin-order-detail-actions { display: none !important; }
+      tr, .admin-order-document-parties { break-inside: avoid; }
+    `;
+
+    printWindow.document.open();
+    printWindow.document.write(`<!doctype html><html lang="${lang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${t.adminPage.orders.documentLabel} #${selectedOrder.id.slice(0, 8).toUpperCase()}</title><style>${printStyles}</style></head><body>${printableDocument.outerHTML}<script>window.addEventListener("load", async () => { await Promise.all(Array.from(document.images, image => image.decode().catch(() => {}))); window.focus(); window.print(); }); window.addEventListener("afterprint", () => window.close());</script></body></html>`);
+    printWindow.document.close();
+  }
+
   // Collapse the full navigation after the user starts scrolling.
   // Zwijamy pełną nawigację po rozpoczęciu przewijania.
   useEffect(() => {
@@ -2269,7 +2320,7 @@ function App() {
                           <header className="admin-order-detail-toolbar">
                             <span>{t.adminPage.orders.details}</span>
                             <div>
-                              <button className="admin-order-print" type="button" onClick={() => window.print()}>
+                              <button className="admin-order-print" type="button" onClick={printOrderDocument}>
                                 {t.adminPage.orders.printPdf}
                               </button>
                               <button
